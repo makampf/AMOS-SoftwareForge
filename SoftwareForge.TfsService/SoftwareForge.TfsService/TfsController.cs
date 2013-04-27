@@ -4,7 +4,10 @@ using System.Collections.ObjectModel;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Framework.Client;
 using Microsoft.TeamFoundation.Framework.Common;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using SoftwareForge.Common.Models;
+using Project = SoftwareForge.Common.Models.Project;
+
 
 namespace SoftwareForge.TfsService
 {
@@ -30,38 +33,71 @@ namespace SoftwareForge.TfsService
             _tfsServer.Authenticate();
         }
 
+       
+
         /// <summary>
         /// Get all TeamCollections
         /// </summary>
-        /// <returns>a ReadOnlyCollection of CatalogNodes</returns>
+        /// <returns>a list of TeamCollections</returns>
         public List<TeamCollection> GetTeamCollections()
         {
+            if (HasAuthenticated == false)
+                _tfsServer.Authenticate();
+
             List<TeamCollection> teamCollectionsList = new List<TeamCollection>();
+
+
             // Get the catalog of team project collections
-            ReadOnlyCollection<CatalogNode> nodes = _tfsServer.CatalogNode.QueryChildren(
+            ReadOnlyCollection<CatalogNode> tpcNodes = _tfsServer.CatalogNode.QueryChildren(
                 new[] { CatalogResourceTypes.ProjectCollection },
                 false, CatalogQueryOptions.None);
-            foreach (CatalogNode catalogNode in nodes)
+
+            foreach (CatalogNode catalogNode in tpcNodes)
             {
-                TeamCollection teamCol = new TeamCollection();
-                teamCol.Name = catalogNode.Resource.DisplayName;
+                Guid guid = new Guid(catalogNode.Resource.Properties["InstanceId"]);
+                String name = catalogNode.Resource.DisplayName;
+                //List<Project> projects = GetProjectsOfCollectionNode(catalogNode);
+                List<Project> projects = GetProjectsOfTeamCollectionGuid(guid);
+
+                TeamCollection teamCol = new TeamCollection { Guid = guid, Name = name, Projects = projects };
                 teamCollectionsList.Add(teamCol);
             }
             return teamCollectionsList;
-
         }
+
 
         /// <summary>
-        /// Get all Projects of a collection
+        /// Get specific TeamCollection
         /// </summary>
-        /// <param name="collectionNode">the Team collection</param>
-        /// <returns>a ReadOnlyCollection of CatalogNodes</returns>
-        public ReadOnlyCollection<CatalogNode> GetProjectsOfCollection(CatalogNode collectionNode)
+        /// <returns>a TeamCollection or null if no suited collection was found</returns>
+        public TeamCollection GetTeamCollection(Guid id)
         {
-             // Get a catalog of team projects for the collection
-            return collectionNode.QueryChildren(
-                new[] { CatalogResourceTypes.TeamProject },
-                false, CatalogQueryOptions.None);
+            List<TeamCollection> list = GetTeamCollections();
+            return list.Find(c => (c.Guid == id));
         }
+
+
+        /// <summary>
+        /// Get all Projects of a TeamCollection
+        /// </summary>
+        /// <param name="teamCollectionId">the TeamCollection guid</param>
+        /// <returns>a list of of projects</returns>
+        public List<Project> GetProjectsOfTeamCollectionGuid(Guid teamCollectionId)
+        {
+            List<Project> result = new List<Project>();
+
+            TfsTeamProjectCollection tpc = _tfsServer.GetTeamProjectCollection(teamCollectionId);
+            WorkItemStore store = tpc.GetService<WorkItemStore>();
+            
+            ProjectCollection projects = store.Projects;
+
+            foreach (Microsoft.TeamFoundation.WorkItemTracking.Client.Project project in projects)
+            {
+                result.Add(new Project{Id = project.Id, Name = project.Name, Guid = new Guid(project.Guid)});
+            }
+
+            return result;
+        }
+
     }
 }

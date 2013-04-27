@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using Microsoft.TeamFoundation.Framework.Client;
 using SoftwareForge.Common.Models;
 using SoftwareForge.TfsService;
 
@@ -13,32 +9,71 @@ namespace SoftwareForge.WebApi.Controllers
 {
     public class TeamCollectionsController : ApiController
     {
+        //Lazy initialization
+        private readonly Lazy<TfsController> _tfsController = new Lazy<TfsController>(CreateTfsController);
 
-        // GET api/teamcollections
-        public List<TeamCollection> Get()
+        public TfsController TfsController
         {
-            return new TfsController(new Uri("http://localhost:8080/tfs")).GetTeamCollections();
+            get { return _tfsController.Value; }
         }
 
-        // GET api/teamcollections/5
-        public string Get(int id)
+        private static TfsController CreateTfsController()
         {
-            return "val" + id;
+            return new TfsController(new Uri(Properties.Settings.Default.TfsServerUri));
         }
 
-        // POST api/teamcollections
-        public void Post([FromBody]string value)
+
+        #region GET
+        // GET api/TeamCollections
+        public List<TeamCollection> GetTeamCollections()
         {
+            return TfsController.GetTeamCollections(); 
         }
 
-        // PUT api/teamcollections/5
-        public void Put(int id, [FromBody]string value)
+        // GET api/TeamCollections?id=ff076057-54fe-4e0d-85c6-2cfd59a49baa
+        public TeamCollection GetTeamCollection(Guid id)
         {
+            TeamCollection result = TfsController.GetTeamCollection(id);
+            if (result == null)
+            {
+                HttpResponseMessage responseMessage = new HttpResponseMessage
+                    {
+                        Content = new StringContent(string.Format("No team collection found with GUID = {0}", id)),
+                        ReasonPhrase = "GUID Not Found"
+                    };
+                throw new HttpResponseException(responseMessage);
+            }
+                
+            
+            return result;
         }
+        #endregion
 
-        // DELETE api/teamcollections/5
-        public void Delete(int id)
-        {
-        }
+
+
+        //#region POST
+        //// POST api/teamcollections
+        //public void Post([FromBody]string value)
+        //{
+        //}
+        //#endregion
+
+
+
+        //#region PUT
+        //// PUT api/teamcollections/5
+        //public void Put(int id, [FromBody]string value)
+        //{
+        //}
+        //#endregion
+
+
+
+        //#region Delete
+        //// DELETE api/teamcollections/5
+        //public void Delete(int id)
+        //{
+        //}
+        //#endregion
     }
 }

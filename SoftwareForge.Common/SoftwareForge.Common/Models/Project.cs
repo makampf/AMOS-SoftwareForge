@@ -14,5 +14,15 @@ namespace SoftwareForge.Common.Models
         /// The Name of the Project
         /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// The Guid of the Project
+        /// </summary>
+        public int Id { get; set; }
+
+        /// <summary>
+        /// The Guid of the Project
+        /// </summary>
+        public Guid Guid { get; set; }
     }
 }
