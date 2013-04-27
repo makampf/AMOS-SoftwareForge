@@ -4,7 +4,7 @@ using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Framework.Client;
 using Microsoft.TeamFoundation.Framework.Common;
 
-namespace SoftwareForge.TfsService.impl.tfs
+namespace SoftwareForge.TfsService
 {
     /// <summary>
     /// The TfsController. Has the logic to control and query the tfs.
