@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.TeamFoundation.Framework.Client;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SoftwareForge.Common.Models;
 
 namespace SoftwareForge.TfsService.UnitTests
 {
@@ -38,7 +40,7 @@ namespace SoftwareForge.TfsService.UnitTests
         [TestMethod]
         public void TestGetTeamCollections()
         {
-            ReadOnlyCollection<CatalogNode> collections = _tfsController.GetTeamCollections();
+            List<TeamCollection> collections = _tfsController.GetTeamCollections();
             Assert.AreNotEqual(0, collections.Count,"Expected one or more teamcollections, but found none.");
         }
     }

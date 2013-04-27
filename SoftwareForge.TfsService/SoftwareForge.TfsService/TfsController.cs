@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Framework.Client;
 using Microsoft.TeamFoundation.Framework.Common;
+using SoftwareForge.Common.Models;
 
 namespace SoftwareForge.TfsService
 {
@@ -32,12 +34,20 @@ namespace SoftwareForge.TfsService
         /// Get all TeamCollections
         /// </summary>
         /// <returns>a ReadOnlyCollection of CatalogNodes</returns>
-        public ReadOnlyCollection<CatalogNode> GetTeamCollections()
+        public List<TeamCollection> GetTeamCollections()
         {
+            List<TeamCollection> teamCollectionsList = new List<TeamCollection>();
             // Get the catalog of team project collections
-            return _tfsServer.CatalogNode.QueryChildren(
+            ReadOnlyCollection<CatalogNode> nodes = _tfsServer.CatalogNode.QueryChildren(
                 new[] { CatalogResourceTypes.ProjectCollection },
                 false, CatalogQueryOptions.None);
+            foreach (CatalogNode catalogNode in nodes)
+            {
+                TeamCollection teamCol = new TeamCollection();
+                teamCol.Name = catalogNode.Resource.DisplayName;
+                teamCollectionsList.Add(teamCol);
+            }
+            return teamCollectionsList;
 
         }
 
