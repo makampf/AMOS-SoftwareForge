@@ -1,5 +1,28 @@
-bin
-debug
-obj
-*.suo
+#Windows Thumbnails ignorieren
+Thumbs.db
+
+#Visual Studio Dateien ignorieren
+*.obj
+*.exe
+*.pdb
 *.user
+*.aps
+*.pch
+*.vspscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.cache
+*.ilk
+*.log
+[Bb]in
+[Dd]ebug*/
+*.lib
+*.sbr
+obj/
+[Rr]elease*/
+_ReSharper*/

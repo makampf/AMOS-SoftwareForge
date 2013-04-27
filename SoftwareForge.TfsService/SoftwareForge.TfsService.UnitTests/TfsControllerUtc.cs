@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using Microsoft.TeamFoundation.Framework.Client;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SoftwareForge.TfsService.impl.tfs;
 
 namespace SoftwareForge.TfsService.UnitTests
 {
