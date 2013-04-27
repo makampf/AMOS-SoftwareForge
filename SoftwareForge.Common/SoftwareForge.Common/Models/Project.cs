@@ -16,7 +16,7 @@ namespace SoftwareForge.Common.Models
         public string Name { get; set; }
 
         /// <summary>
-        /// The Guid of the Project
+        /// The id of the Project
         /// </summary>
         public int Id { get; set; }
 

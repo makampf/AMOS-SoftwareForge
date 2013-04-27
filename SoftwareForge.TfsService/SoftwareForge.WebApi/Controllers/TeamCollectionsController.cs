@@ -30,15 +30,15 @@ namespace SoftwareForge.WebApi.Controllers
             return TfsController.GetTeamCollections(); 
         }
 
-        // GET api/TeamCollections?id=ff076057-54fe-4e0d-85c6-2cfd59a49baa
-        public TeamCollection GetTeamCollection(Guid id)
+        // GET api/TeamCollections?guid=fe4ad9d6-6936-4f09-842c-4d56f4276cee
+        public TeamCollection GetTeamCollection(Guid guid)
         {
-            TeamCollection result = TfsController.GetTeamCollection(id);
+            TeamCollection result = TfsController.GetTeamCollection(guid);
             if (result == null)
             {
                 HttpResponseMessage responseMessage = new HttpResponseMessage
                     {
-                        Content = new StringContent(string.Format("No team collection found with GUID = {0}", id)),
+                        Content = new StringContent(string.Format("No team collection found with GUID = {0}", guid)),
                         ReasonPhrase = "GUID Not Found"
                     };
                 throw new HttpResponseException(responseMessage);
