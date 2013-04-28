@@ -26,12 +26,24 @@ namespace SoftwareForge.TfsService.UnitTests.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:8080/tfs")]
-        public string TfsServerUri {
+        public string TfsTestServerUri {
             get {
-                return ((string)(this["TfsServerUri"]));
+                return ((string)(this["TfsTestServerUri"]));
             }
             set {
-                this["TfsServerUri"] = value;
+                this["TfsTestServerUri"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=localhost\\SQLEXPRESS;Integrated Security=True")]
+        public string DbTestConnectionString {
+            get {
+                return ((string)(this["DbTestConnectionString"]));
+            }
+            set {
+                this["DbTestConnectionString"] = value;
             }
         }
     }

@@ -1,4 +1,24 @@
-﻿using System;
+﻿/*
+ * Copyright (c) 2013 by Denis Bach, Konstantin Tsysin, Taner Tunc, Marvin Kampf, Florian Wittmann
+ *
+ * This file is part of the Software Forge Overlay rating application.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public
+ * License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Web.Http;
@@ -12,25 +32,27 @@ namespace SoftwareForge.WebApi.Controllers
         //Lazy initialization
         private readonly Lazy<TfsController> _tfsController = new Lazy<TfsController>(CreateTfsController);
 
-        public TfsController TfsController
+        TfsController TfsController
         {
             get { return _tfsController.Value; }
         }
 
         private static TfsController CreateTfsController()
         {
-            return new TfsController(new Uri(Properties.Settings.Default.TfsServerUri));
+            return new TfsController(new Uri(Properties.Settings.Default.TfsServerUri), Properties.Settings.Default.DbConnectionString);
         }
 
 
         #region GET
         // GET api/TeamCollections
+        [HttpGet]
         public List<TeamCollection> GetTeamCollections()
         {
             return TfsController.GetTeamCollections(); 
         }
 
         // GET api/TeamCollections?guid=fe4ad9d6-6936-4f09-842c-4d56f4276cee
+        [HttpGet]
         public TeamCollection GetTeamCollection(Guid guid)
         {
             TeamCollection result = TfsController.GetTeamCollection(guid);
@@ -51,17 +73,20 @@ namespace SoftwareForge.WebApi.Controllers
 
 
 
-        //#region POST
-        //// POST api/teamcollections
-        //public void Post([FromBody]string value)
-        //{
-        //}
-        //#endregion
+        #region POST
+        // POST api/teamcollections
+        [HttpPost]
+        public TeamCollection CreateTeamCollection([FromBody] string testCollectionName)
+        {
+            return TfsController.CreateTeamCollection(testCollectionName);
+        }
+        #endregion
 
 
 
         //#region PUT
-        //// PUT api/teamcollections/5
+        //// PUT api/TeamCollections
+        //[HttpPut]
         //public void Put(int id, [FromBody]string value)
         //{
         //}
@@ -69,11 +94,15 @@ namespace SoftwareForge.WebApi.Controllers
 
 
 
-        //#region Delete
-        //// DELETE api/teamcollections/5
-        //public void Delete(int id)
-        //{
-        //}
-        //#endregion
+        #region Delete
+        // DELETE api/teamcollections/5
+
+        //TODO: Test it from browser
+        [HttpDelete]
+        public void RemoveTeamCollection(Guid testCollectionGuid)
+        {
+            TfsController.RemoveTeamCollection(testCollectionGuid);
+        }
+        #endregion
     }
 }

@@ -31,5 +31,14 @@ namespace SoftwareForge.WebApi.Properties {
                 return ((string)(this["TfsServerUri"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=localhost\\SQLEXPRESS;Integrated Security=True")]
+        public string DbConnectionString {
+            get {
+                return ((string)(this["DbConnectionString"]));
+            }
+        }
     }
 }

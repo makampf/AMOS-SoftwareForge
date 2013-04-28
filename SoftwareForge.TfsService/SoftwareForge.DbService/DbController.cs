@@ -19,34 +19,27 @@
  */
 
 using System;
-using System.Collections.Generic;
+using System.Data.SqlClient;
+using Microsoft.SqlServer.Management.Common;
+using Microsoft.SqlServer.Management.Smo;
 
-namespace SoftwareForge.Common.Models
+namespace SoftwareForge.DbService
 {
-    /// <summary>
-    /// A Tfs TeamCollection Model.
-    /// </summary>
-    public class TeamCollection
+    public class DbController
     {
-        
+        private readonly Server _server;
+        private const String DbPrefix = "Tfs_";
 
-        /// <summary>
-        /// The Name of the TeamCollection
-        /// </summary>
-        public string Name { get; set; }
+        public DbController(String connectionString)
+        {
+            _server = new Server(new ServerConnection(new SqlConnection(connectionString)));
+            _server.Refresh();
+        }
 
-        /// <summary>
-        /// The Guid of the TeamCollection
-        /// </summary>
-        public Guid Guid { get; set; }
+        public void RemoveDatabase(String name)
+        {
+            _server.KillDatabase(DbPrefix + name);
+        }
 
-        /// <summary>
-        /// The Projects of the TeamCollection
-        /// </summary>
-        public List<Project> Projects { get; set; }
-
-        
-
-       
     }
 }

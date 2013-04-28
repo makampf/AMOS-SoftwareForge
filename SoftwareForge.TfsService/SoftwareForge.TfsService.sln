@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftwareForge.WebApi", "Sof
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftwareForge.WebApi.Tests", "SoftwareForge.WebApi.Tests\SoftwareForge.WebApi.Tests.csproj", "{D5CBB1B9-2AEC-4550-909C-533E74412C5E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftwareForge.DbService", "SoftwareForge.DbService\SoftwareForge.DbService.csproj", "{7F856256-365F-489C-8FB6-2ADB46D21E41}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{D5CBB1B9-2AEC-4550-909C-533E74412C5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5CBB1B9-2AEC-4550-909C-533E74412C5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5CBB1B9-2AEC-4550-909C-533E74412C5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F856256-365F-489C-8FB6-2ADB46D21E41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F856256-365F-489C-8FB6-2ADB46D21E41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F856256-365F-489C-8FB6-2ADB46D21E41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F856256-365F-489C-8FB6-2ADB46D21E41}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
