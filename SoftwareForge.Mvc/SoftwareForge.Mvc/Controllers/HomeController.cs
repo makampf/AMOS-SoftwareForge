@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using SoftwareForge.Mvc.WebApiClient;
 
 namespace SoftwareForge.Mvc.Controllers
 {
@@ -10,7 +11,7 @@ namespace SoftwareForge.Mvc.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            return View(TeamCollectionsClient.GetTeamCollections());
         }
     }
 }

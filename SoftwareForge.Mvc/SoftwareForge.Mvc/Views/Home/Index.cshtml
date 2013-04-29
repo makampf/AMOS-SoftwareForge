@@ -1,4 +1,6 @@
-﻿@{
+﻿@using SoftwareForge.Common.Models
+@model IEnumerable<TeamCollection>
+@{
     ViewBag.Title = "Home";
 }
 @section featured {
@@ -9,10 +11,28 @@
                 <h2>@ViewBag.Message</h2>
             </hgroup>
             <p>
-                Some featured content
+                Welcome to the Software Forge!
             </p>
         </div>
     </section>
 }
-<h3>Welcome</h3>
-It works!
+<h3>Overview</h3><br/>
+
+@foreach (TeamCollection teamCollection in Model)
+{
+    
+    <b>@teamCollection.Name</b> 
+          
+    <ul>
+    @foreach (Project project in teamCollection.Projects)
+    {
+        <li>
+            @project.Name
+        </li>
+    }
+    </ul>
+}
+    
+<div>
+    @Html.ActionLink("Create new TeamCollection","Create","TeamCollections")
+</div>

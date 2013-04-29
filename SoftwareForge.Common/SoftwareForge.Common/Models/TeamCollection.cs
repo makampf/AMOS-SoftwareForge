@@ -33,6 +33,7 @@ namespace SoftwareForge.Common.Models
         /// <summary>
         /// The Name of the TeamCollection
         /// </summary>
+        
         public string Name { get; set; }
 
         /// <summary>
