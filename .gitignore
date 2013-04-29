@@ -1,3 +1,6 @@
+#MacOS Filesystem Trash
+.DS_Store
+
 #Windows Thumbnails ignorieren
 Thumbs.db
 
