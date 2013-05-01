@@ -4,7 +4,7 @@ using System.Web.Optimization;
 namespace SoftwareForge.WebApi
 {
     /// <summary>
-    /// Creates public class BundleConfig
+    /// 
     /// </summary>
     public class BundleConfig
     {

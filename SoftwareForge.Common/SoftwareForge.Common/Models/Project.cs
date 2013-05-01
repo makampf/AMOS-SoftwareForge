@@ -28,7 +28,7 @@ namespace SoftwareForge.Common.Models
     public class Project
     {
         /// <summary>
-        /// The Name of the Project
+        /// The Name of the Project.
         /// </summary>
         public string Name { get; set; }
 
@@ -38,7 +38,7 @@ namespace SoftwareForge.Common.Models
         public int Id { get; set; }
 
         /// <summary>
-        /// The Guid of the Project
+        /// The Guid of the Project.
         /// </summary>
         public Guid Guid { get; set; }
     }

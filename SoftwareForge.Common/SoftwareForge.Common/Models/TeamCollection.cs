@@ -30,17 +30,17 @@ namespace SoftwareForge.Common.Models
     {
 
         /// <summary>
-        /// The Name of the TeamCollection
+        /// The Name of the TeamCollection.
         /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// The Guid of the TeamCollection
+        /// The Guid of the TeamCollection.
         /// </summary>
         public Guid Guid { get; set; }
 
         /// <summary>
-        /// The Projects of the TeamCollection
+        /// The Projects of the TeamCollection.
         /// </summary>
         public List<Project> Projects { get; set; }
        

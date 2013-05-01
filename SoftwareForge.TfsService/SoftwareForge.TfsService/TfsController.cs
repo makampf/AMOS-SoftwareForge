@@ -49,7 +49,7 @@ namespace SoftwareForge.TfsService
 
 
         /// <summary>
-        /// Create a new tfsController
+        /// Create a new tfsController.
         /// </summary>
         /// <param name="tfsUri">The uri of the tfs</param>
         /// <param name="connectionString">The connection String to the mssql-server holding the ProjectCollections</param>
@@ -64,7 +64,7 @@ namespace SoftwareForge.TfsService
        
 
         /// <summary>
-        /// Get all TeamCollections
+        /// Get all TeamCollections.
         /// </summary>
         /// <returns>a list of TeamCollections</returns>
         public List<TeamCollection> GetTeamCollections()
@@ -95,7 +95,7 @@ namespace SoftwareForge.TfsService
 
 
         /// <summary>
-        /// Get specific TeamCollection
+        /// Get specific TeamCollection.
         /// </summary>
         /// <returns>a TeamCollection or null if no suited collection was found</returns>
         public TeamCollection GetTeamCollection(Guid teamCollectionGuid)
@@ -106,7 +106,7 @@ namespace SoftwareForge.TfsService
 
 
         /// <summary>
-        /// Get all Projects of a TeamProjectCollection
+        /// Get all Projects of a TeamProjectCollection.
         /// </summary>
         /// <param name="teamCollectionId">the TeamCollection guid</param>
         /// <returns>a list of of projects</returns>
@@ -132,7 +132,7 @@ namespace SoftwareForge.TfsService
 
 
         /// <summary>
-        /// Creates a TeamProjectCollection
+        /// Creates a TeamProjectCollection.
         /// </summary>
         /// <param name="collectionName">the TeamCollection name</param>
         /// <returns>the created TeamCollection</returns>
@@ -174,7 +174,7 @@ namespace SoftwareForge.TfsService
 
         
         /// <summary>
-        /// Removes the TeamProjectCollection
+        /// Removes the TeamProjectCollection.
         /// </summary>
         /// <param name="collectionId">the Guid of the TeamProjectCollection to remove</param>
         public void RemoveTeamCollection(Guid collectionId)
@@ -190,7 +190,7 @@ namespace SoftwareForge.TfsService
 
 
         /// <summary>
-        /// Removes the TeamProjectCollection
+        /// Removes the TeamProjectCollection.
         /// </summary>
         /// <param name="collection">the TeamProjectCollection to remove</param>
         private void RemoveTeamCollection(TeamProjectCollection collection)
