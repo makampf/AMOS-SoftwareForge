@@ -25,6 +25,9 @@ using Microsoft.SqlServer.Management.Smo;
 
 namespace SoftwareForge.DbService
 {
+    /// <summary>
+    /// Initialise a database controller which realises a new server connection with SQL database
+    /// </summary>
     public class DbController
     {
         private readonly Server _server;
@@ -36,6 +39,10 @@ namespace SoftwareForge.DbService
             _server.Refresh();
         }
 
+        /// <summary>
+        /// Function to remove the database
+        /// </summary>
+        /// <param name="name"> Name of the database</param>
         public void RemoveDatabase(String name)
         {
             _server.KillDatabase(DbPrefix + name);

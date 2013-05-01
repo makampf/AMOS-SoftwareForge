@@ -33,7 +33,7 @@ namespace SoftwareForge.WebApi.Tests.Controllers
         private TeamCollectionsController _controller;
 
         /// <summary>
-        /// Init the connection to tfs
+        /// Init the connection to tfs.
         /// </summary>
         [TestInitialize]
         public void TestInit()
@@ -41,7 +41,9 @@ namespace SoftwareForge.WebApi.Tests.Controllers
             _controller = new TeamCollectionsController();
         }
 
-
+        /// <summary>
+        /// test the GetTeamCollections method (simple).
+        /// </summary>
         [TestMethod]
         public void GetTeamCollections()
         {
@@ -63,7 +65,9 @@ namespace SoftwareForge.WebApi.Tests.Controllers
             }
         }
 
-
+        /// <summary>
+        /// test the GetTeamCollections method (extended).
+        /// </summary>
         [TestMethod]
         public void GetTeamCollection()
         {

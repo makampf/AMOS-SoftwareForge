@@ -28,12 +28,10 @@ namespace SoftwareForge.Common.Models
     /// </summary>
     public class TeamCollection
     {
-        
 
         /// <summary>
         /// The Name of the TeamCollection
         /// </summary>
-        
         public string Name { get; set; }
 
         /// <summary>
@@ -45,9 +43,6 @@ namespace SoftwareForge.Common.Models
         /// The Projects of the TeamCollection
         /// </summary>
         public List<Project> Projects { get; set; }
-
-        
-
        
     }
 }
