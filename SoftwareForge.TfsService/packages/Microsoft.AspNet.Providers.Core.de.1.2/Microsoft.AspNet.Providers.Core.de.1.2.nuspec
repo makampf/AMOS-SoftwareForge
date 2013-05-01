@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Microsoft.AspNet.Providers.Core.de</id>
+    <version>1.2</version>
+    <title>Deutsche Ressourcen für Microsoft ASP.NET Universal Providers-Kernbibliotheken</title>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
+    <licenseUrl>http://www.microsoft.com/web/webpi/eula/Providers_1_eula_DEU.htm</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Dieses Paket enthält die deutschen Satellitenassemblys für ASP.NET Universal Providers.</description>
+    <summary>Deutsche Ressourcen für das Microsoft.AspNet.Providers.Core-Paket</summary>
+    <language>de</language>
+    <dependencies>
+      <dependency id="Microsoft.AspNet.Providers.Core" version="[1.2]" />
+    </dependencies>
+    <references />
+  </metadata>
+</package>
