@@ -17,37 +17,20 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
+using System.Collections.Generic;
 
-using System;
-using System.Data.SqlClient;
-using Microsoft.SqlServer.Management.Common;
-using Microsoft.SqlServer.Management.Smo;
-
-namespace SoftwareForge.DbService
+namespace SoftwareForge.Common.Models
 {
-    /// <summary>
-    /// Initialise a database controller which realises a new server connection with. 
-    /// SQL database.
-    /// </summary>
-    public class DbController
+    public class User
     {
-        private readonly Server _server;
-        private const String DbPrefix = "Tfs_";
-
-        public DbController(String connectionString)
-        {
-            _server = new Server(new ServerConnection(new SqlConnection(connectionString)));
-            _server.Refresh();
-        }
+        /// <summary>
+        /// The Username <example>domain\john.doe</example>
+        /// </summary>
+        public string Username { get; private set; }
 
         /// <summary>
-        /// Function to remove the database connection.
+        /// A list with all projectmemberships.
         /// </summary>
-        /// <param name="name"> Name of the database</param>
-        public void RemoveDatabase(String name)
-        {
-            _server.KillDatabase(DbPrefix + name);
-        }
-
+        public List<Project> ProjectList { get; private set; }
     }
 }

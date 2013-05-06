@@ -39,7 +39,7 @@ namespace SoftwareForge.TfsService
     public class TfsController
     {
         private readonly TfsConfigurationServer _tfsServer;
-        private readonly DbController _dbController;
+        private readonly TfsDbController _tfsDbController;
 
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace SoftwareForge.TfsService
             _tfsServer = TfsConfigurationServerFactory.GetConfigurationServer(tfsUri);
             _tfsServer.Authenticate();
 
-            _dbController = new DbController(connectionString);
+            _tfsDbController = new TfsDbController(connectionString);
         }
 
        
@@ -217,7 +217,7 @@ namespace SoftwareForge.TfsService
 
             tpcService.WaitForCollectionServicingToComplete(tpcJob);
 
-            _dbController.RemoveDatabase(collection.Name);
+            _tfsDbController.RemoveDatabase(collection.Name);
             //http://msdn.microsoft.com/en-us/library/vstudio/dd312130.aspx
             //http://msdn.microsoft.com/de-de/library/ms177419.aspx
 

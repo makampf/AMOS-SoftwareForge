@@ -17,31 +17,41 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-using System;
-using System.Collections.Generic;
 
-namespace SoftwareForge.Common.Models
+using System;
+using System.Data.SqlClient;
+using Microsoft.SqlServer.Management.Common;
+using Microsoft.SqlServer.Management.Smo;
+
+namespace SoftwareForge.DbService
 {
     /// <summary>
-    /// A Tfs TeamCollection Model.
+    /// Initialise a database controller which realises a new server connection with. 
+    /// SQL database.
     /// </summary>
-    public class TeamCollection
+    public class TfsDbController
     {
+        private readonly Server _server;
+        private const String DbPrefix = "Tfs_";
 
         /// <summary>
-        /// The Name of the TeamCollection.
+        /// Create a new TfsDbController
         /// </summary>
-        public string Name { get; set; }
+        /// <param name="connectionString">the connectionString to the database</param>
+        public TfsDbController(String connectionString)
+        {
+            _server = new Server(new ServerConnection(new SqlConnection(connectionString)));
+            _server.Refresh();
+        }
 
         /// <summary>
-        /// The Guid of the TeamCollection.
+        /// Function to remove the database connection.
         /// </summary>
-        public Guid Guid { get; set; }
+        /// <param name="name"> Name of the database</param>
+        public void RemoveDatabase(String name)
+        {
+            _server.KillDatabase(DbPrefix + name);
+        }
 
-        /// <summary>
-        /// The Projects of the TeamCollection.
-        /// </summary>
-        public List<Project> Projects { get; set; }
-       
     }
 }
