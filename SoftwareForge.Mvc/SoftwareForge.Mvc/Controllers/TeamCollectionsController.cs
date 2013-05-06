@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Web;
+﻿using System.Net.Http;
 using System.Web.Mvc;
 using SoftwareForge.Mvc.WebApiClient;
 
@@ -10,16 +6,13 @@ namespace SoftwareForge.Mvc.Controllers
 {
     public class TeamCollectionsController : Controller
     {
-        //
-        // GET: /TeamCollections/
-
-        public ActionResult Create()
+        public ActionResult CreateTeamCollection()
         {
             return View();
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult CreateTeamCollection(FormCollection collection)
         {
             try
             {
@@ -46,7 +39,5 @@ namespace SoftwareForge.Mvc.Controllers
                 return View();
             }
         }
-
-
     }
 }

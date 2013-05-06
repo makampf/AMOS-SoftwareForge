@@ -12,16 +12,23 @@ namespace SoftwareForge.Mvc.Tests.Controllers
     [TestClass]
     public class HomeControllerTest
     {
+
+        private HomeController _controller;
+
+        /// <summary>
+        /// Init the HomeController.
+        /// </summary>
+        [TestInitialize]
+        public void TestInit()
+        {
+            _controller = new HomeController();
+        }
+
+
         [TestMethod]
         public void Index()
         {
-            // Arrange
-            HomeController controller = new HomeController();
-
-            // Act
-            ViewResult result = controller.Index() as ViewResult;
-
-            // Assert
+            ViewResult result = _controller.Index() as ViewResult;
             Assert.IsNotNull(result);
         }
     }

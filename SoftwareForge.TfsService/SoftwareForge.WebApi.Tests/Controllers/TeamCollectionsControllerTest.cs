@@ -33,7 +33,7 @@ namespace SoftwareForge.WebApi.Tests.Controllers
         private TeamCollectionsController _controller;
 
         /// <summary>
-        /// Init the connection to tfs.
+        /// Init the TeamCollectionsController.
         /// </summary>
         [TestInitialize]
         public void TestInit()

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using System.Web.Mvc;
+using SoftwareForge.Common.Models;
 using SoftwareForge.Mvc.WebApiClient;
 
 namespace SoftwareForge.Mvc.Controllers
@@ -11,7 +9,8 @@ namespace SoftwareForge.Mvc.Controllers
     {
         public ActionResult Index()
         {
-            return View(TeamCollectionsClient.GetTeamCollections());
+            IEnumerable<TeamCollection> teamCollections = TeamCollectionsClient.GetTeamCollections();
+            return View(teamCollections);
         }
     }
 }
