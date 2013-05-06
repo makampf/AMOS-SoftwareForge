@@ -33,7 +33,6 @@ namespace SoftwareForge.Mvc.WebApiClient
         /// <returns>all Team Collections</returns>
         public static IEnumerable<TeamCollection> GetTeamCollections()
         {
-           
             // List all products.
             HttpResponseMessage response = Client.GetAsync("api/TeamCollections").Result;  // Blocking call!
             if (response.IsSuccessStatusCode)
