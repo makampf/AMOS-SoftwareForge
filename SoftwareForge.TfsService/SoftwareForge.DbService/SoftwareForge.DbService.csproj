@@ -36,6 +36,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ProjectsDao.cs" />
+    <Compile Include="SoftwareForgeDbContext.cs" />
     <Compile Include="TfsDbController.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -51,6 +53,18 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Entity" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\SoftwareForge.Common\SoftwareForge.Common\SoftwareForge.Common.csproj">
+      <Project>{a73ad4d8-b74b-4e4f-97d3-c8e5078fed36}</Project>
+      <Name>SoftwareForge.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

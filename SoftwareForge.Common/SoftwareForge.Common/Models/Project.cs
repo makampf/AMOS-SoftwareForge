@@ -39,6 +39,7 @@ using System;
  * <http://www.gnu.org/licenses/>.
  */
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SoftwareForge.Common.Models
 {
@@ -55,6 +56,7 @@ namespace SoftwareForge.Common.Models
         /// <summary>
         /// The id of the Project.
         /// </summary>
+        [Key]
         public int Id { get; set; }
 
         /// <summary>
@@ -65,6 +67,6 @@ namespace SoftwareForge.Common.Models
         /// <summary>
         /// The list with all users that are member of this project.
         /// </summary>
-        public List<User> UserList { get; private set; }
+        public ICollection<User> Users { get; set; }
     }
 }
