@@ -60,7 +60,7 @@ namespace SoftwareForge.TfsService.UnitTests
         public void TestGetTeamCollections()
         {
             List<TeamCollection> collections = _tfsController.GetTeamCollections();
-            Assert.AreNotEqual(0, collections.Count,"Expected one or more teamcollections, but found none.");
+            Assert.IsNotNull(collections);
 
             foreach (var teamCollection in collections)
             {
@@ -76,7 +76,7 @@ namespace SoftwareForge.TfsService.UnitTests
         public void TestGetProjectsOfTeamCollectionGuid()
         {
             List<TeamCollection> collections = _tfsController.GetTeamCollections();
-            Assert.AreNotEqual(0, collections.Count, "Expected one or more teamcollections, but found none.");
+            Assert.IsNotNull(collections);
 
             foreach (var teamCollection in collections)
             {
@@ -102,7 +102,7 @@ namespace SoftwareForge.TfsService.UnitTests
         public void TestGetTeamCollection()
         {
             List<TeamCollection> collections = _tfsController.GetTeamCollections();
-            Assert.AreNotEqual(0, collections.Count, "Expected one or more teamcollections, but found none.");
+            Assert.IsNotNull(collections);
 
             foreach (var teamCollection in collections)
             {

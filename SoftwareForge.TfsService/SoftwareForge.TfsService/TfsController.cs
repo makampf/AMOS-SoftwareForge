@@ -19,7 +19,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Framework.Client;
 using Microsoft.TeamFoundation.Framework.Common;
@@ -36,25 +35,25 @@ namespace SoftwareForge.TfsService
     /// </summary>
     public class TfsController
     {
-        private readonly TfsConfigurationServer _tfsServer;
+        private readonly TfsConfigurationServer _tfsConfigurationServer;
         private readonly TfsDbController _tfsDbController;
 
 
         /// <summary>
         /// Bool if the tfs has authenticated.
         /// </summary>
-        public bool HasAuthenticated { get { return _tfsServer.HasAuthenticated; } }
+        public bool HasAuthenticated { get { return _tfsConfigurationServer.HasAuthenticated; } }
 
 
         /// <summary>
-        /// Create a new tfsController.
+        /// Constructor of the tfsController.
         /// </summary>
         /// <param name="tfsUri">The uri of the tfs</param>
         /// <param name="connectionString">The connection String to the mssql-server holding the ProjectCollections</param>
         public TfsController(Uri tfsUri, String connectionString)
         {
-            _tfsServer = TfsConfigurationServerFactory.GetConfigurationServer(tfsUri);
-            _tfsServer.Authenticate();
+            _tfsConfigurationServer = TfsConfigurationServerFactory.GetConfigurationServer(tfsUri);
+            _tfsConfigurationServer.Authenticate();
 
             _tfsDbController = new TfsDbController(connectionString);
         }
@@ -68,26 +67,26 @@ namespace SoftwareForge.TfsService
         public List<TeamCollection> GetTeamCollections()
         {
             if (HasAuthenticated == false)
-                _tfsServer.Authenticate();
+                _tfsConfigurationServer.Authenticate();
 
             List<TeamCollection> teamCollectionsList = new List<TeamCollection>();
 
 
-            // Get the catalog of team project collections
-            ReadOnlyCollection<CatalogNode> tpcNodes = _tfsServer.CatalogNode.QueryChildren(
-                new[] { CatalogResourceTypes.ProjectCollection },
-                false, CatalogQueryOptions.None);
+            ITeamProjectCollectionService teamProjectCollectionService = _tfsConfigurationServer.GetService<ITeamProjectCollectionService>();
+            IList<TeamProjectCollection> collections = teamProjectCollectionService.GetCollections();
 
-            foreach (CatalogNode catalogNode in tpcNodes)
+            foreach (TeamProjectCollection collection in collections)
             {
-                Guid guid = new Guid(catalogNode.Resource.Properties["InstanceId"]);
-                String name = catalogNode.Resource.DisplayName;
-                //List<Project> projects = GetProjectsOfCollectionNode(catalogNode);
-                List<Project> projects = GetProjectsOfTeamCollectionGuid(guid);
-
-                TeamCollection teamCol = new TeamCollection { Guid = guid, Name = name, Projects = projects };
-                teamCollectionsList.Add(teamCol);
+                if (collection.State == TeamFoundationServiceHostStatus.Started)
+                {
+                    Guid guid = collection.Id;
+                    String name = collection.Name;
+                    List<Project> projects = GetProjectsOfTeamCollectionGuid(guid);
+                    TeamCollection teamCol = new TeamCollection { Guid = guid, Name = name, Projects = projects };
+                    teamCollectionsList.Add(teamCol);
+                }
             }
+            
             return teamCollectionsList;
         }
 
@@ -113,9 +112,9 @@ namespace SoftwareForge.TfsService
             List<Project> result = new List<Project>();
 
             if (HasAuthenticated == false)
-                _tfsServer.Authenticate();
+                _tfsConfigurationServer.Authenticate();
 
-            TfsTeamProjectCollection tpc = _tfsServer.GetTeamProjectCollection(teamCollectionId);
+            TfsTeamProjectCollection tpc = _tfsConfigurationServer.GetTeamProjectCollection(teamCollectionId);
             WorkItemStore store = tpc.GetService<WorkItemStore>();
             
             ProjectCollection projects = store.Projects;
@@ -137,9 +136,9 @@ namespace SoftwareForge.TfsService
         public TeamCollection CreateTeamCollection(String collectionName)
         {
             if (HasAuthenticated == false)
-                _tfsServer.Authenticate();
+                _tfsConfigurationServer.Authenticate();
 
-            ITeamProjectCollectionService tpcService = _tfsServer.GetService<ITeamProjectCollectionService>();
+            ITeamProjectCollectionService tpcService = _tfsConfigurationServer.GetService<ITeamProjectCollectionService>();
 
             Dictionary<string, string> servicingTokens = new Dictionary<string, string>
                 {
@@ -178,9 +177,9 @@ namespace SoftwareForge.TfsService
         public void RemoveTeamCollection(Guid collectionId)
         {
             if (HasAuthenticated == false)
-                _tfsServer.Authenticate();
+                _tfsConfigurationServer.Authenticate();
 
-            ITeamProjectCollectionService tpcService = _tfsServer.GetService<ITeamProjectCollectionService>();
+            ITeamProjectCollectionService tpcService = _tfsConfigurationServer.GetService<ITeamProjectCollectionService>();
             TeamProjectCollection collection = tpcService.GetCollection(collectionId);
             
             RemoveTeamCollection(collection);
@@ -194,9 +193,9 @@ namespace SoftwareForge.TfsService
         private void RemoveTeamCollection(TeamProjectCollection collection)
         {
             if (HasAuthenticated == false)
-                _tfsServer.Authenticate();
+                _tfsConfigurationServer.Authenticate();
 
-            ITeamProjectCollectionService tpcService = _tfsServer.GetService<ITeamProjectCollectionService>();
+            ITeamProjectCollectionService tpcService = _tfsConfigurationServer.GetService<ITeamProjectCollectionService>();
 
             Dictionary<string, string> servicingTokens = new Dictionary<string, string>
                 {
@@ -221,6 +220,8 @@ namespace SoftwareForge.TfsService
 
            
         }
+
+
 
     }
 }
