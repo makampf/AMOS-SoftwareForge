@@ -110,7 +110,7 @@ namespace SoftwareForge.TfsService
                 {
                     Guid guid = collection.Id;
                     String name = collection.Name;
-                    List<Project> projects = GetProjectsOfTeamCollectionGuid(guid);
+                    List<Project> projects = GetTeamProjectsOfTeamCollection(guid);
                     TeamCollection teamCol = new TeamCollection { Guid = guid, Name = name, Projects = projects };
                     teamCollectionsList.Add(teamCol);
                 }
@@ -136,7 +136,7 @@ namespace SoftwareForge.TfsService
         /// </summary>
         /// <param name="teamCollectionGuid">the TeamCollection guid</param>
         /// <returns>a list of of projects</returns>
-        public List<Project> GetProjectsOfTeamCollectionGuid(Guid teamCollectionGuid)
+        public List<Project> GetTeamProjectsOfTeamCollection(Guid teamCollectionGuid)
         {
 
             ProjectsDao projectsDao = new ProjectsDao();
@@ -261,22 +261,22 @@ namespace SoftwareForge.TfsService
         /// <summary>
         /// Creates a TeamProjectCollection.
         /// </summary>
-        /// <param name="collectionGuid">the TeamProjectCollection Guid in which the project will be created</param>
+        /// <param name="teamCollectionGuid">the TeamProjectCollection Guid in which the project will be created</param>
         /// <param name="projectName">the TeamProject name</param>
         /// <param name="templateName">the Template, which should be used</param>
-        public void CreateTeamProjectInTeamCollection(Guid collectionGuid, String projectName, String templateName)
+        public void CreateTeamProjectInTeamCollection(Guid teamCollectionGuid, String projectName, String templateName)
         {
             if (HasAuthenticated == false)
                 _tfsConfigurationServer.Authenticate();
 
-            TeamCollection tc = GetTeamCollection(collectionGuid);
+            TeamCollection tc = GetTeamCollection(teamCollectionGuid);
             if (tc == null)
-                throw new Exception("Could not found TeamCollection with Guid: " + collectionGuid);
+                throw new Exception("Could not found TeamCollection with Guid: " + teamCollectionGuid);
 
             if (tc.Projects.Count(a => a.Name == projectName) != 0)
                 throw  new Exception("The Project " + projectName + " in the TeamCollection " + tc.Name + " already exists");
-            
-            List<String> templates = GetTemplatesInCollection(collectionGuid);
+
+            List<String> templates = GetTemplatesInCollection(teamCollectionGuid);
             if (templates.Contains(templateName) == false)
                 throw new Exception("Could not found templateName in collection " + tc.Name);
 

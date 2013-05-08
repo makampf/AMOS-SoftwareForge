@@ -75,7 +75,7 @@ namespace SoftwareForge.TfsService.UnitTests
 
 
         /// <summary>
-        /// Test the GetProjectsOfTeamCollectionGuid method.
+        /// Test the GetTeamProjectsOfTeamCollection method.
         /// </summary>
         [TestMethod]
         public void TestGetProjectsOfTeamCollectionGuid()
@@ -88,7 +88,7 @@ namespace SoftwareForge.TfsService.UnitTests
                 Assert.AreNotEqual(new Guid(), teamCollection.Guid);
                 Assert.IsFalse(String.IsNullOrEmpty(teamCollection.Name));
 
-                List<Project> list = _tfsController.GetProjectsOfTeamCollectionGuid(teamCollection.Guid);
+                List<Project> list = _tfsController.GetTeamProjectsOfTeamCollection(teamCollection.Guid);
                 Assert.IsNotNull(list);
 
                 foreach (var project in list)
