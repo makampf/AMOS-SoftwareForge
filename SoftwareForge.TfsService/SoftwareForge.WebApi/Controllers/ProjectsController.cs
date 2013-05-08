@@ -58,7 +58,10 @@ namespace SoftwareForge.WebApi.Controllers
         [HttpPost]
         public Project CreateProject([FromBody] Project project)
         {
-            TfsController.CreateTeamProjectInTeamCollection(project.TeamCollectionGuid, project.Name,"");
+            List<String> templates = TfsController.GetTemplatesInCollection(project.TeamCollectionGuid);
+            if (templates.Count< 1) 
+                throw new ArgumentException("The project given is in a collection that has no templates! ");
+            TfsController.CreateTeamProjectInTeamCollection(project.TeamCollectionGuid, project.Name, templates[0]);
             return project;
         }
         #endregion
