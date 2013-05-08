@@ -18,6 +18,9 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using SoftwareForge.Common.Models;
 using SoftwareForge.Common.Models.Requests;
@@ -30,7 +33,15 @@ namespace SoftwareForge.DbService
     public class ProjectsDao
     {
 
-        private readonly SoftwareForgeDbContext _softwareForgeDbContext = new SoftwareForgeDbContext();
+        private readonly SoftwareForgeDbContext _softwareForgeDbContext;
+
+
+
+        public ProjectsDao()
+        {
+            _softwareForgeDbContext =  new SoftwareForgeDbContext();
+        }
+
 
         /// <summary>
         /// Add a project
@@ -56,9 +67,14 @@ namespace SoftwareForge.DbService
                 user = new User {Username = requestModel.Username};
                 _softwareForgeDbContext.Users.Add(user);
             }
+            if (project.Users == null)
+            {
+                project.Users = new Collection<User>();
+            }
             if (project.Users.Contains(user))
             {
                 project.Users.Remove(user);
+
             }
             else
             {
@@ -66,6 +82,16 @@ namespace SoftwareForge.DbService
             }
             _softwareForgeDbContext.SaveChanges();
 
+        }
+
+        public Project Get(Guid guid)
+        {
+            return _softwareForgeDbContext.Projects.Single(t => t.Guid == guid);
+        }
+
+        public ICollection<User> GetUsers(Guid guid)
+        {
+            return _softwareForgeDbContext.Projects.Single(t => t.Guid == guid).Users;
         }
     }
 }

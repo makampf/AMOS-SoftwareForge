@@ -18,6 +18,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace SoftwareForge.Common.Models
@@ -28,11 +29,6 @@ namespace SoftwareForge.Common.Models
         /// The Username <example>domain\john.doe</example>
         /// </summary>
         public string Username { get; set; }
-
-        /// <summary>
-        /// A list with all projectmemberships.
-        /// </summary>
-        public virtual ICollection<Project> Projects { get; set; }
 
         /// <summary>
         /// The user id.

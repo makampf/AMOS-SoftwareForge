@@ -84,25 +84,9 @@ namespace SoftwareForge.Mvc.WebApiClient
 
         }
 
-        public static bool JoinProject(Guid project, string username)
+        public static bool JoinProject(Guid projectGuid, string username)
         {
-            ProjectMembershipRequestModel joinProjectRequestModel = new ProjectMembershipRequestModel();
-            joinProjectRequestModel.ProjectGuid = project;
-            joinProjectRequestModel.Username = username;
-
-            // List all products.
-            HttpResponseMessage response = Client.PostAsJsonAsync("api/ProjectMembership", joinProjectRequestModel).Result;  // Blocking call!
-            if (response.IsSuccessStatusCode)
-            {
-                // Parse the response body. Blocking!
-                return response.Content.ReadAsAsync<bool>().Result;
-            }
-
-            throw new HttpRequestException(response.StatusCode + ": " + response.ReasonPhrase);
-
-
-
-            throw new NotImplementedException();
+            return PostProjectMembershipRequest(projectGuid, username);
         }
 
         public static TeamCollection GetTeamCollection(Guid teamCollectionGuid)
@@ -129,9 +113,27 @@ namespace SoftwareForge.Mvc.WebApiClient
             throw new HttpRequestException(response.StatusCode + ": " + response.ReasonPhrase);
         }
 
-        public static void LeaveProject(Guid guid, string username)
+        public static bool LeaveProject(Guid projectGuid, string username)
         {
-            throw new NotImplementedException();
+            return PostProjectMembershipRequest(projectGuid, username);
+        }
+
+        private static bool PostProjectMembershipRequest(Guid projectGuid, string username)
+        {
+            ProjectMembershipRequestModel joinProjectRequestModel = new ProjectMembershipRequestModel();
+            joinProjectRequestModel.ProjectGuid = projectGuid;
+            joinProjectRequestModel.Username = username;
+
+            // Post a membership request
+            HttpResponseMessage response = Client.PostAsJsonAsync("api/ProjectMembership", joinProjectRequestModel).Result;
+                // Blocking call!
+            if (response.IsSuccessStatusCode)
+            {
+                // Parse the response body. Blocking!
+                return response.Content.ReadAsAsync<bool>().Result;
+            }
+
+            throw new HttpRequestException(response.StatusCode + ": " + response.ReasonPhrase);
         }
     }
 }

@@ -49,7 +49,7 @@ namespace SoftwareForge.Common.Models
         /// <summary>
         /// The list with all users that are member of this project.
         /// </summary>
-        public ICollection<User> Users { get; set; }
+        public virtual ICollection<User> Users { get; set; }
 
         /// <summary>
         /// The teamCollection it is part of
