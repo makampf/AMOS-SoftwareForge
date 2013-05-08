@@ -46,7 +46,14 @@
     @foreach (Project project in teamCollection.Projects)
     {
         <li>
-            @project.Name
+            @project.Name [@if (@project.Users.Any(t => t.Username.Equals(User.Identity.Name)))
+                           {
+                                <text>@Html.ActionLink("Leave", "LeaveProject", "TeamCollections")</text>
+                           }
+                           else
+                           {
+                                <text>@Html.ActionLink("Join", "JoinProject", "TeamCollections",new {project},null)</text>
+                           }]
         </li>
     }
     </ul>

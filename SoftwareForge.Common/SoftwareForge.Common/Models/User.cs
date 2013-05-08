@@ -39,5 +39,6 @@ namespace SoftwareForge.Common.Models
         /// </summary>
         [Key]
         public int ID { get; set; }
+
     }
 }

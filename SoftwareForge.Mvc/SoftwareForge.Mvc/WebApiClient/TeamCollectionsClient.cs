@@ -23,6 +23,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using SoftwareForge.Common.Models;
+using SoftwareForge.Common.Models.Requests;
 
 namespace SoftwareForge.Mvc.WebApiClient
 {
@@ -52,7 +53,7 @@ namespace SoftwareForge.Mvc.WebApiClient
         /// <returns>all Team Collections</returns>
         public static IEnumerable<TeamCollection> GetTeamCollections()
         {
-            // List all products.
+            // List all teamcollections.
             HttpResponseMessage response = Client.GetAsync("api/TeamCollections").Result;  // Blocking call!
             if (response.IsSuccessStatusCode)
             {
@@ -83,5 +84,25 @@ namespace SoftwareForge.Mvc.WebApiClient
 
         }
 
+        public static bool JoinProject(string project, string username)
+        {
+            JoinProjectRequestModel joinProjectRequestModel = new JoinProjectRequestModel();
+            joinProjectRequestModel.ProjectGuid = new Guid(project);
+            joinProjectRequestModel.Username = username;
+
+            // List all products.
+            HttpResponseMessage response = Client.PostAsJsonAsync("api/ProjectMembership", joinProjectRequestModel).Result;  // Blocking call!
+            if (response.IsSuccessStatusCode)
+            {
+                // Parse the response body. Blocking!
+                return response.Content.ReadAsAsync<bool>().Result;
+            }
+
+            throw new HttpRequestException(response.StatusCode + ": " + response.ReasonPhrase);
+
+
+
+            throw new NotImplementedException();
+        }
     }
 }

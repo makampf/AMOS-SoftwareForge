@@ -67,6 +67,10 @@ namespace SoftwareForge.TfsService
         /// <returns>a list of TeamCollections</returns>
         public List<TeamCollection> GetTeamCollections()
         {
+
+
+            new ProjectsDao().Add(new Project("Test",1,new Guid()));
+
             if (HasAuthenticated == false)
                 _tfsServer.Authenticate();
 
@@ -122,7 +126,7 @@ namespace SoftwareForge.TfsService
 
             foreach (Microsoft.TeamFoundation.WorkItemTracking.Client.Project project in projects)
             {
-                result.Add(new Project{Id = project.Id, Name = project.Name, Guid = new Guid(project.Guid)});
+                result.Add(new Project(project.Name,project.Id,new Guid(project.Guid)));
             }
 
             return result;

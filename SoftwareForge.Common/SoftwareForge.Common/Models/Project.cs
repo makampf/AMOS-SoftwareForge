@@ -19,6 +19,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace SoftwareForge.Common.Models
@@ -48,5 +49,13 @@ namespace SoftwareForge.Common.Models
         /// The list with all users that are member of this project.
         /// </summary>
         public ICollection<User> Users { get; set; }
+
+        public Project(string name, int id, Guid guid)
+        {
+            Name = name;
+            Id = id;
+            Guid = guid;
+            Users = new Collection<User>();
+        }
     }
 }

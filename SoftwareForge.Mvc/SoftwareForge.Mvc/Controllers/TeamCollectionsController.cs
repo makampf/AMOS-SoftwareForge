@@ -17,8 +17,11 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
+
+using System;
 using System.Net.Http;
 using System.Web.Mvc;
+using SoftwareForge.Common.Models;
 using SoftwareForge.Mvc.WebApiClient;
 
 namespace SoftwareForge.Mvc.Controllers
@@ -69,6 +72,19 @@ namespace SoftwareForge.Mvc.Controllers
             {
                 return View();
             }
+        }
+
+        public ActionResult JoinProject(Guid guid, String username)
+        {
+
+            TeamCollectionsClient.JoinProject(guid.ToString(), username);
+            return RedirectToAction("Index","Home");
+
+        }
+
+        public ActionResult LeaveProject()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
