@@ -29,6 +29,7 @@ namespace SoftwareForge.Common.Models
     /// </summary>
     public class Project
     {
+
         /// <summary>
         /// The Name of the Project.
         /// </summary>
@@ -50,12 +51,24 @@ namespace SoftwareForge.Common.Models
         /// </summary>
         public ICollection<User> Users { get; set; }
 
-        public Project(string name, int id, Guid guid)
+        /// <summary>
+        /// The teamCollection it is part of
+        /// </summary>
+        public Guid TeamCollectionGuid { get; set; }
+
+
+        public Project()
+        {
+            
+        }
+
+        public Project(string name, int id, Guid guid, Guid teamCollectionGuid)
         {
             Name = name;
             Id = id;
             Guid = guid;
             Users = new Collection<User>();
+            TeamCollectionGuid = teamCollectionGuid;
         }
     }
 }

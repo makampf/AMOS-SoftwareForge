@@ -17,7 +17,10 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
+
+using System.Linq;
 using SoftwareForge.Common.Models;
+using SoftwareForge.Common.Models.Requests;
 
 namespace SoftwareForge.DbService
 {
@@ -35,8 +38,34 @@ namespace SoftwareForge.DbService
         /// <param name="project"></param>
         public void Add(Project project)
         {
+            if (_softwareForgeDbContext.Projects.Any(t => t.Guid == project.Guid))
+            {
+                //TODO: Error, adding a project second time.
+                return;
+            }
             _softwareForgeDbContext.Projects.Add(project);
             _softwareForgeDbContext.SaveChanges();
+        }
+
+        public void ProcessMembershipRequest(ProjectMembershipRequestModel requestModel)
+        {
+            Project project = _softwareForgeDbContext.Projects.Single(t => t.Guid == requestModel.ProjectGuid);
+            User user = _softwareForgeDbContext.Users.SingleOrDefault(t => t.Username == requestModel.Username);
+            if (user == null)
+            {
+                user = new User {Username = requestModel.Username};
+                _softwareForgeDbContext.Users.Add(user);
+            }
+            if (project.Users.Contains(user))
+            {
+                project.Users.Remove(user);
+            }
+            else
+            {
+                project.Users.Add(user);
+            }
+            _softwareForgeDbContext.SaveChanges();
+
         }
     }
 }

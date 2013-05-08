@@ -84,10 +84,10 @@ namespace SoftwareForge.Mvc.WebApiClient
 
         }
 
-        public static bool JoinProject(string project, string username)
+        public static bool JoinProject(Guid project, string username)
         {
-            JoinProjectRequestModel joinProjectRequestModel = new JoinProjectRequestModel();
-            joinProjectRequestModel.ProjectGuid = new Guid(project);
+            ProjectMembershipRequestModel joinProjectRequestModel = new ProjectMembershipRequestModel();
+            joinProjectRequestModel.ProjectGuid = project;
             joinProjectRequestModel.Username = username;
 
             // List all products.
@@ -102,6 +102,35 @@ namespace SoftwareForge.Mvc.WebApiClient
 
 
 
+            throw new NotImplementedException();
+        }
+
+        public static TeamCollection GetTeamCollection(Guid teamCollectionGuid)
+        {
+            // Get teamcollection.
+            HttpResponseMessage response = Client.GetAsync("api/TeamCollections?guid=" + teamCollectionGuid).Result;  // Blocking call!
+            if (response.IsSuccessStatusCode)
+            {
+                // Parse the response body. Blocking!
+                return response.Content.ReadAsAsync<TeamCollection>().Result;
+            }
+            throw new HttpRequestException(response.StatusCode + ": " + response.ReasonPhrase);
+        }
+
+        public static Project CreateProject(Project project)
+        {
+            HttpResponseMessage response = Client.PostAsJsonAsync("api/Projects", project).Result;  // Blocking call!
+            if (response.IsSuccessStatusCode)
+            {
+                // Parse the response body. Blocking!
+                return response.Content.ReadAsAsync<Project>().Result;
+            }
+
+            throw new HttpRequestException(response.StatusCode + ": " + response.ReasonPhrase);
+        }
+
+        public static void LeaveProject(Guid guid, string username)
+        {
             throw new NotImplementedException();
         }
     }

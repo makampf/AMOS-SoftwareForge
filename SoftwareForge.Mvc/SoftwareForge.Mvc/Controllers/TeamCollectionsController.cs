@@ -77,14 +77,15 @@ namespace SoftwareForge.Mvc.Controllers
         public ActionResult JoinProject(Guid guid, String username)
         {
 
-            TeamCollectionsClient.JoinProject(guid.ToString(), username);
+            TeamCollectionsClient.JoinProject(guid, username);
             return RedirectToAction("Index","Home");
 
         }
 
-        public ActionResult LeaveProject()
+        public ActionResult LeaveProject(Guid guid, String username)
         {
-            throw new System.NotImplementedException();
+            TeamCollectionsClient.LeaveProject(guid, username);
+            return RedirectToAction("Index", "Home");
         }
     }
 }

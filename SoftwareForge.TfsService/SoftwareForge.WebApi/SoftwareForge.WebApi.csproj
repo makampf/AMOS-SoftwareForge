@@ -155,6 +155,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\ProjectMembershipController.cs" />
     <Compile Include="Controllers\TeamCollectionsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -165,6 +166,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\ProjectsController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
@@ -190,6 +192,10 @@
     <ProjectReference Include="..\..\SoftwareForge.Common\SoftwareForge.Common\SoftwareForge.Common.csproj">
       <Project>{a73ad4d8-b74b-4e4f-97d3-c8e5078fed36}</Project>
       <Name>SoftwareForge.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareForge.DbService\SoftwareForge.DbService.csproj">
+      <Project>{7F856256-365F-489C-8FB6-2ADB46D21E41}</Project>
+      <Name>SoftwareForge.DbService</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoftwareForge.TfsService\SoftwareForge.TfsService.csproj">
       <Project>{ae9c9b2f-eae8-4de4-88af-73e164157158}</Project>

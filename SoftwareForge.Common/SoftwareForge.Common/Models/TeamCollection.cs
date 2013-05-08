@@ -19,6 +19,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SoftwareForge.Common.Models
 {
@@ -31,6 +32,7 @@ namespace SoftwareForge.Common.Models
         /// <summary>
         /// The Name of the TeamCollection.
         /// </summary>
+        [Key]
         public string Name { get; set; }
 
         /// <summary>

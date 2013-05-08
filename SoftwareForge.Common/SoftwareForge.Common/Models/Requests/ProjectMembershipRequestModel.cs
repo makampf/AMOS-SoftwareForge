@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SoftwareForge.Common.Models.Requests
 {
-    public class JoinProjectRequestModel
+    public class ProjectMembershipRequestModel
     {
         public Guid ProjectGuid { get; set; }
         public String Username { get; set; }
