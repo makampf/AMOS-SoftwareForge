@@ -44,9 +44,8 @@ namespace SoftwareForge.WebApi.Controllers
         /// <returns> new TfsController</returns>
         private static TfsController CreateTfsController()
         {
-            return new TfsController(new Uri(Properties.Settings.Default.TfsServerUri), Properties.Settings.Default.DbConnectionString);
+                 return new TfsController(new Uri(Properties.Settings.Default.TfsServerUri), Properties.Settings.Default.DbConnectionString);
         }
-
 
         #region GET
         // GET api/TeamCollections

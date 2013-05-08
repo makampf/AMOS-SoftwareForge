@@ -18,6 +18,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SoftwareForge.Common.Models;
@@ -32,7 +33,9 @@ namespace SoftwareForge.TfsService.UnitTests
     public class TfsControllerUtc
     {
         private TfsController _tfsController;
-        
+        private const string TestCollectionName = "newTestCollection";
+        private const string TestProjectName = "newTestProject";
+
 
         /// <summary>
         /// Init the connection to tfs
@@ -53,6 +56,7 @@ namespace SoftwareForge.TfsService.UnitTests
             Assert.IsTrue(_tfsController.HasAuthenticated);
         }
 
+
         /// <summary>
         /// Test the GetTeamCollections method.
         /// </summary>
@@ -60,7 +64,7 @@ namespace SoftwareForge.TfsService.UnitTests
         public void TestGetTeamCollections()
         {
             List<TeamCollection> collections = _tfsController.GetTeamCollections();
-            Assert.AreNotEqual(0, collections.Count,"Expected one or more teamcollections, but found none.");
+            Assert.IsNotNull(collections);
 
             foreach (var teamCollection in collections)
             {
@@ -69,6 +73,7 @@ namespace SoftwareForge.TfsService.UnitTests
             }
         }
 
+
         /// <summary>
         /// Test the GetProjectsOfTeamCollectionGuid method.
         /// </summary>
@@ -76,7 +81,7 @@ namespace SoftwareForge.TfsService.UnitTests
         public void TestGetProjectsOfTeamCollectionGuid()
         {
             List<TeamCollection> collections = _tfsController.GetTeamCollections();
-            Assert.AreNotEqual(0, collections.Count, "Expected one or more teamcollections, but found none.");
+            Assert.IsNotNull(collections);
 
             foreach (var teamCollection in collections)
             {
@@ -95,6 +100,7 @@ namespace SoftwareForge.TfsService.UnitTests
             }
         }
 
+
         /// <summary>
         /// Test the GetTeamCollection method.
         /// </summary>
@@ -102,7 +108,7 @@ namespace SoftwareForge.TfsService.UnitTests
         public void TestGetTeamCollection()
         {
             List<TeamCollection> collections = _tfsController.GetTeamCollections();
-            Assert.AreNotEqual(0, collections.Count, "Expected one or more teamcollections, but found none.");
+            Assert.IsNotNull(collections);
 
             foreach (var teamCollection in collections)
             {
@@ -134,27 +140,73 @@ namespace SoftwareForge.TfsService.UnitTests
             //C:\Program Files\Microsoft Team Foundation Server 11.0\Tools\TFSConfig.exe Collection /delete /CollectionName:"newTestCollection"
 
             List<TeamCollection> collections = _tfsController.GetTeamCollections();
-            Assert.AreNotEqual(0, collections.Count, "Expected one or more teamcollections, but found none.");
+            Assert.IsNotNull(collections);
 
-            
-            TeamCollection teamCollection = _tfsController.CreateTeamCollection("newTestCollection");
+
+            TeamCollection teamCollection = _tfsController.CreateTeamCollection(TestCollectionName);
             Assert.IsNotNull(teamCollection);
             Assert.IsFalse(String.IsNullOrEmpty(teamCollection.Name));
             Assert.AreNotEqual(new Guid(), teamCollection.Guid);
-            Assert.AreEqual(teamCollection.Projects.Count, 0);
+            Assert.IsNotNull(teamCollection.Projects);
+            Assert.AreEqual(0, teamCollection.Projects.Count);
 
             int expectedCollectionsCount = collections.Count + 1;
             collections = _tfsController.GetTeamCollections();
             Assert.AreEqual(expectedCollectionsCount, collections.Count);
-
-            //Assert.IsTrue(collections.Contains(teamCollection));
+            
             _tfsController.RemoveTeamCollection(teamCollection.Guid);
-            //Assert.IsFalse(collections.Contains(teamCollection));
-
+          
             expectedCollectionsCount = expectedCollectionsCount - 1;
             collections = _tfsController.GetTeamCollections();
-            Assert.AreEqual(collections.Count, expectedCollectionsCount);
+            Assert.AreEqual(expectedCollectionsCount, collections.Count);
         }
+
+
+        /// <summary>
+        /// Test the GetTemplatesInCollection method.
+        /// </summary>
+        [TestMethod]
+        public void TestGetTemplatesInCollection()
+        {
+            List<TeamCollection> collections = _tfsController.GetTeamCollections();
+            
+            foreach (var teamCollection in collections)
+            {
+                List<String> results = _tfsController.GetTemplatesInCollection(teamCollection.Guid);
+                Assert.IsNotNull(results);
+            }
+        }
+
+
+        /// <summary>
+        /// Test the CreateTeamProjectInTeamCollection method.
+        /// </summary>
+        [TestMethod]
+        public void TestCreateTeamProjectInTeamCollection()
+        {
+            List<TeamCollection> collections = _tfsController.GetTeamCollections();
+            Assert.IsNotNull(collections);
+
+            TeamCollection teamCollection;
+            if (collections.Any(a => a.Name == TestCollectionName))
+                teamCollection = collections.Find(a => a.Name == TestCollectionName);
+            else
+                teamCollection = _tfsController.CreateTeamCollection(TestCollectionName);
+
+
+            Assert.IsNotNull(teamCollection);
+            Assert.IsFalse(String.IsNullOrEmpty(teamCollection.Name));
+            Assert.AreNotEqual(new Guid(), teamCollection.Guid);
+            Assert.IsNotNull(teamCollection.Projects);
+
+            List<String> templates = _tfsController.GetTemplatesInCollection(teamCollection.Guid);
+            Assert.IsNotNull(templates);
+            Assert.IsTrue(templates.Count > 0);
+            _tfsController.CreateTeamProjectInTeamCollection(teamCollection.Guid, TestProjectName, templates[0]);
+            
+            _tfsController.RemoveTeamCollection(teamCollection.Guid);
+        }
+
 
     }
 }

@@ -18,11 +18,12 @@
  * <http://www.gnu.org/licenses/>.
  */
 using System;
+using System.Linq;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Framework.Client;
 using Microsoft.TeamFoundation.Framework.Common;
+using Microsoft.TeamFoundation.Server;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using SoftwareForge.Common.Models;
 using SoftwareForge.DbService;
@@ -36,30 +37,56 @@ namespace SoftwareForge.TfsService
     /// </summary>
     public class TfsController
     {
-        private readonly TfsConfigurationServer _tfsServer;
+        private readonly TfsConfigurationServer _tfsConfigurationServer;
         private readonly TfsDbController _tfsDbController;
 
 
         /// <summary>
         /// Bool if the tfs has authenticated.
         /// </summary>
-        public bool HasAuthenticated { get { return _tfsServer.HasAuthenticated; } }
+        public bool HasAuthenticated { get { return _tfsConfigurationServer.HasAuthenticated; } }
 
 
         /// <summary>
-        /// Create a new tfsController.
+        /// Constructor of the tfsController.
         /// </summary>
         /// <param name="tfsUri">The uri of the tfs</param>
         /// <param name="connectionString">The connection String to the mssql-server holding the ProjectCollections</param>
         public TfsController(Uri tfsUri, String connectionString)
         {
-            _tfsServer = TfsConfigurationServerFactory.GetConfigurationServer(tfsUri);
-            _tfsServer.Authenticate();
+            
+           _tfsConfigurationServer = new TfsConfigurationServer(tfsUri);
+           _tfsConfigurationServer.Authenticate();
+            
 
             _tfsDbController = new TfsDbController(connectionString);
         }
 
-       
+
+        /// <summary>
+        /// Get all Templates in the TeamProjectCollection.
+        /// </summary>
+        /// <returns>a list of Templates</returns>
+        public List<String> GetTemplatesInCollection(Guid teamCollectionGuid)
+        {
+            if (HasAuthenticated == false)
+                _tfsConfigurationServer.Authenticate();
+
+            TeamCollection collection = GetTeamCollection(teamCollectionGuid);
+
+            IProcessTemplates processTemplates = _tfsConfigurationServer.GetTeamProjectCollection(collection.Guid).GetService<IProcessTemplates>();
+            TemplateHeader[] templateHeaders = processTemplates.TemplateHeaders();
+
+            List<String> templatesList = new List<String>();
+            foreach (TemplateHeader header in templateHeaders)
+            {
+                templatesList.Add(header.Name);
+            }
+
+            return templatesList;
+        }
+
+
 
         /// <summary>
         /// Get all TeamCollections.
@@ -72,26 +99,26 @@ namespace SoftwareForge.TfsService
             new ProjectsDao().Add(new Project("Test",1,new Guid()));
 
             if (HasAuthenticated == false)
-                _tfsServer.Authenticate();
+                _tfsConfigurationServer.Authenticate();
 
             List<TeamCollection> teamCollectionsList = new List<TeamCollection>();
 
 
-            // Get the catalog of team project collections
-            ReadOnlyCollection<CatalogNode> tpcNodes = _tfsServer.CatalogNode.QueryChildren(
-                new[] { CatalogResourceTypes.ProjectCollection },
-                false, CatalogQueryOptions.None);
+            ITeamProjectCollectionService teamProjectCollectionService = _tfsConfigurationServer.GetService<ITeamProjectCollectionService>();
+            IList<TeamProjectCollection> collections = teamProjectCollectionService.GetCollections();
 
-            foreach (CatalogNode catalogNode in tpcNodes)
+            foreach (TeamProjectCollection collection in collections)
             {
-                Guid guid = new Guid(catalogNode.Resource.Properties["InstanceId"]);
-                String name = catalogNode.Resource.DisplayName;
-                //List<Project> projects = GetProjectsOfCollectionNode(catalogNode);
-                List<Project> projects = GetProjectsOfTeamCollectionGuid(guid);
-
-                TeamCollection teamCol = new TeamCollection { Guid = guid, Name = name, Projects = projects };
-                teamCollectionsList.Add(teamCol);
+                if (collection.State == TeamFoundationServiceHostStatus.Started)
+                {
+                    Guid guid = collection.Id;
+                    String name = collection.Name;
+                    List<Project> projects = GetProjectsOfTeamCollectionGuid(guid);
+                    TeamCollection teamCol = new TeamCollection { Guid = guid, Name = name, Projects = projects };
+                    teamCollectionsList.Add(teamCol);
+                }
             }
+            
             return teamCollectionsList;
         }
 
@@ -110,16 +137,16 @@ namespace SoftwareForge.TfsService
         /// <summary>
         /// Get all Projects of a TeamProjectCollection.
         /// </summary>
-        /// <param name="teamCollectionId">the TeamCollection guid</param>
+        /// <param name="teamCollectionGuid">the TeamCollection guid</param>
         /// <returns>a list of of projects</returns>
-        public List<Project> GetProjectsOfTeamCollectionGuid(Guid teamCollectionId)
+        public List<Project> GetProjectsOfTeamCollectionGuid(Guid teamCollectionGuid)
         {
             List<Project> result = new List<Project>();
 
             if (HasAuthenticated == false)
-                _tfsServer.Authenticate();
+                _tfsConfigurationServer.Authenticate();
 
-            TfsTeamProjectCollection tpc = _tfsServer.GetTeamProjectCollection(teamCollectionId);
+            TfsTeamProjectCollection tpc = _tfsConfigurationServer.GetTeamProjectCollection(teamCollectionGuid);
             WorkItemStore store = tpc.GetService<WorkItemStore>();
             
             ProjectCollection projects = store.Projects;
@@ -141,9 +168,13 @@ namespace SoftwareForge.TfsService
         public TeamCollection CreateTeamCollection(String collectionName)
         {
             if (HasAuthenticated == false)
-                _tfsServer.Authenticate();
+                _tfsConfigurationServer.Authenticate();
 
-            ITeamProjectCollectionService tpcService = _tfsServer.GetService<ITeamProjectCollectionService>();
+            List<TeamCollection> teamCollections = GetTeamCollections();
+            if (teamCollections.Any(a => a.Name == collectionName))
+                throw new Exception("A collaction with name " + collectionName + " already exists!");
+
+            ITeamProjectCollectionService tpcService = _tfsConfigurationServer.GetService<ITeamProjectCollectionService>();
 
             Dictionary<string, string> servicingTokens = new Dictionary<string, string>
                 {
@@ -182,9 +213,9 @@ namespace SoftwareForge.TfsService
         public void RemoveTeamCollection(Guid collectionId)
         {
             if (HasAuthenticated == false)
-                _tfsServer.Authenticate();
+                _tfsConfigurationServer.Authenticate();
 
-            ITeamProjectCollectionService tpcService = _tfsServer.GetService<ITeamProjectCollectionService>();
+            ITeamProjectCollectionService tpcService = _tfsConfigurationServer.GetService<ITeamProjectCollectionService>();
             TeamProjectCollection collection = tpcService.GetCollection(collectionId);
             
             RemoveTeamCollection(collection);
@@ -198,9 +229,9 @@ namespace SoftwareForge.TfsService
         private void RemoveTeamCollection(TeamProjectCollection collection)
         {
             if (HasAuthenticated == false)
-                _tfsServer.Authenticate();
+                _tfsConfigurationServer.Authenticate();
 
-            ITeamProjectCollectionService tpcService = _tfsServer.GetService<ITeamProjectCollectionService>();
+            ITeamProjectCollectionService tpcService = _tfsConfigurationServer.GetService<ITeamProjectCollectionService>();
 
             Dictionary<string, string> servicingTokens = new Dictionary<string, string>
                 {
@@ -225,6 +256,33 @@ namespace SoftwareForge.TfsService
 
            
         }
+
+        /// <summary>
+        /// Creates a TeamProjectCollection.
+        /// </summary>
+        /// <param name="collectionGuid">the TeamProjectCollection Guid in which the project will be created</param>
+        /// <param name="projectName">the TeamProject name</param>
+        /// <param name="templateName">the Template, which should be used</param>
+        public void CreateTeamProjectInTeamCollection(Guid collectionGuid, String projectName, String templateName)
+        {
+            if (HasAuthenticated == false)
+                _tfsConfigurationServer.Authenticate();
+
+            TeamCollection tc = GetTeamCollection(collectionGuid);
+            if (tc == null)
+                throw new Exception("Could not found TeamCollection with Guid: " + collectionGuid);
+
+            if (tc.Projects.Count(a => a.Name == projectName) != 0)
+                throw  new Exception("The Project " + projectName + " in the TeamCollection " + tc.Name + " already exists");
+            
+            List<String> templates = GetTemplatesInCollection(collectionGuid);
+            if (templates.Contains(templateName) == false)
+                throw new Exception("Could not found templateName in collection " + tc.Name);
+
+            PowerToolsUtil.CreateTfsProject(_tfsConfigurationServer.Uri.ToString(), tc.Name, projectName, templateName);
+        }
+
+
 
     }
 }
