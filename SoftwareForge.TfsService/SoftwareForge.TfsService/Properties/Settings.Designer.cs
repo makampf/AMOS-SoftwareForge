@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SoftwareForge.WebApi.Properties {
+namespace SoftwareForge.TfsService.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -25,19 +25,10 @@ namespace SoftwareForge.WebApi.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:8080/tfs")]
-        public string TfsServerUri {
+        [global::System.Configuration.DefaultSettingValueAttribute("tfpt.exe")]
+        public string TeamFoundationPowerToolExecutable {
             get {
-                return ((string)(this["TfsServerUri"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=localhost\\SQLEXPRESS;Integrated Security=True")]
-        public string DbConnectionString {
-            get {
-                return ((string)(this["DbConnectionString"]));
+                return ((string)(this["TeamFoundationPowerToolExecutable"]));
             }
         }
     }
