@@ -2,7 +2,6 @@
 using System.Web.Http;
 using SoftwareForge.Common.Models.Requests;
 using SoftwareForge.DbService;
-using SoftwareForge.TfsService;
 
 namespace SoftwareForge.WebApi.Controllers
 {
@@ -10,19 +9,19 @@ namespace SoftwareForge.WebApi.Controllers
     {
 
         //Lazy initialization
-        private readonly Lazy<TfsController> _tfsController = new Lazy<TfsController>(CreateTfsController);
+        private readonly Lazy<ProjectsDao> _projectsDao = new Lazy<ProjectsDao>(CreateProjectsDao);
 
-        TfsController TfsController
+        ProjectsDao ProjectsDao
         {
-            get { return _tfsController.Value; }
+            get { return _projectsDao.Value; }
         }
         /// <summary>
-        /// Function which creates a new TfsController
+        /// Function which creates a new ProjectsDao
         /// </summary>
-        /// <returns> new TfsController</returns>
-        private static TfsController CreateTfsController()
+        /// <returns> new ProjectsDao</returns>
+        private static ProjectsDao CreateProjectsDao()
         {
-            return new TfsController(new Uri(Properties.Settings.Default.TfsServerUri), Properties.Settings.Default.DbConnectionString);
+            return new ProjectsDao();
         }
 
         #region POST
@@ -30,7 +29,7 @@ namespace SoftwareForge.WebApi.Controllers
         [HttpPost]
         public bool Post([FromBody] ProjectMembershipRequestModel project)
         {
-            new ProjectsDao().ProcessMembershipRequest(project);
+            ProjectsDao.ProcessMembershipRequest(project);
             return true;
         }
         #endregion
