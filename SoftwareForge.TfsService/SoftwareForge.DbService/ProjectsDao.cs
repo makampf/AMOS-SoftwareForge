@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Linq;
 using SoftwareForge.Common.Models;
 using SoftwareForge.Common.Models.Requests;
@@ -32,11 +33,15 @@ namespace SoftwareForge.DbService
     /// </summary>
     public class ProjectsDao
     {
-
+        /// <summary>
+        /// The DatabaseContext
+        /// </summary>
         private readonly SoftwareForgeDbContext _softwareForgeDbContext;
 
 
-
+        /// <summary>
+        /// Create a new ProjectDao.
+        /// </summary>
         public ProjectsDao()
         {
             _softwareForgeDbContext =  new SoftwareForgeDbContext();
@@ -46,18 +51,22 @@ namespace SoftwareForge.DbService
         /// <summary>
         /// Add a project
         /// </summary>
-        /// <param name="project"></param>
-        public void Add(Project project)
+        /// <param name="project">project to add</param>
+        public Project Add(Project project)
         {
             if (_softwareForgeDbContext.Projects.Any(t => t.Guid == project.Guid))
             {
-                //TODO: Error, adding a project second time.
-                return;
+                throw new DataException("A project with the same guid is already in database.");
             }
             _softwareForgeDbContext.Projects.Add(project);
             _softwareForgeDbContext.SaveChanges();
+            return project;
         }
 
+        /// <summary>
+        /// Process a membership request. Joining or leaving of projects
+        /// </summary>
+        /// <param name="requestModel">the request model</param>
         public void ProcessMembershipRequest(ProjectMembershipRequestModel requestModel)
         {
             Project project = _softwareForgeDbContext.Projects.Single(t => t.Guid == requestModel.ProjectGuid);
@@ -67,31 +76,61 @@ namespace SoftwareForge.DbService
                 user = new User {Username = requestModel.Username};
                 _softwareForgeDbContext.Users.Add(user);
             }
-            if (project.Users == null)
-            {
-                project.Users = new Collection<User>();
-            }
-            if (project.Users.Contains(user))
-            {
-                project.Users.Remove(user);
 
-            }
-            else
+            try
             {
-                project.Users.Add(user);
+                ProjectUser projectUser = _softwareForgeDbContext.ProjectUsers.Single(t => t.Project_Guid == project.Guid && t.User_Id == user.Id);
+                _softwareForgeDbContext.ProjectUsers.Remove(projectUser);
+            }
+            catch
+            {
+                _softwareForgeDbContext.ProjectUsers.Add(new ProjectUser
+                    {
+                        Project = project,
+                        Project_Guid = project.Guid,
+                        User = user,
+                        User_Id = user.Id
+                    });
+
             }
             _softwareForgeDbContext.SaveChanges();
 
         }
 
-        public Project Get(Guid guid)
+        /// <summary>
+        /// Get a project by guid
+        /// </summary>
+        /// <param name="guid">guid of project</param>
+        /// <returns>A project or null if no project is found</returns>
+        public Project Get(Guid guid) 
         {
-            return _softwareForgeDbContext.Projects.Single(t => t.Guid == guid);
+            try
+            {
+                Project project = _softwareForgeDbContext.Projects.Single(t => t.Guid == guid);
+                project.Users = GetUsers(project.Guid);
+                return project;
+            }
+            catch (InvalidOperationException)
+            {
+                return null;
+            }
+           
         }
 
+        /// <summary>
+        /// Get the users of a project
+        /// </summary>
+        /// <param name="guid">guid of the project</param>
+        /// <returns>a collection of users in the specific project</returns>
         public ICollection<User> GetUsers(Guid guid)
         {
-            return _softwareForgeDbContext.Projects.Single(t => t.Guid == guid).Users;
+            Collection<User> users = new Collection<User>();
+            IQueryable<ProjectUser> x = _softwareForgeDbContext.ProjectUsers.Where(t => t.Project.Guid == guid);
+            foreach (ProjectUser projectUser in x)
+            {
+                users.Add(projectUser.User);
+            }
+            return users;
         }
     }
 }

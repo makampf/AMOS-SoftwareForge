@@ -37,5 +37,10 @@ namespace SoftwareForge.DbService
         /// </summary>
         public DbSet<User> Users { get; set; }
 
+        /// <summary>
+        /// The DbSet for users.
+        /// </summary>
+        public DbSet<ProjectUser> ProjectUsers { get; set; }
+
     }
 }

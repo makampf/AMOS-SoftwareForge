@@ -18,8 +18,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SoftwareForge.Common.Models
 {
@@ -34,7 +34,13 @@ namespace SoftwareForge.Common.Models
         /// The user id.
         /// </summary>
         [Key]
-        public int ID { get; set; }
+        public int Id { get; set; }
+
+        /// <summary>
+        /// The list with all projects that the user is member of.
+        /// </summary>
+         [NotMapped]
+        public ICollection<Project> Projects { get; set; }
 
     }
 }

@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SoftwareForge.Common.Models
 {
@@ -38,18 +39,20 @@ namespace SoftwareForge.Common.Models
         /// <summary>
         /// The id of the Project.
         /// </summary>
-        [Key]
+       
         public int Id { get; set; }
 
         /// <summary>
         /// The Guid of the Project.
         /// </summary>
+         [Key]
         public Guid Guid { get; set; }
 
         /// <summary>
         /// The list with all users that are member of this project.
         /// </summary>
-        public virtual ICollection<User> Users { get; set; }
+        [NotMapped]
+        public ICollection<User> Users { get; set; }
 
         /// <summary>
         /// The teamCollection it is part of

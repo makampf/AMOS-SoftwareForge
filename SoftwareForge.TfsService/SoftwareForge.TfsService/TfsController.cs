@@ -152,9 +152,8 @@ namespace SoftwareForge.TfsService
 
             foreach (Microsoft.TeamFoundation.WorkItemTracking.Client.Project project in projects)
             {
-                Project newProject = new Project(project.Name, project.Id, new Guid(project.Guid), teamCollectionGuid);
-                projectsDao.Add(newProject);
-                Project projectModel = projectsDao.Get(new Guid(project.Guid));
+                Project projectModel = projectsDao.Get(new Guid(project.Guid)) ??
+                    projectsDao.Add(new Project(project.Name, project.Id, new Guid(project.Guid), teamCollectionGuid));
                 result.Add(projectModel);
             }
 

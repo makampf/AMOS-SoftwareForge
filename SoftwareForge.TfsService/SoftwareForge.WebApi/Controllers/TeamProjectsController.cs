@@ -47,6 +47,11 @@ namespace SoftwareForge.WebApi.Controllers
         }
 
         #region GET
+        /// <summary>
+        /// Get all projects of a TeamCollection
+        /// </summary>
+        /// <param name="teamCollectionGuid">guid of teamCollection</param>
+        /// <returns>A list of projects</returns>
         [HttpGet]
         public List<Project> GetTeamProjectsOfTeamCollection(Guid teamCollectionGuid)
         {
@@ -55,7 +60,11 @@ namespace SoftwareForge.WebApi.Controllers
         #endregion
 
 
-
+        /// <summary>
+        /// Create a new project
+        /// </summary>
+        /// <param name="project">project to create</param>
+        /// <returns>the newly create project</returns>
         #region POST
         [HttpPost]
         public Project CreateProject([FromBody] Project project)

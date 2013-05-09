@@ -74,6 +74,12 @@ namespace SoftwareForge.Mvc.Controllers
             }
         }
 
+        /// <summary>
+        /// Join a project
+        /// </summary>
+        /// <param name="guid">guid of project</param>
+        /// <param name="username">username</param>
+        /// <returns>Redirects to overview page</returns>
         public ActionResult JoinProject(Guid guid, String username)
         {
 
@@ -82,6 +88,12 @@ namespace SoftwareForge.Mvc.Controllers
 
         }
 
+        /// <summary>
+        /// Leave a project
+        /// </summary>
+        /// <param name="guid">guid of project</param>
+        /// <param name="username">username</param>
+        /// <returns>Redirects to overview page</returns>
         public ActionResult LeaveProject(Guid guid, String username)
         {
             TeamCollectionsClient.LeaveProject(guid, username);

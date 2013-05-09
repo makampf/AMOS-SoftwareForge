@@ -112,6 +112,12 @@ namespace SoftwareForge.Mvc.WebApiClient
             throw new HttpRequestException(response.StatusCode + ": " + response.ReasonPhrase);
         }
 
+        /// <summary>
+        /// Leave a Project
+        /// </summary>
+        /// <param name="projectGuid">The projectGuid of the project to leave</param>
+        /// <param name="username">The user that wants to leave</param>
+        /// <returns>true if successful, false in error case</returns>
         public static bool LeaveProject(Guid projectGuid, string username)
         {
             return PostProjectMembershipRequest(projectGuid, username);
@@ -119,6 +125,7 @@ namespace SoftwareForge.Mvc.WebApiClient
 
         private static bool PostProjectMembershipRequest(Guid projectGuid, string username)
         {
+
             ProjectMembershipRequestModel joinProjectRequestModel = new ProjectMembershipRequestModel
                 {
                     ProjectGuid = projectGuid,
