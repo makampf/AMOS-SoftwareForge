@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 by Denis Bach, Konstantin Tsysin, Taner Tunc, Marvin Kampf, Florian Wittmann
+ * Copyright (c) 2013 by Denis Bach, Marvin Kampf, Konstantin Tsysin, Taner Tunc, Florian Wittmann
  *
  * This file is part of the Software Forge Overlay rating application.
  *
@@ -17,7 +17,6 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -33,7 +32,7 @@ namespace SoftwareForge.WebApi.Tests.Controllers
         private TeamCollectionsController _controller;
 
         /// <summary>
-        /// Init the connection to tfs.
+        /// Init the TeamCollectionsController.
         /// </summary>
         [TestInitialize]
         public void TestInit()

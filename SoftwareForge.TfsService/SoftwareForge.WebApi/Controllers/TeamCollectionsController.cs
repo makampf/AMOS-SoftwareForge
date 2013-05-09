@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 by Denis Bach, Konstantin Tsysin, Taner Tunc, Marvin Kampf, Florian Wittmann
+ * Copyright (c) 2013 by Denis Bach, Marvin Kampf, Konstantin Tsysin, Taner Tunc, Florian Wittmann
  *
  * This file is part of the Software Forge Overlay rating application.
  *
@@ -17,7 +17,6 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -27,6 +26,9 @@ using SoftwareForge.TfsService;
 
 namespace SoftwareForge.WebApi.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class TeamCollectionsController : ApiController
     {
         //Lazy initialization
@@ -36,12 +38,14 @@ namespace SoftwareForge.WebApi.Controllers
         {
             get { return _tfsController.Value; }
         }
-
+        /// <summary>
+        /// Function which creates a new TfsController
+        /// </summary>
+        /// <returns> new TfsController</returns>
         private static TfsController CreateTfsController()
         {
-            return new TfsController(new Uri(Properties.Settings.Default.TfsServerUri), Properties.Settings.Default.DbConnectionString);
+                 return new TfsController(new Uri(Properties.Settings.Default.TfsServerUri), Properties.Settings.Default.DbConnectionString);
         }
-
 
         #region GET
         // GET api/TeamCollections

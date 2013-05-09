@@ -1,4 +1,23 @@
-﻿@using SoftwareForge.Common.Models
+﻿<!-- 
+ - Copyright (c) 2013 by Denis Bach, Marvin Kampf, Konstantin Tsysin, Taner Tunc, Florian Wittmann
+ -
+ - This file is part of the Software Forge Overlay rating application.
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU Affero General Public License as
+ - published by the Free Software Foundation, either version 3 of the
+ - License, or (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful, 
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU Affero General Public License for more details.
+ -
+ - You should have received a copy of the GNU Affero General Public
+ - License along with this program. If not, see
+ - <http://www.gnu.org/licenses/>.
+ -->
+@using SoftwareForge.Common.Models
 @model IEnumerable<TeamCollection>
 @{
     ViewBag.Title = "Home";
@@ -24,15 +43,25 @@
     <b>@teamCollection.Name</b> 
           
     <ul>
-    @foreach (Project project in teamCollection.Projects)
-    {
-        <li>
-            @project.Name
-        </li>
-    }
+        @foreach (Project project in teamCollection.Projects)
+        {
+            <li>
+                @project.Name [
+                @if (@project.Users.Any(t => t.Username.Equals(User.Identity.Name)))
+                               {
+                                   <text>@Html.ActionLink("Leave", "LeaveProject", "TeamCollections",new {guid=project.Guid, username=User.Identity.Name},null)</text>
+                               }
+                               else
+                               {
+                                   <text>@Html.ActionLink("Join", "JoinProject", "TeamCollections",new {guid=project.Guid, username=User.Identity.Name},null)</text>
+                               }]
+            </li>
+        }
     </ul>
+    @Html.ActionLink("Create new Project","CreateProject","TeamProjects", new {teamCollectionGuid = teamCollection.Guid}, null)
+    <br/> <br/>
 }
     
 <div>
-    @Html.ActionLink("Create new TeamCollection","Create","TeamCollections")
+    @Html.ActionLink("Create new TeamCollection","CreateTeamCollection","TeamCollections")
 </div>

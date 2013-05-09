@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 by Denis Bach, Konstantin Tsysin, Taner Tunc, Marvin Kampf, Florian Wittmann
+ * Copyright (c) 2013 by Denis Bach, Marvin Kampf, Konstantin Tsysin, Taner Tunc, Florian Wittmann
  *
  * This file is part of the Software Forge Overlay rating application.
  *
@@ -17,9 +17,9 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SoftwareForge.Common.Models
 {
@@ -30,17 +30,18 @@ namespace SoftwareForge.Common.Models
     {
 
         /// <summary>
-        /// The Name of the TeamCollection
+        /// The Name of the TeamCollection.
         /// </summary>
+        [Key]
         public string Name { get; set; }
 
         /// <summary>
-        /// The Guid of the TeamCollection
+        /// The Guid of the TeamCollection.
         /// </summary>
         public Guid Guid { get; set; }
 
         /// <summary>
-        /// The Projects of the TeamCollection
+        /// The Projects of the TeamCollection.
         /// </summary>
         public List<Project> Projects { get; set; }
        

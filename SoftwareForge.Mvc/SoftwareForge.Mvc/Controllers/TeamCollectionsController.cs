@@ -1,25 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿/*
+ * Copyright (c) 2013 by Denis Bach, Marvin Kampf, Konstantin Tsysin, Taner Tunc, Florian Wittmann
+ *
+ * This file is part of the Software Forge Overlay rating application.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public
+ * License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Net.Http;
-using System.Web;
 using System.Web.Mvc;
+using SoftwareForge.Common.Models;
 using SoftwareForge.Mvc.WebApiClient;
 
 namespace SoftwareForge.Mvc.Controllers
 {
+    /// <summary>
+    /// Controller for Teamcollections
+    /// </summary>
     public class TeamCollectionsController : Controller
     {
-        //
-        // GET: /TeamCollections/
-
-        public ActionResult Create()
+        /// <summary>
+        /// GET: /CreateTeamCollection.
+        /// </summary>
+        /// <returns>Teamcollection view for the browser</returns>
+        public ActionResult CreateTeamCollection()
         {
             return View();
         }
-
+        /// <summary>
+        /// POST: /CreateTeamCollection with a message body.
+        /// </summary>
+        /// <param name="collection">Message body <example> name1=value1&name2=value2 </example></param>
+        /// <returns>Either view with new collection, returns to the start page or view where 
+        /// the user have to type the name of the colection. </returns>
         [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult CreateTeamCollection(FormCollection collection)
         {
             try
             {
@@ -47,6 +74,30 @@ namespace SoftwareForge.Mvc.Controllers
             }
         }
 
+        /// <summary>
+        /// Join a project
+        /// </summary>
+        /// <param name="guid">guid of project</param>
+        /// <param name="username">username</param>
+        /// <returns>Redirects to overview page</returns>
+        public ActionResult JoinProject(Guid guid, String username)
+        {
 
+            TeamCollectionsClient.JoinProject(guid, username);
+            return RedirectToAction("Index","Home");
+
+        }
+
+        /// <summary>
+        /// Leave a project
+        /// </summary>
+        /// <param name="guid">guid of project</param>
+        /// <param name="username">username</param>
+        /// <returns>Redirects to overview page</returns>
+        public ActionResult LeaveProject(Guid guid, String username)
+        {
+            TeamCollectionsClient.LeaveProject(guid, username);
+            return RedirectToAction("Index", "Home");
+        }
     }
 }

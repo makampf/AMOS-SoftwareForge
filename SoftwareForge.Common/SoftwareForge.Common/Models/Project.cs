@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 by Denis Bach, Konstantin Tsysin, Taner Tunc, Marvin Kampf, Florian Wittmann
+ * Copyright (c) 2013 by Denis Bach, Marvin Kampf, Konstantin Tsysin, Taner Tunc, Florian Wittmann
  *
  * This file is part of the Software Forge Overlay rating application.
  *
@@ -17,8 +17,11 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SoftwareForge.Common.Models
 {
@@ -27,19 +30,48 @@ namespace SoftwareForge.Common.Models
     /// </summary>
     public class Project
     {
+
         /// <summary>
-        /// The Name of the Project
+        /// The Name of the Project.
         /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// The id of the Project
+        /// The id of the Project.
         /// </summary>
+       
         public int Id { get; set; }
 
         /// <summary>
-        /// The Guid of the Project
+        /// The Guid of the Project.
         /// </summary>
+         [Key]
         public Guid Guid { get; set; }
+
+        /// <summary>
+        /// The list with all users that are member of this project.
+        /// </summary>
+        [NotMapped]
+        public ICollection<User> Users { get; set; }
+
+        /// <summary>
+        /// The teamCollection it is part of
+        /// </summary>
+        public Guid TeamCollectionGuid { get; set; }
+
+
+        public Project()
+        {
+            
+        }
+
+        public Project(string name, int id, Guid guid, Guid teamCollectionGuid)
+        {
+            Name = name;
+            Id = id;
+            Guid = guid;
+            Users = new Collection<User>();
+            TeamCollectionGuid = teamCollectionGuid;
+        }
     }
 }
