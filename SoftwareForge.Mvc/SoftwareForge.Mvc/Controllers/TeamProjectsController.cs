@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Web.Mvc;
 using SoftwareForge.Common.Models;
 using SoftwareForge.Mvc.WebApiClient;
 
 namespace SoftwareForge.Mvc.Controllers
 {
-    public class ProjectsController : Controller
+    public class TeamProjectsController : Controller
     {
         public ActionResult CreateProject(Guid teamCollectionGuid)
         {

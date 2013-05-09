@@ -47,34 +47,37 @@ namespace SoftwareForge.WebApi.Controllers
         }
 
         #region GET
-        // GET api/TeamCollections
         [HttpGet]
         public List<Project> GetTeamProjectsOfTeamCollection(Guid teamCollectionGuid)
         {
-            return TfsController.GetTeamProjectsOfTeamCollection(teamCollectionGuid); 
+            return TfsController.GetTeamProjectsOfTeamCollection(teamCollectionGuid);
         }
         #endregion
+
 
 
         #region POST
-        // POST api/teamcollections
         [HttpPost]
-        public void CreateTeamProjectInTeamCollection([FromBody] Guid teamCollectionGuid, [FromBody] String projectName, [FromBody] String templateName)
+        public Project CreateProject([FromBody] Project project)
         {
-            TfsController.CreateTeamProjectInTeamCollection(teamCollectionGuid, projectName, templateName);
+            List<String> templates = TfsController.GetTemplatesInCollection(project.TeamCollectionGuid);
+            if (templates.Count< 1) 
+                throw new ArgumentException("The project given is in a collection that has no templates! ");
+            TfsController.CreateTeamProjectInTeamCollection(project.TeamCollectionGuid, project.Name, templates[0]);
+            return project;
         }
         #endregion
 
 
 
-        #region PUT
-       
-        #endregion
+        //#region PUT
+
+        //#endregion
 
 
 
-        #region Delete
-        
-        #endregion
+        //#region DELETE
+
+        //#endregion
     }
 }

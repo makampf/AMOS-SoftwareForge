@@ -19,7 +19,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using SoftwareForge.Common.Models;
@@ -103,7 +102,7 @@ namespace SoftwareForge.Mvc.WebApiClient
 
         public static Project CreateProject(Project project)
         {
-            HttpResponseMessage response = Client.PostAsJsonAsync("api/Projects", project).Result;  // Blocking call!
+            HttpResponseMessage response = Client.PostAsJsonAsync("api/TeamProjects", project).Result;  // Blocking call!
             if (response.IsSuccessStatusCode)
             {
                 // Parse the response body. Blocking!
@@ -120,9 +119,11 @@ namespace SoftwareForge.Mvc.WebApiClient
 
         private static bool PostProjectMembershipRequest(Guid projectGuid, string username)
         {
-            ProjectMembershipRequestModel joinProjectRequestModel = new ProjectMembershipRequestModel();
-            joinProjectRequestModel.ProjectGuid = projectGuid;
-            joinProjectRequestModel.Username = username;
+            ProjectMembershipRequestModel joinProjectRequestModel = new ProjectMembershipRequestModel
+                {
+                    ProjectGuid = projectGuid,
+                    Username = username
+                };
 
             // Post a membership request
             HttpResponseMessage response = Client.PostAsJsonAsync("api/ProjectMembership", joinProjectRequestModel).Result;

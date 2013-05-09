@@ -156,7 +156,6 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\ProjectMembershipController.cs" />
-    <Compile Include="Controllers\TeamProjectsController.cs" />
     <Compile Include="Controllers\TeamCollectionsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -167,7 +166,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Controllers\ProjectsController.cs" />
+    <Compile Include="Controllers\TeamProjectsController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />

@@ -153,7 +153,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ProjectsController.cs" />
+    <Compile Include="Controllers\TeamProjectsController.cs" />
     <Compile Include="Controllers\TeamCollectionsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -272,7 +272,7 @@
     <Content Include="Views\Web.config" />
     <Content Include="packages.config" />
     <Content Include="Views\TeamCollections\CreateTeamCollection.cshtml" />
-    <Content Include="Views\Projects\CreateProject.cshtml" />
+    <Content Include="Views\TeamProjects\CreateProject.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
