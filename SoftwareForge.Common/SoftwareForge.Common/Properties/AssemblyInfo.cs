@@ -21,9 +21,9 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// Allgemeine Informationen über eine Assembly werden über die folgenden 
-// Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
-// die mit einer Assembly verknüpft sind.
+//General Information about an assembly will be controlled with the following
+//attributes. Change these attribute values ​​to modify the information
+//associated with an assembly. 
 [assembly: AssemblyTitle("SoftwareForge.Common")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
@@ -33,23 +33,23 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-// Durch Festlegen von ComVisible auf "false" werden die Typen in dieser Assembly unsichtbar 
-// für COM-Komponenten. Wenn Sie auf einen Typ in dieser Assembly von 
-// COM zugreifen müssen, legen Sie das ComVisible-Attribut für diesen Typ auf "true" fest.
+//Setting ComVisible to "false", the types in this assembly are invisible to COM components.
+//If you have to get access to a type in this assembly of COM,
+//set the ComVisible attribute for this type to "true".
 [assembly: ComVisible(false)]
 
-// Die folgende GUID bestimmt die ID der Typbibliothek, wenn dieses Projekt für COM verfügbar gemacht wird
+//The following GUID determines the ID of the typelib if this project is exposed to COM
 [assembly: Guid("bb98c973-9a73-4379-abff-2cd9a74eafca")]
 
-// Versionsinformationen für eine Assembly bestehen aus den folgenden vier Werten:
+// Version information for an assembly consists of the following four values:
 //
-//      Hauptversion
-//      Nebenversion 
-//      Buildnummer
+//      Main version
+//      Minor version
+//      Buildnumber
 //      Revision
 //
-// Sie können alle Werte angeben oder die standardmäßigen Build- und Revisionsnummern 
-// übernehmen, indem Sie "*" eingeben:
+// You can specify all the values ​​or you can accept the default Build and Revision Numbers
+// by typing "*":
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
