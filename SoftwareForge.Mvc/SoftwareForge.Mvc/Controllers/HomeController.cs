@@ -17,6 +17,9 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
+using System;
+using SoftwareForge.Common.Models;
+using SoftwareForge.Common.Models.Requests;
 using System.Collections.Generic;
 using System.Web.Mvc;
 using SoftwareForge.Common.Models;
@@ -37,6 +40,26 @@ namespace SoftwareForge.Mvc.Controllers
         {
             IEnumerable<TeamCollection> teamCollections = TeamCollectionsClient.GetTeamCollections();
             return View(teamCollections);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>Random projects for a user in which he is not joined yet.</returns>
+        public ActionResult Dashboard()
+        {
+            IEnumerable<TeamCollection> teamCollections = TeamCollectionsClient.GetTeamCollections();
+            List<Project> randomProjects = new List<Project>();
+            foreach (var teamCollection in teamCollections)
+            {
+                //Only add Projects to list in which the user is not a member.
+               // if (?....)
+                //{
+                    // Add Projects to list.
+                    randomProjects.AddRange(teamCollection.Projects);
+                //}
+            }
+
+            return View(randomProjects);
         }
     }
 }

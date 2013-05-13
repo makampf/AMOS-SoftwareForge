@@ -273,6 +273,7 @@
     <Content Include="packages.config" />
     <Content Include="Views\TeamCollections\CreateTeamCollection.cshtml" />
     <Content Include="Views\TeamProjects\CreateProject.cshtml" />
+    <Content Include="Views\Home\Dashboard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
