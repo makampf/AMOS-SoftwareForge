@@ -1,0 +1,43 @@
+﻿<!-- 
+ - Copyright (c) 2013 by Denis Bach, Marvin Kampf, Konstantin Tsysin, Taner Tunc, Florian Wittmann
+ -
+ - This file is part of the Software Forge Overlay rating application.
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU Affero General Public License as
+ - published by the Free Software Foundation, either version 3 of the
+ - License, or (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful, 
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU Affero General Public License for more details.
+ -
+ - You should have received a copy of the GNU Affero General Public
+ - License along with this program. If not, see
+ - <http://www.gnu.org/licenses/>.
+ -->
+@using SoftwareForge.Common.Models
+@model System.Collections.Generic.List<SoftwareForge.Common.Models.Project>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Dashboard</title>
+    </head>
+    <body>
+        <div>
+            <h3>Noch nicht beigetretene Projekte:<br/></h3>             
+                @foreach (Project p in Model)
+                {
+                    <b>@p.Name<br/></b>
+                }
+              
+        </div>
+    </body>
+</html>
