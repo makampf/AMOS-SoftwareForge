@@ -18,12 +18,9 @@
  - <http://www.gnu.org/licenses/>.
  -->
 @using SoftwareForge.Common.Models
-@model SoftwareForge.Common.Models.DashboardModel
-
-@{
-    ViewBag.Title = "Dashboard";
-}
-
-<div>
-    @Html.Partial("DashboardRandomProjectsPartial", Model.RandomProjects)
-</div>
+@model List<Project>
+    <h3>Some random projects for you:<br/></h3>             
+        @foreach (Project p in Model)
+        {
+            <b>@p.Name<br/></b>
+        }   

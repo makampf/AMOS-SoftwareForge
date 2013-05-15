@@ -274,6 +274,8 @@
     <Content Include="Views\TeamCollections\CreateTeamCollection.cshtml" />
     <Content Include="Views\TeamProjects\CreateProject.cshtml" />
     <Content Include="Views\Home\Dashboard.cshtml" />
+    <Content Include="Views\Home\DashboardRandomProjectsPartial.cshtml" />
+    <Content Include="Views\Home\DashboardMyProjectsPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
