@@ -19,10 +19,8 @@
  */
 using System;
 using SoftwareForge.Common.Models;
-using SoftwareForge.Common.Models.Requests;
 using System.Collections.Generic;
 using System.Web.Mvc;
-using SoftwareForge.Common.Models;
 using SoftwareForge.Mvc.WebApiClient;
 
 namespace SoftwareForge.Mvc.Controllers
@@ -42,24 +40,87 @@ namespace SoftwareForge.Mvc.Controllers
             return View(teamCollections);
         }
         /// <summary>
-        /// 
+        /// Search all projects the user is not joined yet. Then chooses 5 of them randomly.
         /// </summary>
-        /// <returns>Random projects for a user in which he is not joined yet.</returns>
+        /// <returns>5 random projects for a user in which he is not joined yet.</returns>
         public ActionResult Dashboard()
         {
             IEnumerable<TeamCollection> teamCollections = TeamCollectionsClient.GetTeamCollections();
             List<Project> randomProjects = new List<Project>();
+            int control;
             foreach (var teamCollection in teamCollections)
             {
-                //Only add Projects to list in which the user is not a member.
-               // if (?....)
-                //{
-                    // Add Projects to list.
-                    randomProjects.AddRange(teamCollection.Projects);
-                //}
+                foreach (Project p in teamCollection.Projects)
+                {
+                    control = 0;
+                    foreach (User u in p.Users)
+                    {
+                        if (u.Username == User.Identity.Name)
+                        {
+                            control = 1;
+                            break;
+                        }
+                    }
+                    if (control == 0)
+                    {
+                        randomProjects.Add(p);
+                    }      
+                }
             }
+            List<Project> fiveProjects = new List<Project>();
+            Random rnd = new Random();
+            int counter = 0;
+            int iterations;
+            int listelements = randomProjects.Count;
+            if (listelements >= 5)
+            {
+                iterations = 5;
+            }
+            else
+            {
+                iterations = randomProjects.Count;
+            }   
+                while (iterations > 0)
+                {
+                    int random = rnd.Next(0, listelements - counter);
+                    fiveProjects.Add(randomProjects[random]);
+                    randomProjects.RemoveAt(random);
+                    counter++;
+                    iterations--;
 
-            return View(randomProjects);
+
+                }
+                /*
+                 * old Version
+                // choose first element
+                int first = rnd.Next(0, listelements);
+                fiveProjects.Add(randomProjects[first]);
+                randomProjects.RemoveAt(first);
+
+                // choose second element
+                int second = rnd.Next(0, listelements - 1);
+                fiveProjects.Add(randomProjects[second]);
+                randomProjects.RemoveAt(second);
+
+                // choose third element
+                int third = rnd.Next(0, listelements - 2);
+                fiveProjects.Add(randomProjects[third]);
+                randomProjects.RemoveAt(third);
+
+                // choose fourth element
+                int fourth = rnd.Next(0, listelements - 3);
+                fiveProjects.Add(randomProjects[fourth]);
+                randomProjects.RemoveAt(fourth);
+
+                // choose fifth element
+                int fifth = rnd.Next(0, listelements - 4);
+                fiveProjects.Add(randomProjects[fifth]);
+                randomProjects.RemoveAt(fifth);
+                 */
+
+                return View(fiveProjects);
+            
+            
         }
     }
 }
