@@ -47,11 +47,10 @@ namespace SoftwareForge.Mvc.Controllers
         public ActionResult Dashboard()
         {
             DashboardModel dashboardModel = new DashboardModel();
-            IEnumerable<TeamCollection> teamCollections = TeamCollectionsClient.GetTeamCollections();
-
+            List<TeamCollection> teamCollections = TeamCollectionsClient.GetTeamCollections().ToList();
 
             dashboardModel.RandomProjects = GetRandomProjects(teamCollections);
-
+            dashboardModel.MyProjects = GetMyProjects(teamCollections);
 
             return View(dashboardModel);
             
@@ -95,6 +94,23 @@ namespace SoftwareForge.Mvc.Controllers
 
             }
             return fiveProjects;
+        }
+
+        private List<Project> GetMyProjects(IEnumerable<TeamCollection> teamCollections)
+        {
+            List<Project> myProjects = new List<Project>();
+            foreach (TeamCollection teamCollection in teamCollections)
+            {
+                foreach (Project project in teamCollection.Projects)
+                {
+                    if (project.Users.Any(user => user.Username.Equals(User.Identity.Name)))
+                    {
+                        myProjects.Add(project);
+                    }
+                }
+            }
+
+            return myProjects;
         }
     }
 }

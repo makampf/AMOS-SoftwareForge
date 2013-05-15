@@ -31,5 +31,10 @@ namespace SoftwareForge.Common.Models
         /// A list of random projects, the user is not yet member of.
         /// </summary>
         public List<Project> RandomProjects { get; set; }
+
+        /// <summary>
+        /// A list of all projects, the user is member of.
+        /// </summary>
+        public List<Project> MyProjects { get; set; }
     }
 }
