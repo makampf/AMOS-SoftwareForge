@@ -156,7 +156,7 @@ namespace SoftwareForge.TfsService
                 {
                     //TODO: Language files - localization - no language specifictext in code!
                     const string noDescriptionAvailable = "No description available.";
-                    projectModel = projectsDao.Add(new Project(project.Name, noDescriptionAvailable, project.Id, guid, teamCollectionGuid));
+                    projectModel = projectsDao.Add(new Project(project.Name, noDescriptionAvailable, project.Id, guid, teamCollectionGuid, ProjectType.Application));
                 }
                 result.Add(projectModel);
             }

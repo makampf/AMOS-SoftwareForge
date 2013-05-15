@@ -120,5 +120,22 @@ namespace SoftwareForge.Mvc.Controllers
 
             return myProjects;
         }
+        /// <summary>
+        /// Creats a list to display enums in a dropdownlist
+        /// </summary>
+        /// <param name="selectedProject"></param>
+        /// <returns>List of items for dropdownlist</returns>
+        public ActionResult SetProjectType(ProjectType selectedProject)
+        {
+            IEnumerable<ProjectType> values = Enum.GetValues(typeof (ProjectType)).Cast<ProjectType>();
+            IEnumerable<SelectListItem> items = from value in values
+                                                select new SelectListItem
+                                                    {
+                                                        Text = value.ToString(),
+                                                        Value = value.ToString(),
+                                                        Selected = value == selectedProject,
+                                                    };
+            return View(items);
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace SoftwareForge.Mvc.Controllers
         /// <returns>A CreateProject View</returns>
         public ActionResult CreateProject(Guid teamCollectionGuid)
         {
-            return View(new Project("", "", 0, new Guid(), teamCollectionGuid));
+            return View(new Project("", "", 0, new Guid(), teamCollectionGuid, ProjectType.Application));
         }
 
         /// <summary>

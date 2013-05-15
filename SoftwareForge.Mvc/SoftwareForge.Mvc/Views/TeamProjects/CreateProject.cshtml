@@ -19,6 +19,7 @@
  -->
 @model SoftwareForge.Common.Models.Project
 
+
 @{
     ViewBag.Title = "Create";
 }
@@ -47,6 +48,16 @@
         <div class="editor-field">
             @Html.EditorFor(model => model.Description)
             @Html.ValidationMessageFor(model => model.Description)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ProjectType)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ProjectType)
+            @Html.ValidationMessageFor(model => model.ProjectType)
+        </div>
+        <div>
+            @Html.Partial("SetProjectType", ViewBag.ProjectTypes)
         </div>
         <p>
             <input type="submit" value="Create" />

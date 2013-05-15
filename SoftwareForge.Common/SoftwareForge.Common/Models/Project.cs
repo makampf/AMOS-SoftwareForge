@@ -66,13 +66,18 @@ namespace SoftwareForge.Common.Models
         /// </summary>
         public Guid TeamCollectionGuid { get; set; }
 
+        /// <summary>
+        /// The ProjectType of a project.
+        /// </summary>
+        public ProjectType ProjectType { get; set; }
+
 
         public Project()
         {
             
         }
 
-        public Project(string name, string description, int id, Guid guid, Guid teamCollectionGuid)
+        public Project(string name, string description, int id, Guid guid, Guid teamCollectionGuid, ProjectType projectType)
         {
             Name = name;
             Description = description;
@@ -80,6 +85,7 @@ namespace SoftwareForge.Common.Models
             Guid = guid;
             Users = new Collection<User>();
             TeamCollectionGuid = teamCollectionGuid;
+            ProjectType = projectType;
         }
     }
 }
