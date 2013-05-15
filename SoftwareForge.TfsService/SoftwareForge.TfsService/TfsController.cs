@@ -86,8 +86,6 @@ namespace SoftwareForge.TfsService
             return templatesList;
         }
 
-
-
         /// <summary>
         /// Get all TeamCollections.
         /// </summary>
@@ -152,12 +150,37 @@ namespace SoftwareForge.TfsService
 
             foreach (Microsoft.TeamFoundation.WorkItemTracking.Client.Project project in projects)
             {
-                Project projectModel = projectsDao.Get(new Guid(project.Guid)) ??
-                    projectsDao.Add(new Project(project.Name, project.Id, new Guid(project.Guid), teamCollectionGuid));
+                Guid guid = new Guid(project.Guid);
+                Project projectModel = projectsDao.Get(new Guid(project.Guid));
+                if (projectModel == null)
+                {
+                    //TODO: Language files - localization - no language specifictext in code!
+                    const string noDescriptionAvailable = "No description available.";
+                    projectModel = projectsDao.Add(new Project(project.Name, noDescriptionAvailable, project.Id, guid, teamCollectionGuid));
+                }
                 result.Add(projectModel);
             }
 
             return result;
+        }
+
+        public Microsoft.TeamFoundation.WorkItemTracking.Client.Project GetTfsProjectByName(string projectName, Guid teamCollectionGuid)
+        {
+
+            if (HasAuthenticated == false)
+                _tfsConfigurationServer.Authenticate();
+
+            TfsTeamProjectCollection tpc = _tfsConfigurationServer.GetTeamProjectCollection(teamCollectionGuid);
+            WorkItemStore store = tpc.GetService<WorkItemStore>();
+
+            ProjectCollection projects = store.Projects;
+
+            foreach (Microsoft.TeamFoundation.WorkItemTracking.Client.Project project in projects)
+            {
+                if (project.Name.Equals(projectName)) return project;
+            }
+
+            return null;
         }
 
 
@@ -264,7 +287,7 @@ namespace SoftwareForge.TfsService
         /// <param name="teamCollectionGuid">the TeamProjectCollection Guid in which the project will be created</param>
         /// <param name="projectName">the TeamProject name</param>
         /// <param name="templateName">the Template, which should be used</param>
-        public void CreateTeamProjectInTeamCollection(Guid teamCollectionGuid, String projectName, String templateName)
+        public void CreateTeamProjectInTeamCollection(Guid teamCollectionGuid, String projectName, string projectDescription, String templateName)
         {
             if (HasAuthenticated == false)
                 _tfsConfigurationServer.Authenticate();
@@ -281,6 +304,21 @@ namespace SoftwareForge.TfsService
                 throw new Exception("Could not found templateName in collection " + tc.Name);
 
             PowerToolsUtil.CreateTfsProject(_tfsConfigurationServer.Uri.ToString(), tc.Name, projectName, templateName);
+            Microsoft.TeamFoundation.WorkItemTracking.Client.Project tfsProject = GetTfsProjectByName(projectName, teamCollectionGuid);
+            if (tfsProject == null)
+            {
+                throw new Exception("Error while creating new project. No new project found after creation command.");
+            }
+            ProjectsDao projectsDao = new ProjectsDao();
+            projectsDao.Add(new Project
+                {
+                    Description = projectDescription,
+                    Guid = new Guid(tfsProject.Guid),
+                    Id = tfsProject.Id,
+                    Name = projectName,
+                    TeamCollectionGuid = teamCollectionGuid
+                });
+
         }
 
 

@@ -36,6 +36,13 @@ namespace SoftwareForge.Common.Models
         /// </summary>
         public string Name { get; set; }
 
+
+        /// <summary>
+        /// The Description of the Project.
+        /// </summary>
+        [DataType(DataType.MultilineText)]
+        public string Description { get; set; }
+
         /// <summary>
         /// The id of the Project.
         /// </summary>
@@ -45,7 +52,7 @@ namespace SoftwareForge.Common.Models
         /// <summary>
         /// The Guid of the Project.
         /// </summary>
-         [Key]
+        [Key]
         public Guid Guid { get; set; }
 
         /// <summary>
@@ -65,9 +72,10 @@ namespace SoftwareForge.Common.Models
             
         }
 
-        public Project(string name, int id, Guid guid, Guid teamCollectionGuid)
+        public Project(string name, string description, int id, Guid guid, Guid teamCollectionGuid)
         {
             Name = name;
+            Description = description;
             Id = id;
             Guid = guid;
             Users = new Collection<User>();

@@ -40,10 +40,11 @@ namespace SoftwareForge.Mvc.Controllers
             IEnumerable<TeamCollection> teamCollections = TeamCollectionsClient.GetTeamCollections();
             return View(teamCollections);
         }
+
         /// <summary>
-        /// Search all projects the user is not joined yet. Then chooses 5 of them randomly.
+        /// Fill the dashboard Model and return the dashboard view
         /// </summary>
-        /// <returns>5 random projects for a user in which he is not joined yet.</returns>
+        /// <returns>the dashboardview with partial views like random projects, own project, ...</returns>
         public ActionResult Dashboard()
         {
             DashboardModel dashboardModel = new DashboardModel();
@@ -57,6 +58,10 @@ namespace SoftwareForge.Mvc.Controllers
             
         }
 
+        /// <summary>
+        /// Search all projects the user is not joined yet. Then chooses 5 of them randomly.
+        /// </summary>
+        /// <returns>5 random projects for a user in which he is not joined yet.</returns>
         private List<Project> GetRandomProjects(IEnumerable<TeamCollection> teamCollections)
         {
             List<Project> randomProjects = new List<Project>();
@@ -95,7 +100,10 @@ namespace SoftwareForge.Mvc.Controllers
             }
             return fiveProjects;
         }
-
+        /// <summary>
+        /// Search all projects the user has joined yet.
+        /// </summary>
+        /// <returns>all projects for a user in which he is member.</returns>
         private List<Project> GetMyProjects(IEnumerable<TeamCollection> teamCollections)
         {
             List<Project> myProjects = new List<Project>();
