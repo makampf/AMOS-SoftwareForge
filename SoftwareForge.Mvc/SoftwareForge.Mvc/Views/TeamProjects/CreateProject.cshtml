@@ -22,6 +22,7 @@
 
 @{
     ViewBag.Title = "Create";
+    IEnumerable<SelectListItem> projectTypes = (IEnumerable<SelectListItem>) ViewData["ProjectTypes"];
 }
 
 <h2>Create Project</h2>
@@ -52,12 +53,8 @@
         <div class="editor-label">
             @Html.LabelFor(model => model.ProjectType)
         </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.ProjectType)
-            @Html.ValidationMessageFor(model => model.ProjectType)
-        </div>
         <div>
-            @Html.Partial("SetProjectType", ViewBag.ProjectTypes)
+            @Html.DropDownListFor(model => model.ProjectType, projectTypes)
         </div>
         <p>
             <input type="submit" value="Create" />

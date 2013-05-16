@@ -14,6 +14,13 @@ namespace SoftwareForge.Mvc.Controllers
         /// <returns>A CreateProject View</returns>
         public ActionResult CreateProject(Guid teamCollectionGuid)
         {
+            SelectListItem[] projectTypes = new[]
+            {
+                new SelectListItem { Value = ProjectType.Application.ToString(), Text = ProjectType.Application.ToString() },
+                new SelectListItem { Value = ProjectType.Library.ToString(), Text =ProjectType.Library.ToString() },
+                new SelectListItem { Value = ProjectType.Nonsoftware.ToString(), Text = ProjectType.Nonsoftware.ToString() },
+            };
+            ViewData["ProjectTypes"] = projectTypes;
             return View(new Project("", "", 0, new Guid(), teamCollectionGuid, ProjectType.Application));
         }
 
