@@ -26,11 +26,11 @@
     [
     @if (@Model.Users.Any(t => t.Username.Equals(User.Identity.Name)))
     {
-        <text>@Html.ActionLink("Leave", "LeaveProject", "TeamCollections",new {guid=Model.Guid, username=User.Identity.Name},null)</text>
+        <text>@Html.ActionLink("Leave", "LeaveProject", "TeamProjects",new {guid=Model.Guid, username=User.Identity.Name},null)</text>
     }
     else
     {
-        <text>@Html.ActionLink("Join", "JoinProject", "TeamCollections",new {guid=Model.Guid, username=User.Identity.Name},null)</text>
+        <text>@Html.ActionLink("Join", "JoinProject", "TeamProjects",new {guid=Model.Guid, username=User.Identity.Name},null)</text>
     }
     ]
     
