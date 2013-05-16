@@ -20,6 +20,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Framework.Client;
 using Microsoft.TeamFoundation.Framework.Common;
@@ -37,8 +38,9 @@ namespace SoftwareForge.TfsService
     /// </summary>
     public class TfsController
     {
-        private readonly TfsConfigurationServer _tfsConfigurationServer;
+        private TfsConfigurationServer _tfsConfigurationServer;
         private readonly TfsDbController _tfsDbController;
+        private readonly Uri _tfsUri;
 
 
         /// <summary>
@@ -57,11 +59,17 @@ namespace SoftwareForge.TfsService
             
            _tfsConfigurationServer = new TfsConfigurationServer(tfsUri);
            _tfsConfigurationServer.Authenticate();
-            
+            _tfsUri = tfsUri;
 
             _tfsDbController = new TfsDbController(connectionString);
         }
 
+
+        private void ForceTfsCacheClean()
+        {
+            _tfsConfigurationServer = new TfsConfigurationServer(_tfsUri);
+            _tfsConfigurationServer.Authenticate();
+        }
 
         /// <summary>
         /// Get all Templates in the TeamProjectCollection.
@@ -304,7 +312,11 @@ namespace SoftwareForge.TfsService
                 throw new Exception("Could not found templateName in collection " + tc.Name);
 
             PowerToolsUtil.CreateTfsProject(_tfsConfigurationServer.Uri.ToString(), tc.Name, projectName, templateName);
-            Microsoft.TeamFoundation.WorkItemTracking.Client.Project tfsProject = GetTfsProjectByName(projectName, teamCollectionGuid);
+
+            ForceTfsCacheClean();
+
+            Microsoft.TeamFoundation.WorkItemTracking.Client.Project tfsProject =  GetTfsProjectByName(projectName, teamCollectionGuid);
+
             if (tfsProject == null)
             {
                 throw new Exception("Error while creating new project. No new project found after creation command.");

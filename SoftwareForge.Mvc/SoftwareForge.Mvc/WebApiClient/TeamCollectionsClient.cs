@@ -39,7 +39,7 @@ namespace SoftwareForge.Mvc.WebApiClient
         /// <returns>The new HttpClient.</returns>
         public static HttpClient CreateHttpClient()
         {
-            HttpClient client = new HttpClient { BaseAddress = new Uri(Properties.Settings.Default.WebApiUri) };
+            HttpClient client = new HttpClient { BaseAddress = new Uri(Properties.Settings.Default.WebApiUri), Timeout = new TimeSpan(0,5,0) };
 
             // Add an Accept header for JSON format.
             client.DefaultRequestHeaders.Accept.Add(
