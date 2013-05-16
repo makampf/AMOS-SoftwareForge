@@ -14,7 +14,14 @@ namespace SoftwareForge.Mvc.Controllers
         /// <returns>A CreateProject View</returns>
         public ActionResult CreateProject(Guid teamCollectionGuid)
         {
-            return View(new Project("", 0, new Guid(), teamCollectionGuid));
+            SelectListItem[] projectTypes = new[]
+            {
+                new SelectListItem { Value = ProjectType.Application.ToString(), Text = ProjectType.Application.ToString() },
+                new SelectListItem { Value = ProjectType.Library.ToString(), Text =ProjectType.Library.ToString() },
+                new SelectListItem { Value = ProjectType.Nonsoftware.ToString(), Text = ProjectType.Nonsoftware.ToString() },
+            };
+            ViewData["ProjectTypes"] = projectTypes;
+            return View(new Project("", "", 0, new Guid(), teamCollectionGuid, ProjectType.Application));
         }
 
         /// <summary>
@@ -35,5 +42,41 @@ namespace SoftwareForge.Mvc.Controllers
             return RedirectToAction("Index","Home");
         }
 
+        /// <summary>
+        /// Show the details page for a project
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        public ActionResult ProjectDetailsPage(Guid guid)
+        {
+            Project teamCollections = TeamCollectionsClient.GetTeamProject(guid);
+            return View(teamCollections);
+        }
+
+        /// <summary>
+        /// Join a project
+        /// </summary>
+        /// <param name="guid">guid of project</param>
+        /// <param name="username">username</param>
+        /// <returns>Redirects to overview page</returns>
+        public ActionResult JoinProject(Guid guid, String username)
+        {
+
+            TeamCollectionsClient.JoinProject(guid, username);
+            return RedirectToAction("ProjectDetailsPage",new {guid});
+
+        }
+
+        /// <summary>
+        /// Leave a project
+        /// </summary>
+        /// <param name="guid">guid of project</param>
+        /// <param name="username">username</param>
+        /// <returns>Redirects to overview page</returns>
+        public ActionResult LeaveProject(Guid guid, String username)
+        {
+            TeamCollectionsClient.LeaveProject(guid, username);
+            return RedirectToAction("ProjectDetailsPage", new { guid });
+        }
     }
 }

@@ -31,7 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework">
-      <HintPath>..\..\SoftwareForge.TfsService\SoftwareForge.TfsService\bin\Debug\EntityFramework.dll</HintPath>
+      <HintPath>..\..\SoftwareForge.TfsService\packages\EntityFramework.5.0.0\lib\net40\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.WorkItemTracking.Client, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -47,6 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\ProjectType.cs" />
+    <Compile Include="Models\DashboardModel.cs" />
     <Compile Include="Models\Project.cs" />
     <Compile Include="Models\ProjectUser.cs" />
     <Compile Include="Models\Requests\ProjectMembershipRequestModel.cs" />

@@ -20,6 +20,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Framework.Client;
 using Microsoft.TeamFoundation.Framework.Common;
@@ -37,8 +38,9 @@ namespace SoftwareForge.TfsService
     /// </summary>
     public class TfsController
     {
-        private readonly TfsConfigurationServer _tfsConfigurationServer;
+        private TfsConfigurationServer _tfsConfigurationServer;
         private readonly TfsDbController _tfsDbController;
+        private readonly Uri _tfsUri;
 
 
         /// <summary>
@@ -57,11 +59,17 @@ namespace SoftwareForge.TfsService
             
            _tfsConfigurationServer = new TfsConfigurationServer(tfsUri);
            _tfsConfigurationServer.Authenticate();
-            
+            _tfsUri = tfsUri;
 
             _tfsDbController = new TfsDbController(connectionString);
         }
 
+
+        private void ForceTfsCacheClean()
+        {
+            _tfsConfigurationServer = new TfsConfigurationServer(_tfsUri);
+            _tfsConfigurationServer.Authenticate();
+        }
 
         /// <summary>
         /// Get all Templates in the TeamProjectCollection.
@@ -85,8 +93,6 @@ namespace SoftwareForge.TfsService
 
             return templatesList;
         }
-
-
 
         /// <summary>
         /// Get all TeamCollections.
@@ -152,12 +158,37 @@ namespace SoftwareForge.TfsService
 
             foreach (Microsoft.TeamFoundation.WorkItemTracking.Client.Project project in projects)
             {
-                Project projectModel = projectsDao.Get(new Guid(project.Guid)) ??
-                    projectsDao.Add(new Project(project.Name, project.Id, new Guid(project.Guid), teamCollectionGuid));
+                Guid guid = new Guid(project.Guid);
+                Project projectModel = projectsDao.Get(new Guid(project.Guid));
+                if (projectModel == null)
+                {
+                    //TODO: Language files - localization - no language specifictext in code!
+                    const string noDescriptionAvailable = "No description available.";
+                    projectModel = projectsDao.Add(new Project(project.Name, noDescriptionAvailable, project.Id, guid, teamCollectionGuid, ProjectType.Application));
+                }
                 result.Add(projectModel);
             }
 
             return result;
+        }
+
+        public Microsoft.TeamFoundation.WorkItemTracking.Client.Project GetTfsProjectByName(string projectName, Guid teamCollectionGuid)
+        {
+
+            if (HasAuthenticated == false)
+                _tfsConfigurationServer.Authenticate();
+
+            TfsTeamProjectCollection tpc = _tfsConfigurationServer.GetTeamProjectCollection(teamCollectionGuid);
+            WorkItemStore store = tpc.GetService<WorkItemStore>();
+
+            ProjectCollection projects = store.Projects;
+
+            foreach (Microsoft.TeamFoundation.WorkItemTracking.Client.Project project in projects)
+            {
+                if (project.Name.Equals(projectName)) return project;
+            }
+
+            return null;
         }
 
 
@@ -264,7 +295,7 @@ namespace SoftwareForge.TfsService
         /// <param name="teamCollectionGuid">the TeamProjectCollection Guid in which the project will be created</param>
         /// <param name="projectName">the TeamProject name</param>
         /// <param name="templateName">the Template, which should be used</param>
-        public void CreateTeamProjectInTeamCollection(Guid teamCollectionGuid, String projectName, String templateName)
+        public Project CreateTeamProjectInTeamCollection(Guid teamCollectionGuid, String projectName, string projectDescription, ProjectType projectType, String templateName)
         {
             if (HasAuthenticated == false)
                 _tfsConfigurationServer.Authenticate();
@@ -281,9 +312,37 @@ namespace SoftwareForge.TfsService
                 throw new Exception("Could not found templateName in collection " + tc.Name);
 
             PowerToolsUtil.CreateTfsProject(_tfsConfigurationServer.Uri.ToString(), tc.Name, projectName, templateName);
+
+            ForceTfsCacheClean();
+
+            Microsoft.TeamFoundation.WorkItemTracking.Client.Project tfsProject =  GetTfsProjectByName(projectName, teamCollectionGuid);
+
+            if (tfsProject == null)
+            {
+                throw new Exception("Error while creating new project. No new project found after creation command.");
+            }
+            ProjectsDao projectsDao = new ProjectsDao();
+            return projectsDao.Add(new Project
+                {
+                    Description = projectDescription,
+                    ProjectType = projectType,
+                    Guid = new Guid(tfsProject.Guid),
+                    Id = tfsProject.Id,
+                    Name = projectName,
+                    TeamCollectionGuid = teamCollectionGuid
+                });
+
         }
 
 
-
+        /// <summary>
+        /// Get a specific project 
+        /// </summary>
+        /// <param name="projectGuid"></param>
+        /// <returns></returns>
+        public Project GetTeamProject(Guid projectGuid)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

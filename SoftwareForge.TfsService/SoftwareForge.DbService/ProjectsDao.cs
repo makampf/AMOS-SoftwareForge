@@ -110,7 +110,7 @@ namespace SoftwareForge.DbService
                 project.Users = GetUsers(project.Guid);
                 return project;
             }
-            catch (InvalidOperationException)
+            catch (Exception)
             {
                 return null;
             }

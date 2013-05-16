@@ -17,16 +17,24 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace SoftwareForge.Common.Models.Requests
+using System.Collections.Generic;
+
+namespace SoftwareForge.Common.Models
 {
-    public class ProjectMembershipRequestModel
+    /// <summary>
+    /// The model for the dashboard view
+    /// </summary>
+    public class DashboardModel
     {
-        public Guid ProjectGuid { get; set; }
-        public String Username { get; set; }
+        /// <summary>
+        /// A list of random projects, the user is not yet member of.
+        /// </summary>
+        public List<Project> RandomProjects { get; set; }
+
+        /// <summary>
+        /// A list of all projects, the user is member of.
+        /// </summary>
+        public List<Project> MyProjects { get; set; }
     }
 }
