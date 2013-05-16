@@ -295,7 +295,7 @@ namespace SoftwareForge.TfsService
         /// <param name="teamCollectionGuid">the TeamProjectCollection Guid in which the project will be created</param>
         /// <param name="projectName">the TeamProject name</param>
         /// <param name="templateName">the Template, which should be used</param>
-        public Project CreateTeamProjectInTeamCollection(Guid teamCollectionGuid, String projectName, string projectDescription, String templateName)
+        public Project CreateTeamProjectInTeamCollection(Guid teamCollectionGuid, String projectName, string projectDescription, ProjectType projectType, String templateName)
         {
             if (HasAuthenticated == false)
                 _tfsConfigurationServer.Authenticate();
@@ -325,6 +325,7 @@ namespace SoftwareForge.TfsService
             return projectsDao.Add(new Project
                 {
                     Description = projectDescription,
+                    ProjectType = projectType,
                     Guid = new Guid(tfsProject.Guid),
                     Id = tfsProject.Id,
                     Name = projectName,

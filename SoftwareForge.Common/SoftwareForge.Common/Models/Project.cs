@@ -66,10 +66,14 @@ namespace SoftwareForge.Common.Models
         /// </summary>
         public Guid TeamCollectionGuid { get; set; }
 
-        /// <summary>
-        /// The ProjectType of a project.
-        /// </summary>
-        public ProjectType ProjectType { get; set; }
+        public int ProjectTypeValue { get; set; }
+
+        public ProjectType ProjectType
+        {
+            get { return (ProjectType)ProjectTypeValue; }
+            set { ProjectTypeValue = (int) value; }
+        }
+
 
 
         public Project()

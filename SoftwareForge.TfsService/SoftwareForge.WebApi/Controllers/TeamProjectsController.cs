@@ -86,7 +86,7 @@ namespace SoftwareForge.WebApi.Controllers
             List<String> templates = TfsController.GetTemplatesInCollection(project.TeamCollectionGuid);
             if (templates.Count< 1) 
                 throw new ArgumentException("The project given is in a collection that has no templates! ");
-            return TfsController.CreateTeamProjectInTeamCollection(project.TeamCollectionGuid, project.Name, project.Description, templates[0]);
+            return TfsController.CreateTeamProjectInTeamCollection(project.TeamCollectionGuid, project.Name, project.Description, project.ProjectType, templates[0]);
         }
         #endregion
 
@@ -95,7 +95,7 @@ namespace SoftwareForge.WebApi.Controllers
         //#region PUT
 
         //#endregion
-
+        
 
 
         //#region DELETE
