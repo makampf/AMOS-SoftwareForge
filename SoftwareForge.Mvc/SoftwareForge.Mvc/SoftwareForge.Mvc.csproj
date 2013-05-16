@@ -276,7 +276,7 @@
     <Content Include="Views\Home\Dashboard.cshtml" />
     <Content Include="Views\Home\DashboardRandomProjectsPartial.cshtml" />
     <Content Include="Views\Home\DashboardMyProjectsPartial.cshtml" />
-    <Content Include="Views\TeamProjects\SetProjectType.cshtml" />
+    <Content Include="Views\Shared\ProjectPreviewPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

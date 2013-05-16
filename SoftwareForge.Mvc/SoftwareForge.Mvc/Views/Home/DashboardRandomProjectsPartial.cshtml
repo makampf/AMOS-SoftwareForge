@@ -20,7 +20,7 @@
 @using SoftwareForge.Common.Models
 @model List<Project>
     <h3>Some random projects for you:<br/></h3>             
-        @foreach (Project p in Model)
+        @foreach (Project project in Model)
         {
-            <b>@p.Name<br/></b>
+             @Html.Partial("ProjectPreviewPartial",project)
         }   
