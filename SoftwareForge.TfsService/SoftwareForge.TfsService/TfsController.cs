@@ -313,9 +313,20 @@ namespace SoftwareForge.TfsService
 
             PowerToolsUtil.CreateTfsProject(_tfsConfigurationServer.Uri.ToString(), tc.Name, projectName, templateName);
 
-            ForceTfsCacheClean();
+           
 
-            Microsoft.TeamFoundation.WorkItemTracking.Client.Project tfsProject =  GetTfsProjectByName(projectName, teamCollectionGuid);
+            Microsoft.TeamFoundation.WorkItemTracking.Client.Project tfsProject = null;
+
+            int getProjectTrys = 0;
+            while (tfsProject == null && getProjectTrys < 30)
+            {
+                ForceTfsCacheClean();
+                tfsProject = GetTfsProjectByName(projectName, teamCollectionGuid);
+                Thread.Sleep(250);
+                getProjectTrys++;
+            }
+
+
 
             if (tfsProject == null)
             {
