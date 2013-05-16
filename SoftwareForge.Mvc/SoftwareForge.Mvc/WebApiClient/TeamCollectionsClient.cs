@@ -123,6 +123,18 @@ namespace SoftwareForge.Mvc.WebApiClient
             return PostProjectMembershipRequest(projectGuid, username);
         }
 
+        public static Project GetTeamProject(Guid teamProjectGuid)
+        {
+            // Get teamcollection.
+            HttpResponseMessage response = Client.GetAsync("api/TeamProjects?guid=" + teamProjectGuid).Result;  // Blocking call!
+            if (response.IsSuccessStatusCode)
+            {
+                // Parse the response body. Blocking!
+                return response.Content.ReadAsAsync<Project>().Result;
+            }
+            throw new HttpRequestException(response.StatusCode + ": " + response.ReasonPhrase);
+        }
+
         private static bool PostProjectMembershipRequest(Guid projectGuid, string username)
         {
 

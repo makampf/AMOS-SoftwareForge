@@ -42,5 +42,15 @@ namespace SoftwareForge.Mvc.Controllers
             return RedirectToAction("Index","Home");
         }
 
+        /// <summary>
+        /// Show the details page for a project
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        public ActionResult ProjectDetailsPage(Guid guid)
+        {
+            Project teamCollections = TeamCollectionsClient.GetTeamProject(guid);
+            return View(teamCollections);
+        }
     }
 }

@@ -20,7 +20,18 @@
 @using SoftwareForge.Common.Models
 @model Project
 <p>
-    <b>@Html.ActionLink(@Model.Name,"ProjectDetailsPage","TeamProjects",new {guid=Model.Guid},null)</b><br/>
+    <b>@Model.Name</b><br/>
     @Model.Description<br/>
     <i>@Model.ProjectType</i><br/>
+    [
+    @if (@Model.Users.Any(t => t.Username.Equals(User.Identity.Name)))
+    {
+        <text>@Html.ActionLink("Leave", "LeaveProject", "TeamCollections",new {guid=Model.Guid, username=User.Identity.Name},null)</text>
+    }
+    else
+    {
+        <text>@Html.ActionLink("Join", "JoinProject", "TeamCollections",new {guid=Model.Guid, username=User.Identity.Name},null)</text>
+    }
+    ]
+    
 </p>

@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Web.Http;
 using SoftwareForge.Common.Models;
+using SoftwareForge.DbService;
 using SoftwareForge.TfsService;
 
 namespace SoftwareForge.WebApi.Controllers
@@ -47,17 +48,30 @@ namespace SoftwareForge.WebApi.Controllers
         }
 
         #region GET
+        ///// <summary>
+        ///// Get all projects of a TeamCollection
+        ///// </summary>
+        ///// <param name="teamCollectionGuid">guid of teamCollection</param>
+        ///// <returns>A list of projects</returns>
+        //[HttpGet]
+        //public List<Project> GetTeamProjectsOfTeamCollection(Guid teamCollectionGuid)
+        //{
+        //    return TfsController.GetTeamProjectsOfTeamCollection(teamCollectionGuid);
+        //}
+ 
+
         /// <summary>
-        /// Get all projects of a TeamCollection
+        /// Get a project by guid
         /// </summary>
-        /// <param name="teamCollectionGuid">guid of teamCollection</param>
-        /// <returns>A list of projects</returns>
+        /// <param name="projectGuid">the guid of the project</param>
+        /// <returns>A project</returns>
         [HttpGet]
-        public List<Project> GetTeamProjectsOfTeamCollection(Guid teamCollectionGuid)
+        public Project GetTeamProject(Guid guid)
         {
-            return TfsController.GetTeamProjectsOfTeamCollection(teamCollectionGuid);
+            return new ProjectsDao().Get(guid);
         }
         #endregion
+
 
 
         /// <summary>
@@ -72,8 +86,7 @@ namespace SoftwareForge.WebApi.Controllers
             List<String> templates = TfsController.GetTemplatesInCollection(project.TeamCollectionGuid);
             if (templates.Count< 1) 
                 throw new ArgumentException("The project given is in a collection that has no templates! ");
-            TfsController.CreateTeamProjectInTeamCollection(project.TeamCollectionGuid, project.Name, project.Description, templates[0]);
-            return project;
+            return TfsController.CreateTeamProjectInTeamCollection(project.TeamCollectionGuid, project.Name, project.Description, templates[0]);
         }
         #endregion
 
