@@ -17,16 +17,24 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-using System.Web;
-using System.Web.Mvc;
 
-namespace SoftwareForge.Mvc
+using System.Collections.Generic;
+
+namespace SoftwareForge.Common.Models
 {
-    public class FilterConfig
+    /// <summary>
+    /// The model for the dashboard view
+    /// </summary>
+    public class DashboardModel
     {
-        public static void RegisterGlobalFilters(GlobalFilterCollection filters)
-        {
-            filters.Add(new HandleErrorAttribute());
-        }
+        /// <summary>
+        /// A list of random projects, the user is not yet member of.
+        /// </summary>
+        public List<Project> RandomProjects { get; set; }
+
+        /// <summary>
+        /// A list of all projects, the user is member of.
+        /// </summary>
+        public List<Project> MyProjects { get; set; }
     }
 }

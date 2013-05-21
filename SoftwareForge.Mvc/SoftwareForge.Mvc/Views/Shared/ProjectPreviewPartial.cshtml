@@ -18,15 +18,9 @@
  - <http://www.gnu.org/licenses/>.
  -->
 @using SoftwareForge.Common.Models
-@model SoftwareForge.Common.Models.DashboardModel
-
-@{
-    ViewBag.Title = "Dashboard";
-}
-
-<div>
-    @Html.Partial("DashboardMyProjectsPartial", Model.MyProjects)
-</div>
-<div>
-    @Html.Partial("DashboardRandomProjectsPartial", Model.RandomProjects)
-</div>
+@model Project
+<p>
+    <b>@Html.ActionLink(@Model.Name,"ProjectDetailsPage","TeamProjects",new {guid=Model.Guid},null)</b><br/>
+    @Model.Description<br/>
+    <i>@Model.ProjectType</i><br/>
+</p>

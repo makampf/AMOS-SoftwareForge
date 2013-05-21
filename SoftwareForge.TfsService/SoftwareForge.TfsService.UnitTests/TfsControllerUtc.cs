@@ -202,7 +202,7 @@ namespace SoftwareForge.TfsService.UnitTests
             List<String> templates = _tfsController.GetTemplatesInCollection(teamCollection.Guid);
             Assert.IsNotNull(templates);
             Assert.IsTrue(templates.Count > 0);
-            _tfsController.CreateTeamProjectInTeamCollection(teamCollection.Guid, TestProjectName, templates[0]);
+            _tfsController.CreateTeamProjectInTeamCollection(teamCollection.Guid, TestProjectName, "Description", ProjectType.Application, templates[0] );
             
             _tfsController.RemoveTeamCollection(teamCollection.Guid);
         }

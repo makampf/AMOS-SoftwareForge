@@ -39,7 +39,7 @@ namespace SoftwareForge.Mvc.WebApiClient
         /// <returns>The new HttpClient.</returns>
         public static HttpClient CreateHttpClient()
         {
-            HttpClient client = new HttpClient { BaseAddress = new Uri(Properties.Settings.Default.WebApiUri) };
+            HttpClient client = new HttpClient { BaseAddress = new Uri(Properties.Settings.Default.WebApiUri), Timeout = new TimeSpan(0,5,0) };
 
             // Add an Accept header for JSON format.
             client.DefaultRequestHeaders.Accept.Add(
@@ -121,6 +121,18 @@ namespace SoftwareForge.Mvc.WebApiClient
         public static bool LeaveProject(Guid projectGuid, string username)
         {
             return PostProjectMembershipRequest(projectGuid, username);
+        }
+
+        public static Project GetTeamProject(Guid teamProjectGuid)
+        {
+            // Get teamcollection.
+            HttpResponseMessage response = Client.GetAsync("api/TeamProjects?guid=" + teamProjectGuid).Result;  // Blocking call!
+            if (response.IsSuccessStatusCode)
+            {
+                // Parse the response body. Blocking!
+                return response.Content.ReadAsAsync<Project>().Result;
+            }
+            throw new HttpRequestException(response.StatusCode + ": " + response.ReasonPhrase);
         }
 
         private static bool PostProjectMembershipRequest(Guid projectGuid, string username)

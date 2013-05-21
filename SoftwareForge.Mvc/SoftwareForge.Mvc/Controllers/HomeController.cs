@@ -18,11 +18,10 @@
  * <http://www.gnu.org/licenses/>.
  */
 using System;
+using System.Linq;
 using SoftwareForge.Common.Models;
-using SoftwareForge.Common.Models.Requests;
 using System.Collections.Generic;
 using System.Web.Mvc;
-using SoftwareForge.Common.Models;
 using SoftwareForge.Mvc.WebApiClient;
 
 namespace SoftwareForge.Mvc.Controllers
@@ -41,25 +40,85 @@ namespace SoftwareForge.Mvc.Controllers
             IEnumerable<TeamCollection> teamCollections = TeamCollectionsClient.GetTeamCollections();
             return View(teamCollections);
         }
+
         /// <summary>
-        /// 
+        /// Fill the dashboard Model and return the dashboard view
         /// </summary>
-        /// <returns>Random projects for a user in which he is not joined yet.</returns>
+        /// <returns>the dashboardview with partial views like random projects, own project, ...</returns>
         public ActionResult Dashboard()
         {
-            IEnumerable<TeamCollection> teamCollections = TeamCollectionsClient.GetTeamCollections();
-            List<Project> randomProjects = new List<Project>();
-            foreach (var teamCollection in teamCollections)
-            {
-                //Only add Projects to list in which the user is not a member.
-               // if (?....)
-                //{
-                    // Add Projects to list.
-                    randomProjects.AddRange(teamCollection.Projects);
-                //}
-            }
+            DashboardModel dashboardModel = new DashboardModel();
+            List<TeamCollection> teamCollections = TeamCollectionsClient.GetTeamCollections().ToList();
 
-            return View(randomProjects);
+            dashboardModel.RandomProjects = GetRandomProjects(teamCollections);
+            dashboardModel.MyProjects = GetMyProjects(teamCollections);
+
+            return View(dashboardModel);
+            
+            
         }
+
+        /// <summary>
+        /// Search all projects the user is not joined yet. Then chooses 5 of them randomly.
+        /// </summary>
+        /// <returns>5 random projects for a user in which he is not joined yet.</returns>
+        private List<Project> GetRandomProjects(IEnumerable<TeamCollection> teamCollections)
+        {
+            List<Project> randomProjects = new List<Project>();
+            foreach (TeamCollection teamCollection in teamCollections)
+            {
+                foreach (Project project in teamCollection.Projects)
+                {
+                    if (!project.Users.Any(user => user.Username.Equals(User.Identity.Name)))
+                    {
+                        randomProjects.Add(project);
+                    }
+                }
+            }
+            List<Project> fiveProjects = new List<Project>();
+            Random rnd = new Random();
+            int counter = 0;
+            int iterations;
+            int listelements = randomProjects.Count;
+            if (listelements >= 5)
+            {
+                iterations = 5;
+            }
+            else
+            {
+                iterations = randomProjects.Count;
+            }
+            while (iterations > 0)
+            {
+                int random = rnd.Next(0, listelements - counter);
+                fiveProjects.Add(randomProjects[random]);
+                randomProjects.RemoveAt(random);
+                counter++;
+                iterations--;
+
+
+            }
+            return fiveProjects;
+        }
+        /// <summary>
+        /// Search all projects the user has joined yet.
+        /// </summary>
+        /// <returns>all projects for a user in which he is member.</returns>
+        private List<Project> GetMyProjects(IEnumerable<TeamCollection> teamCollections)
+        {
+            List<Project> myProjects = new List<Project>();
+            foreach (TeamCollection teamCollection in teamCollections)
+            {
+                foreach (Project project in teamCollection.Projects)
+                {
+                    if (project.Users.Any(user => user.Username.Equals(User.Identity.Name)))
+                    {
+                        myProjects.Add(project);
+                    }
+                }
+            }
+            return myProjects;
+        }
+        
     }
 }

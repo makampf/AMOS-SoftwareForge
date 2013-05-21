@@ -17,16 +17,17 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-using System.Web;
-using System.Web.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace SoftwareForge.Mvc
+namespace SoftwareForge.Common.Models
 {
-    public class FilterConfig
+    public enum ProjectType
     {
-        public static void RegisterGlobalFilters(GlobalFilterCollection filters)
-        {
-            filters.Add(new HandleErrorAttribute());
-        }
+        Application,
+        Library,
+        Nonsoftware
     }
 }

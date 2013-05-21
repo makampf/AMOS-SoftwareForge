@@ -89,7 +89,8 @@ namespace SoftwareForge.DbService
                         Project = project,
                         Project_Guid = project.Guid,
                         User = user,
-                        User_Id = user.Id
+                        User_Id = user.Id,
+                        UserRole = UserRole.Reader
                     });
 
             }
@@ -110,7 +111,7 @@ namespace SoftwareForge.DbService
                 project.Users = GetUsers(project.Guid);
                 return project;
             }
-            catch (InvalidOperationException)
+            catch (Exception)
             {
                 return null;
             }

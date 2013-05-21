@@ -18,15 +18,20 @@
  - <http://www.gnu.org/licenses/>.
  -->
 @using SoftwareForge.Common.Models
-@model SoftwareForge.Common.Models.DashboardModel
-
-@{
-    ViewBag.Title = "Dashboard";
-}
-
-<div>
-    @Html.Partial("DashboardMyProjectsPartial", Model.MyProjects)
-</div>
-<div>
-    @Html.Partial("DashboardRandomProjectsPartial", Model.RandomProjects)
-</div>
+@model Project
+<p>
+    <b>@Model.Name</b><br/>
+    @Model.Description<br/>
+    <i>@Model.ProjectType</i><br/>
+    [
+    @if (@Model.Users.Any(t => t.Username.Equals(User.Identity.Name)))
+    {
+        <text>@Html.ActionLink("Leave", "LeaveProject", "TeamProjects",new {guid=Model.Guid, username=User.Identity.Name},null)</text>
+    }
+    else
+    {
+        <text>@Html.ActionLink("Join", "JoinProject", "TeamProjects",new {guid=Model.Guid, username=User.Identity.Name},null)</text>
+    }
+    ]
+    
+</p>
