@@ -141,7 +141,8 @@ namespace SoftwareForge.Mvc.WebApiClient
             ProjectMembershipRequestModel joinProjectRequestModel = new ProjectMembershipRequestModel
                 {
                     ProjectGuid = projectGuid,
-                    Username = username
+                    Username = username,
+                    UserRole = UserRole.Reader
                 };
 
             // Post a membership request

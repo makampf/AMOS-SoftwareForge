@@ -19,6 +19,8 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Security.Principal;
+using System.Web;
 using System.Web.Http;
 using SoftwareForge.Common.Models;
 using SoftwareForge.DbService;
@@ -84,6 +86,7 @@ namespace SoftwareForge.WebApi.Controllers
         public Project CreateProject([FromBody] Project project)
         {
             List<String> templates = TfsController.GetTemplatesInCollection(project.TeamCollectionGuid);
+            WindowsIdentity identity = (WindowsIdentity)HttpContext.Current.User.Identity;
             if (templates.Count< 1) 
                 throw new ArgumentException("The project given is in a collection that has no templates! ");
             return TfsController.CreateTeamProjectInTeamCollection(project.TeamCollectionGuid, project.Name, project.Description, project.ProjectType, templates[0]);
