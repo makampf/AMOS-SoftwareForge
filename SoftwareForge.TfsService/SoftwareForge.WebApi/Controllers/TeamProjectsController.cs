@@ -23,6 +23,7 @@ using System.Security.Principal;
 using System.Web;
 using System.Web.Http;
 using SoftwareForge.Common.Models;
+using SoftwareForge.Common.Models.Requests;
 using SoftwareForge.DbService;
 using SoftwareForge.TfsService;
 
@@ -80,7 +81,9 @@ namespace SoftwareForge.WebApi.Controllers
             WindowsIdentity identity = (WindowsIdentity)HttpContext.Current.User.Identity;
             if (templates.Count< 1) 
                 throw new ArgumentException("The project given is in a collection that has no templates! ");
-            return TfsController.CreateTeamProjectInTeamCollection(project.TeamCollectionGuid, project.Name, project.Description, project.ProjectType, templates[0]);
+            Project createdProject = TfsController.CreateTeamProjectInTeamCollection(project.TeamCollectionGuid, project.Name, project.Description, project.ProjectType, templates[0]);
+            new ProjectsDao().ProcessMembershipRequest(new ProjectMembershipRequestModel{ProjectGuid = createdProject.Guid,Username = identity.Name,UserRole = UserRole.ProjectOwner});
+            return createdProject;
         }
         #endregion
 
