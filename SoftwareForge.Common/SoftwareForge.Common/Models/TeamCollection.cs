@@ -30,7 +30,6 @@ namespace SoftwareForge.Common.Models
     [DataContract]
     public class TeamCollection
     {
-
         /// <summary>
         /// The Name of the TeamCollection.
         /// </summary>
