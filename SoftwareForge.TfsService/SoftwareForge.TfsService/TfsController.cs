@@ -40,7 +40,6 @@ namespace SoftwareForge.TfsService
     {
         private TfsConfigurationServer _tfsConfigurationServer;
         private readonly TfsDbController _tfsDbController;
-        private readonly Uri _tfsUri;
 
 
         /// <summary>
@@ -59,8 +58,6 @@ namespace SoftwareForge.TfsService
             
            _tfsConfigurationServer = new TfsConfigurationServer(tfsUri);
            _tfsConfigurationServer.Authenticate();
-            _tfsUri = tfsUri;
-
             _tfsDbController = new TfsDbController(connectionString);
         }
 
@@ -69,7 +66,7 @@ namespace SoftwareForge.TfsService
         /// </summary>
         private void ForceTfsCacheClean()
         {
-            _tfsConfigurationServer = new TfsConfigurationServer(_tfsUri);
+            _tfsConfigurationServer = new TfsConfigurationServer(_tfsConfigurationServer.Uri);
             _tfsConfigurationServer.Authenticate();
         }
 
@@ -83,6 +80,8 @@ namespace SoftwareForge.TfsService
                 _tfsConfigurationServer.Authenticate();
 
             TeamCollection collection = GetTeamCollection(teamCollectionGuid);
+            if (collection == null)
+                throw new Exception("GetTemplatesInCollection: Could not find TeamCollection with Guid: " + teamCollectionGuid.ToString());
 
             IProcessTemplates processTemplates = _tfsConfigurationServer.GetTeamProjectCollection(collection.Guid).GetService<IProcessTemplates>();
             TemplateHeader[] templateHeaders = processTemplates.TemplateHeaders();
@@ -154,6 +153,9 @@ namespace SoftwareForge.TfsService
                 _tfsConfigurationServer.Authenticate();
 
             TfsTeamProjectCollection tpc = _tfsConfigurationServer.GetTeamProjectCollection(teamCollectionGuid);
+            if (tpc == null)
+                throw new Exception("GetTeamProjectsOfTeamCollection: Could not find TeamCollection with Guid: " + teamCollectionGuid.ToString());
+
             WorkItemStore store = tpc.GetService<WorkItemStore>();
             
             ProjectCollection projects = store.Projects;
