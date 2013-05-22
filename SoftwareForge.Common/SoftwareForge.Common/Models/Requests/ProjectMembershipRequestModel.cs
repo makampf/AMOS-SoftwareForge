@@ -28,5 +28,6 @@ namespace SoftwareForge.Common.Models.Requests
     {
         public Guid ProjectGuid { get; set; }
         public String Username { get; set; }
+        public  UserRole UserRole { get; set; }
     }
 }
