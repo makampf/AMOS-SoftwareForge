@@ -22,18 +22,21 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 
 namespace SoftwareForge.Common.Models
 {
     /// <summary>
     /// A Tfs Project model.
     /// </summary>
+    [DataContract]
     public class Project
     {
 
         /// <summary>
         /// The Name of the Project.
         /// </summary>
+        [DataMember]
         public string Name { get; set; }
 
 
@@ -41,33 +44,39 @@ namespace SoftwareForge.Common.Models
         /// The Description of the Project.
         /// </summary>
         [DataType(DataType.MultilineText)]
+        [DataMember]
         public string Description { get; set; }
 
         /// <summary>
         /// The id of the Project.
         /// </summary>
-       
+       [DataMember]
         public int Id { get; set; }
 
         /// <summary>
         /// The Guid of the Project.
         /// </summary>
         [Key]
+        [DataMember]
         public Guid Guid { get; set; }
 
         /// <summary>
         /// The list with all users that are member of this project.
         /// </summary>
         [NotMapped]
+        [DataMember]
         public ICollection<User> Users { get; set; }
 
         /// <summary>
         /// The teamCollection it is part of
         /// </summary>
+        [DataMember]
         public Guid TeamCollectionGuid { get; set; }
 
+        [DataMember]
         public int ProjectTypeValue { get; set; }
 
+        [DataMember]
         public ProjectType ProjectType
         {
             get { return (ProjectType)ProjectTypeValue; }
@@ -76,10 +85,7 @@ namespace SoftwareForge.Common.Models
 
 
 
-        public Project()
-        {
-            
-        }
+        public Project() {}
 
         public Project(string name, string description, int id, Guid guid, Guid teamCollectionGuid, ProjectType projectType)
         {

@@ -212,6 +212,9 @@ namespace SoftwareForge.TfsService
             if (HasAuthenticated == false)
                 _tfsConfigurationServer.Authenticate();
 
+            if (collectionName == null)
+                throw new ArgumentNullException(collectionName);
+
             List<TeamCollection> teamCollections = GetTeamCollections();
             if (teamCollections.Any(a => a.Name == collectionName))
                 throw new Exception("A collaction with name " + collectionName + " already exists!");
