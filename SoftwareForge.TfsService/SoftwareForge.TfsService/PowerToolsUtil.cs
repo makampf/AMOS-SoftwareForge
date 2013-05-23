@@ -55,11 +55,6 @@ namespace SoftwareForge.TfsService
                 throw new Exception("Could not create process");
 
             p.WaitForExit();
-
-          
-
-
         }
-
     }
 }

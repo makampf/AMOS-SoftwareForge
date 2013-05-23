@@ -43,5 +43,17 @@ namespace SoftwareForge.Common.Models
         [Key, ForeignKey("User"), Column(Order = 1)]
         public int User_Id { get; set; }
         public virtual User User { get; set; }
+
+        /// <summary>
+        /// The role of the user for this project
+        /// </summary>
+        public int UserRoleValue { get; set; }
+        public UserRole UserRole
+        {
+            get { return (UserRole)UserRoleValue; }
+            set { UserRoleValue = (int)value; }
+        }
+
+
     }
 }

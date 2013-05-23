@@ -19,8 +19,11 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Security.Principal;
+using System.Web;
 using System.Web.Http;
 using SoftwareForge.Common.Models;
+using SoftwareForge.Common.Models.Requests;
 using SoftwareForge.DbService;
 using SoftwareForge.TfsService;
 
@@ -44,26 +47,16 @@ namespace SoftwareForge.WebApi.Controllers
         /// <returns> new TfsController</returns>
         private static TfsController CreateTfsController()
         {
-                 return new TfsController(new Uri(Properties.Settings.Default.TfsServerUri), Properties.Settings.Default.DbConnectionString);
+            return new TfsController(new Uri(Properties.Settings.Default.TfsServerUri), Properties.Settings.Default.DbConnectionString);
         }
 
-        #region GET
-        ///// <summary>
-        ///// Get all projects of a TeamCollection
-        ///// </summary>
-        ///// <param name="teamCollectionGuid">guid of teamCollection</param>
-        ///// <returns>A list of projects</returns>
-        //[HttpGet]
-        //public List<Project> GetTeamProjectsOfTeamCollection(Guid teamCollectionGuid)
-        //{
-        //    return TfsController.GetTeamProjectsOfTeamCollection(teamCollectionGuid);
-        //}
- 
 
+
+        #region GET
         /// <summary>
         /// Get a project by guid
         /// </summary>
-        /// <param name="projectGuid">the guid of the project</param>
+        /// <param name="guid">the guid of the project</param>
         /// <returns>A project</returns>
         [HttpGet]
         public Project GetTeamProject(Guid guid)
@@ -74,19 +67,23 @@ namespace SoftwareForge.WebApi.Controllers
 
 
 
+        
+        #region POST
         /// <summary>
         /// Create a new project
         /// </summary>
         /// <param name="project">project to create</param>
         /// <returns>the newly create project</returns>
-        #region POST
         [HttpPost]
         public Project CreateProject([FromBody] Project project)
         {
             List<String> templates = TfsController.GetTemplatesInCollection(project.TeamCollectionGuid);
+            WindowsIdentity identity = (WindowsIdentity)HttpContext.Current.User.Identity;
             if (templates.Count< 1) 
                 throw new ArgumentException("The project given is in a collection that has no templates! ");
-            return TfsController.CreateTeamProjectInTeamCollection(project.TeamCollectionGuid, project.Name, project.Description, project.ProjectType, templates[0]);
+            Project createdProject = TfsController.CreateTeamProjectInTeamCollection(project.TeamCollectionGuid, project.Name, project.Description, project.ProjectType, templates[0]);
+            new ProjectsDao().ProcessMembershipRequest(new ProjectMembershipRequestModel{ProjectGuid = createdProject.Guid,Username = identity.Name,UserRole = UserRole.ProjectOwner});
+            return createdProject;
         }
         #endregion
 

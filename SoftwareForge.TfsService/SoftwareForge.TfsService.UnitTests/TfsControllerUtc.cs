@@ -44,17 +44,11 @@ namespace SoftwareForge.TfsService.UnitTests
         public void TestInit()
         {
             _tfsController = new TfsController(new Uri(Properties.Settings.Default.TfsTestServerUri), Properties.Settings.Default.DbTestConnectionString);
-        }
-
-        /// <summary>
-        /// Test if init was successful
-        /// </summary>
-        [TestMethod]
-        public void TestInitTfsConnection()
-        {
             Assert.IsNotNull(_tfsController);
             Assert.IsTrue(_tfsController.HasAuthenticated);
         }
+
+        
 
 
         /// <summary>
@@ -70,9 +64,19 @@ namespace SoftwareForge.TfsService.UnitTests
             {
                 Assert.AreNotEqual(new Guid(), teamCollection.Guid);
                 Assert.IsFalse(String.IsNullOrEmpty(teamCollection.Name));
+                Assert.IsNotNull(teamCollection.Projects);
             }
         }
 
+
+        /// <summary>
+        /// Test the GetTeamProjectsOfTeamCollection method.
+        /// </summary>
+        [TestMethod, ExpectedException(typeof(Exception))]
+        public void TestGetProjectsOfTeamCollectionGuidWithInvalidGuid()
+        {
+            _tfsController.GetTeamProjectsOfTeamCollection(new Guid());
+        }
 
         /// <summary>
         /// Test the GetTeamProjectsOfTeamCollection method.
@@ -202,7 +206,7 @@ namespace SoftwareForge.TfsService.UnitTests
             List<String> templates = _tfsController.GetTemplatesInCollection(teamCollection.Guid);
             Assert.IsNotNull(templates);
             Assert.IsTrue(templates.Count > 0);
-            _tfsController.CreateTeamProjectInTeamCollection(teamCollection.Guid, TestProjectName, "Description", templates[0]);
+            _tfsController.CreateTeamProjectInTeamCollection(teamCollection.Guid, TestProjectName, "Description", ProjectType.Application, templates[0] );
             
             _tfsController.RemoveTeamCollection(teamCollection.Guid);
         }

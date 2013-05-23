@@ -19,8 +19,10 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Http.Headers;
+using System.IO;
+using System.Net;
+using System.Runtime.Serialization.Json;
+using System.Text;
 using SoftwareForge.Common.Models;
 using SoftwareForge.Common.Models.Requests;
 
@@ -31,37 +33,64 @@ namespace SoftwareForge.Mvc.WebApiClient
     /// </summary>
     public static class TeamCollectionsClient
     {
-        private static readonly Lazy<HttpClient> _client = new Lazy<HttpClient>(CreateHttpClient);
-        private static HttpClient Client { get { return _client.Value; } }
-        /// <summary>
-        /// Initializes a new HttpClient.
-        /// </summary>
-        /// <returns>The new HttpClient.</returns>
-        public static HttpClient CreateHttpClient()
+        
+        private static WebRequest CreateGetRequest(String url)
         {
-            HttpClient client = new HttpClient { BaseAddress = new Uri(Properties.Settings.Default.WebApiUri), Timeout = new TimeSpan(0,5,0) };
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
 
-            // Add an Accept header for JSON format.
-            client.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue("application/json"));
-            return client;
+            httpWebRequest.PreAuthenticate = true;
+            httpWebRequest.UseDefaultCredentials = false;
+            httpWebRequest.Credentials = CredentialCache.DefaultCredentials;
+            httpWebRequest.Timeout = 600000;
+
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "GET";
+
+            return httpWebRequest;
         }
+
+        private static WebRequest CreatePostRequest(string url)
+        {
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+
+            httpWebRequest.PreAuthenticate = true;
+            httpWebRequest.UseDefaultCredentials = false;
+            httpWebRequest.Credentials = CredentialCache.DefaultCredentials;
+            httpWebRequest.Timeout = 600000;
+            
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "POST";
+
+            return httpWebRequest;
+        }
+
+
         /// <summary>
         /// Shows already created Team Collections.
         /// </summary>
         /// <returns>all Team Collections</returns>
         public static IEnumerable<TeamCollection> GetTeamCollections()
         {
-            // List all teamcollections.
-            HttpResponseMessage response = Client.GetAsync("api/TeamCollections").Result;  // Blocking call!
-            if (response.IsSuccessStatusCode)
+            String url = Properties.Settings.Default.WebApiUri + "api/TeamCollections";
+            var httpWebRequest = CreateGetRequest(url);
+           
+            using (HttpWebResponse httpResponse = httpWebRequest.GetResponse() as HttpWebResponse)
             {
-                // Parse the response body. Blocking!
-                return response.Content.ReadAsAsync<IEnumerable<TeamCollection>>().Result;
+                if (httpResponse != null)
+                {
+                    var stream = httpResponse.GetResponseStream();
+                    if (stream != null)
+                    {
+                        DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(IEnumerable<TeamCollection>));
+                        return (IEnumerable<TeamCollection>) ser.ReadObject(stream);
+                    }
+                }
+                return null;
             }
-            throw new HttpRequestException(response.StatusCode + ": " + response.ReasonPhrase);
-
         }
+
+
+
         /// <summary>
         /// Creates a new TeamCollection.
         /// </summary>
@@ -69,47 +98,126 @@ namespace SoftwareForge.Mvc.WebApiClient
         /// <returns>The created Team Collection</returns>
         public static TeamCollection CreateTeamCollection(string name)
         {
-          
+            String url = Properties.Settings.Default.WebApiUri + "api/TeamCollections";
+            var httpWebRequest = CreatePostRequest(url);
 
-            // List all products.
-            HttpResponseMessage response = Client.PostAsJsonAsync("api/TeamCollections", name).Result;  // Blocking call!
-            if (response.IsSuccessStatusCode)
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
             {
-                // Parse the response body. Blocking!
-                return response.Content.ReadAsAsync<TeamCollection>().Result;
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(String));
+                MemoryStream ms = new MemoryStream();
+                ser.WriteObject(ms, name);
+                String json = Encoding.UTF8.GetString(ms.ToArray());
+
+                streamWriter.Write(json);
+                streamWriter.Flush();
             }
 
-            throw new HttpRequestException(response.StatusCode + ": " + response.ReasonPhrase);
-
-        }
-
-        public static bool JoinProject(Guid projectGuid, string username)
-        {
-            return PostProjectMembershipRequest(projectGuid, username);
-        }
-
-        public static TeamCollection GetTeamCollection(Guid teamCollectionGuid)
-        {
-            // Get teamcollection.
-            HttpResponseMessage response = Client.GetAsync("api/TeamCollections?guid=" + teamCollectionGuid).Result;  // Blocking call!
-            if (response.IsSuccessStatusCode)
+            using (HttpWebResponse httpResponse = httpWebRequest.GetResponse() as HttpWebResponse)
             {
-                // Parse the response body. Blocking!
-                return response.Content.ReadAsAsync<TeamCollection>().Result;
+                if (httpResponse != null)
+                {
+                    var responseStream = httpResponse.GetResponseStream();
+                    if (responseStream != null)
+                    {
+                        DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(TeamCollection));
+                        return (TeamCollection)ser.ReadObject(responseStream);
+                    }
+                }
+                return null;
             }
-            throw new HttpRequestException(response.StatusCode + ": " + response.ReasonPhrase);
         }
+
+        private static bool PostProjectMembershipRequest(Guid projectGuid, string username)
+        {
+            ProjectMembershipRequestModel joinProjectRequestModel = new ProjectMembershipRequestModel
+                {
+                    ProjectGuid = projectGuid,
+                    Username = username,
+                    UserRole = UserRole.Reader
+                };
+
+            string url = Properties.Settings.Default.WebApiUri + "api/ProjectMembership";
+            var httpWebRequest = CreatePostRequest(url);
+
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(ProjectMembershipRequestModel));
+                MemoryStream ms = new MemoryStream();
+                ser.WriteObject(ms, joinProjectRequestModel);
+                String json = Encoding.UTF8.GetString(ms.ToArray());
+
+                streamWriter.Write(json);
+                streamWriter.Flush();
+            }
+
+            using (HttpWebResponse httpResponse = httpWebRequest.GetResponse() as HttpWebResponse)
+            {
+                if (httpResponse != null)
+                {
+                    var responseStream = httpResponse.GetResponseStream();
+                    if (responseStream != null)
+                    {
+                        DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(bool));
+                        return (bool)ser.ReadObject(responseStream);
+                    }
+                }
+                return false;
+            }
+        }
+
+        public static Project GetTeamProject(Guid teamProjectGuid)
+        {
+            String url =  Properties.Settings.Default.WebApiUri + "api/TeamProjects?guid=" + teamProjectGuid;
+            var httpWebRequest = CreateGetRequest(url);
+
+            using (HttpWebResponse httpResponse = httpWebRequest.GetResponse() as HttpWebResponse)
+            {
+                if (httpResponse != null)
+                {
+                    var stream = httpResponse.GetResponseStream();
+                    if (stream != null)
+                    {
+                        DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Project));
+                        return (Project)ser.ReadObject(stream);
+                    }
+                }
+                return null;
+            }
+        }
+
+
+
+
 
         public static Project CreateProject(Project project)
         {
-            HttpResponseMessage response = Client.PostAsJsonAsync("api/TeamProjects", project).Result;  // Blocking call!
-            if (response.IsSuccessStatusCode)
+            String url = Properties.Settings.Default.WebApiUri + "api/TeamProjects";
+            var httpWebRequest = CreatePostRequest(url);
+
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
             {
-                // Parse the response body. Blocking!
-                return response.Content.ReadAsAsync<Project>().Result;
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Project));
+                MemoryStream ms = new MemoryStream();
+                ser.WriteObject(ms, project);
+                String json = Encoding.UTF8.GetString(ms.ToArray());
+
+                streamWriter.Write(json);
+                streamWriter.Flush();
             }
 
-            throw new HttpRequestException(response.StatusCode + ": " + response.ReasonPhrase);
+            using (HttpWebResponse httpResponse = httpWebRequest.GetResponse() as HttpWebResponse)
+            {
+                if (httpResponse != null)
+                {
+                    var responseStream = httpResponse.GetResponseStream();
+                    if (responseStream != null)
+                    {
+                        DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Project));
+                        return (Project)ser.ReadObject(responseStream);
+                    }
+                }
+                return null;
+            }
         }
 
         /// <summary>
@@ -123,37 +231,10 @@ namespace SoftwareForge.Mvc.WebApiClient
             return PostProjectMembershipRequest(projectGuid, username);
         }
 
-        public static Project GetTeamProject(Guid teamProjectGuid)
+        public static bool JoinProject(Guid projectGuid, string username)
         {
-            // Get teamcollection.
-            HttpResponseMessage response = Client.GetAsync("api/TeamProjects?guid=" + teamProjectGuid).Result;  // Blocking call!
-            if (response.IsSuccessStatusCode)
-            {
-                // Parse the response body. Blocking!
-                return response.Content.ReadAsAsync<Project>().Result;
-            }
-            throw new HttpRequestException(response.StatusCode + ": " + response.ReasonPhrase);
+            return PostProjectMembershipRequest(projectGuid, username);
         }
 
-        private static bool PostProjectMembershipRequest(Guid projectGuid, string username)
-        {
-
-            ProjectMembershipRequestModel joinProjectRequestModel = new ProjectMembershipRequestModel
-                {
-                    ProjectGuid = projectGuid,
-                    Username = username
-                };
-
-            // Post a membership request
-            HttpResponseMessage response = Client.PostAsJsonAsync("api/ProjectMembership", joinProjectRequestModel).Result;
-                // Blocking call!
-            if (response.IsSuccessStatusCode)
-            {
-                // Parse the response body. Blocking!
-                return response.Content.ReadAsAsync<bool>().Result;
-            }
-
-            throw new HttpRequestException(response.StatusCode + ": " + response.ReasonPhrase);
-        }
     }
 }

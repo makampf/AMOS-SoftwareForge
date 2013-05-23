@@ -71,6 +71,7 @@ namespace SoftwareForge.DbService
         {
             Project project = _softwareForgeDbContext.Projects.Single(t => t.Guid == requestModel.ProjectGuid);
             User user = _softwareForgeDbContext.Users.SingleOrDefault(t => t.Username == requestModel.Username);
+            UserRole role = requestModel.UserRole;
             if (user == null)
             {
                 user = new User {Username = requestModel.Username};
@@ -89,7 +90,8 @@ namespace SoftwareForge.DbService
                         Project = project,
                         Project_Guid = project.Guid,
                         User = user,
-                        User_Id = user.Id
+                        User_Id = user.Id,
+                        UserRole = role
                     });
 
             }

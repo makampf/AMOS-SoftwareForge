@@ -20,30 +20,33 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace SoftwareForge.Common.Models
 {
     /// <summary>
     /// A Tfs TeamCollection Model.
     /// </summary>
+    [DataContract]
     public class TeamCollection
     {
-
         /// <summary>
         /// The Name of the TeamCollection.
         /// </summary>
         [Key]
+        [DataMember]
         public string Name { get; set; }
 
         /// <summary>
         /// The Guid of the TeamCollection.
         /// </summary>
+        [DataMember]
         public Guid Guid { get; set; }
 
         /// <summary>
         /// The Projects of the TeamCollection.
         /// </summary>
+        [DataMember]
         public List<Project> Projects { get; set; }
-       
     }
 }

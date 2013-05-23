@@ -19,8 +19,12 @@
  -->
 @using SoftwareForge.Common.Models
 @model List<Project>
-    <h3>Your projects:<br/></h3>             
-        @foreach (Project project in Model)
-        {
-             @Html.Partial("ProjectPreviewPartial",project)
-        }    
+<h3>Your projects:<br/></h3>
+<ul>             
+    @foreach (Project project in Model)
+    {
+        <li>       
+        @Html.Partial("ProjectPreviewPartial",project)
+        </li>
+    } 
+</ul>   

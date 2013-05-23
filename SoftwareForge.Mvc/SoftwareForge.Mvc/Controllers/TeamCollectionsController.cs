@@ -18,10 +18,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.Net.Http;
 using System.Web.Mvc;
-using SoftwareForge.Common.Models;
 using SoftwareForge.Mvc.WebApiClient;
 
 namespace SoftwareForge.Mvc.Controllers
@@ -48,30 +45,19 @@ namespace SoftwareForge.Mvc.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult CreateTeamCollection(FormCollection collection)
         {
-            try
-            {
-
                 ValueProviderResult name = collection.GetValue("Name");
                 if (name == null)
                 {
                     return RedirectToAction("Index", "Home");
                 }
-                try
-                {
-                    TeamCollectionsClient.CreateTeamCollection(name.AttemptedValue);
-                }
-                catch (HttpRequestException)
-                {
-                    //TODO error
-                    throw;
-                }
+               
+                TeamCollectionsClient.CreateTeamCollection(name.AttemptedValue);
+                
+                
         
                 return RedirectToAction("Index","Home");
-            }
-            catch
-            {
-                return View();
-            }
+            
+           
         }
 
 

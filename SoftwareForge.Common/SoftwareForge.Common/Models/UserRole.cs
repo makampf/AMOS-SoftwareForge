@@ -17,16 +17,13 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-using System.Web;
-using System.Web.Mvc;
 
-namespace SoftwareForge.Mvc
+namespace SoftwareForge.Common.Models
 {
-    public class FilterConfig
+    public enum UserRole
     {
-        public static void RegisterGlobalFilters(GlobalFilterCollection filters)
-        {
-            filters.Add(new HandleErrorAttribute());
-        }
+        Reader,
+        Contributor,
+        ProjectOwner
     }
 }

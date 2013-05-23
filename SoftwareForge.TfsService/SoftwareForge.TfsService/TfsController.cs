@@ -40,7 +40,6 @@ namespace SoftwareForge.TfsService
     {
         private TfsConfigurationServer _tfsConfigurationServer;
         private readonly TfsDbController _tfsDbController;
-        private readonly Uri _tfsUri;
 
 
         /// <summary>
@@ -59,15 +58,15 @@ namespace SoftwareForge.TfsService
             
            _tfsConfigurationServer = new TfsConfigurationServer(tfsUri);
            _tfsConfigurationServer.Authenticate();
-            _tfsUri = tfsUri;
-
             _tfsDbController = new TfsDbController(connectionString);
         }
 
-
+        /// <summary>
+        /// Method to reconnect to the tfs, so the cache will be updated. Sometimes must be called multiple times.
+        /// </summary>
         private void ForceTfsCacheClean()
         {
-            _tfsConfigurationServer = new TfsConfigurationServer(_tfsUri);
+            _tfsConfigurationServer = new TfsConfigurationServer(_tfsConfigurationServer.Uri);
             _tfsConfigurationServer.Authenticate();
         }
 
@@ -81,6 +80,8 @@ namespace SoftwareForge.TfsService
                 _tfsConfigurationServer.Authenticate();
 
             TeamCollection collection = GetTeamCollection(teamCollectionGuid);
+            if (collection == null)
+                throw new Exception("GetTemplatesInCollection: Could not find TeamCollection with Guid: " + teamCollectionGuid.ToString());
 
             IProcessTemplates processTemplates = _tfsConfigurationServer.GetTeamProjectCollection(collection.Guid).GetService<IProcessTemplates>();
             TemplateHeader[] templateHeaders = processTemplates.TemplateHeaders();
@@ -152,6 +153,9 @@ namespace SoftwareForge.TfsService
                 _tfsConfigurationServer.Authenticate();
 
             TfsTeamProjectCollection tpc = _tfsConfigurationServer.GetTeamProjectCollection(teamCollectionGuid);
+            if (tpc == null)
+                throw new Exception("GetTeamProjectsOfTeamCollection: Could not find TeamCollection with Guid: " + teamCollectionGuid.ToString());
+
             WorkItemStore store = tpc.GetService<WorkItemStore>();
             
             ProjectCollection projects = store.Projects;
@@ -172,7 +176,13 @@ namespace SoftwareForge.TfsService
             return result;
         }
 
-        public Microsoft.TeamFoundation.WorkItemTracking.Client.Project GetTfsProjectByName(string projectName, Guid teamCollectionGuid)
+        /// <summary>
+        /// Gets the Project with the projectName in the collection with the teamCollectionGuid.
+        /// </summary>
+        /// <param name="projectName">the name of the Project</param>
+        /// <param name="teamCollectionGuid">the guid of the TeamCollection</param>
+        /// <returns>The Project if found, otherwise null</returns>
+        private Microsoft.TeamFoundation.WorkItemTracking.Client.Project GetTfsProjectByName(string projectName, Guid teamCollectionGuid)
         {
 
             if (HasAuthenticated == false)
@@ -201,6 +211,9 @@ namespace SoftwareForge.TfsService
         {
             if (HasAuthenticated == false)
                 _tfsConfigurationServer.Authenticate();
+
+            if (collectionName == null)
+                throw new ArgumentNullException(collectionName);
 
             List<TeamCollection> teamCollections = GetTeamCollections();
             if (teamCollections.Any(a => a.Name == collectionName))
@@ -294,7 +307,9 @@ namespace SoftwareForge.TfsService
         /// </summary>
         /// <param name="teamCollectionGuid">the TeamProjectCollection Guid in which the project will be created</param>
         /// <param name="projectName">the TeamProject name</param>
+        /// <param name="projectType">the type of the project</param>
         /// <param name="templateName">the Template, which should be used</param>
+        /// <param name="projectDescription">the description of the project</param>
         public Project CreateTeamProjectInTeamCollection(Guid teamCollectionGuid, String projectName, string projectDescription, ProjectType projectType, String templateName)
         {
             if (HasAuthenticated == false)
@@ -317,6 +332,7 @@ namespace SoftwareForge.TfsService
 
             Microsoft.TeamFoundation.WorkItemTracking.Client.Project tfsProject = null;
 
+            //TODO: Ugly :)
             int getProjectTrys = 0;
             while (tfsProject == null && getProjectTrys < 30)
             {
@@ -342,18 +358,6 @@ namespace SoftwareForge.TfsService
                     Name = projectName,
                     TeamCollectionGuid = teamCollectionGuid
                 });
-
-        }
-
-
-        /// <summary>
-        /// Get a specific project 
-        /// </summary>
-        /// <param name="projectGuid"></param>
-        /// <returns></returns>
-        public Project GetTeamProject(Guid projectGuid)
-        {
-            throw new NotImplementedException();
         }
     }
 }
