@@ -100,6 +100,10 @@ namespace SoftwareForge.WebApi.Controllers
         [HttpPut]
         public bool RenameProject([FromBody] RenameProjectModel rpm)
         {
+            WindowsIdentity identity = (WindowsIdentity)HttpContext.Current.User.Identity;
+            if (ProjectsDao.GetMembershipRoleOfUserInProject(rpm.Guid, identity.Name) != UserRole.ProjectOwner)
+                throw new Exception("Only a project owner can rename a project!");
+
             return ProjectsDao.RenameProject(rpm.Guid, rpm.NewName);
         }
         #endregion

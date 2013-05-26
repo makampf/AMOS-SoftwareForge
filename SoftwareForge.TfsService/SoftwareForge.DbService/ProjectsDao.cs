@@ -126,6 +126,22 @@ namespace SoftwareForge.DbService
         }
 
         /// <summary>
+        /// Gets the role of a user in a project
+        /// </summary>
+        /// <param name="projectGuid">The guid of the project</param>
+        /// <param name="username">The username</param>
+        /// <returns></returns>
+        public static UserRole GetMembershipRoleOfUserInProject(Guid projectGuid, String username)
+        {
+            var singleOrDefault = SoftwareForgeDbContext.ProjectUsers.SingleOrDefault(t => (t.ProjectGuid == projectGuid && t.User.Username == username));
+            if (singleOrDefault == null)
+                return UserRole.Reader;
+
+            return singleOrDefault.UserRole;
+        }
+
+
+        /// <summary>
         /// Get the users of a project
         /// </summary>
         /// <param name="guid">guid of the project</param>
