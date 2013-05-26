@@ -37,7 +37,7 @@ namespace SoftwareForge.Mvc.Controllers
             {
                 new SelectListItem { Value = ProjectType.Application.ToString(), Text = ProjectType.Application.ToString() },
                 new SelectListItem { Value = ProjectType.Library.ToString(), Text =ProjectType.Library.ToString() },
-                new SelectListItem { Value = ProjectType.Nonsoftware.ToString(), Text = ProjectType.Nonsoftware.ToString() },
+                new SelectListItem { Value = ProjectType.Nonsoftware.ToString(), Text = ProjectType.Nonsoftware.ToString() }
             };
             ViewData["ProjectTypes"] = projectTypes;
             return View(new Project("", "", 0, new Guid(), teamCollectionGuid, ProjectType.Application));
@@ -55,7 +55,6 @@ namespace SoftwareForge.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 TeamCollectionsClient.CreateProject(project);
-                return RedirectToAction("Index", "Home");
             }
 
             return RedirectToAction("Index","Home");
@@ -64,23 +63,22 @@ namespace SoftwareForge.Mvc.Controllers
         /// <summary>
         /// Show the details page for a project
         /// </summary>
-        /// <param name="guid"></param>
-        /// <returns></returns>
+        /// <param name="guid">The guid of the project</param>
+        /// <returns>The details page view</returns>
         public ActionResult ProjectDetailsPage(Guid guid)
         {
-            Project teamCollections = TeamCollectionsClient.GetTeamProject(guid);
-            return View(teamCollections);
+            Project project = TeamCollectionsClient.GetTeamProject(guid);
+            return View(project);
         }
 
         /// <summary>
         /// Join a project
         /// </summary>
-        /// <param name="guid">guid of project</param>
-        /// <param name="username">username</param>
+        /// <param name="guid">The guid of project</param>
+        /// <param name="username">The username</param>
         /// <returns>Redirects to overview page</returns>
         public ActionResult JoinProject(Guid guid, String username)
         {
-
             TeamCollectionsClient.JoinProject(guid, username);
             return RedirectToAction("ProjectDetailsPage",new {guid});
 
@@ -96,6 +94,33 @@ namespace SoftwareForge.Mvc.Controllers
         {
             TeamCollectionsClient.LeaveProject(guid, username);
             return RedirectToAction("ProjectDetailsPage", new { guid });
+        }
+
+        /// <summary>
+        /// Shows the page, where user can rename a project
+        /// </summary>
+        /// <param name="guid">The guid of the project</param>
+        /// <returns>The rename page view</returns>
+        public ActionResult RenameProjectPage(Guid guid)
+        {
+            Project project = TeamCollectionsClient.GetTeamProject(guid);
+            return View(project);
+        }
+
+        /// <summary>
+        /// Renames the project
+        /// </summary>
+        /// <param name="project"></param>
+        /// <returns></returns>
+        [HttpPostAttribute]
+        [ValidateAntiForgeryTokenAttribute]
+        public ActionResult RenameProject(Project project)
+        {
+            if (ModelState.IsValid)
+            {
+                TeamCollectionsClient.RenameProject(project.Guid, project.Name);
+            }
+            return RedirectToAction("ProjectDetailsPage", new { project.Guid });
         }
     }
 }

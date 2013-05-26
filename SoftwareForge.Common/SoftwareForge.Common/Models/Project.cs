@@ -32,13 +32,17 @@ namespace SoftwareForge.Common.Models
     [DataContract]
     public class Project
     {
-
         /// <summary>
-        /// The Name of the Project.
+        /// The Name of the Project in SoftwareForge.
         /// </summary>
         [DataMember]
         public string Name { get; set; }
 
+        /// <summary>
+        /// The Name of the Project in TFS.
+        /// </summary>
+        [DataMember]
+        public string TfsName { get; set; }
 
         /// <summary>
         /// The Description of the Project.
@@ -50,7 +54,7 @@ namespace SoftwareForge.Common.Models
         /// <summary>
         /// The id of the Project.
         /// </summary>
-       [DataMember]
+        [DataMember]
         public int Id { get; set; }
 
         /// <summary>
@@ -90,6 +94,7 @@ namespace SoftwareForge.Common.Models
         public Project(string name, string description, int id, Guid guid, Guid teamCollectionGuid, ProjectType projectType)
         {
             Name = name;
+            TfsName = name;
             Description = description;
             Id = id;
             Guid = guid;

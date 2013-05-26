@@ -61,7 +61,7 @@ namespace SoftwareForge.WebApi.Controllers
         [HttpGet]
         public Project GetTeamProject(Guid guid)
         {
-            return new ProjectsDao().Get(guid);
+            return ProjectsDao.Get(guid);
         }
         #endregion
 
@@ -82,16 +82,25 @@ namespace SoftwareForge.WebApi.Controllers
             if (templates.Count< 1) 
                 throw new ArgumentException("The project given is in a collection that has no templates! ");
             Project createdProject = TfsController.CreateTeamProjectInTeamCollection(project.TeamCollectionGuid, project.Name, project.Description, project.ProjectType, templates[0]);
-            new ProjectsDao().ProcessMembershipRequest(new ProjectMembershipRequestModel{ProjectGuid = createdProject.Guid,Username = identity.Name,UserRole = UserRole.ProjectOwner});
+            ProjectsDao.ProcessMembershipRequest(new ProjectMembershipRequestModel { ProjectGuid = createdProject.Guid, Username = identity.Name, UserRole = UserRole.ProjectOwner });
             return createdProject;
         }
         #endregion
 
 
 
-        //#region PUT
-
-        //#endregion
+        #region PUT
+        /// <summary>
+        /// Renames a project
+        /// </summary>
+        /// <param name="rpm">rename project model</param>
+        /// <returns>true if succesful, false in error case</returns>
+        [HttpPut]
+        public bool RenameProject([FromBody] RenameProjectModel rpm)
+        {
+            return ProjectsDao.RenameProject(rpm.Guid, rpm.NewName);
+        }
+        #endregion
         
 
 

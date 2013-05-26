@@ -34,35 +34,19 @@ namespace SoftwareForge.Mvc.WebApiClient
     public static class TeamCollectionsClient
     {
         
-        private static WebRequest CreateGetRequest(String url)
+        private static WebRequest CreateRequest(String url)
         {
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-
             httpWebRequest.PreAuthenticate = true;
             httpWebRequest.UseDefaultCredentials = false;
             httpWebRequest.Credentials = CredentialCache.DefaultCredentials;
             httpWebRequest.Timeout = 600000;
-
             httpWebRequest.ContentType = "application/json";
-            httpWebRequest.Method = "GET";
 
             return httpWebRequest;
         }
 
-        private static WebRequest CreatePostRequest(string url)
-        {
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-
-            httpWebRequest.PreAuthenticate = true;
-            httpWebRequest.UseDefaultCredentials = false;
-            httpWebRequest.Credentials = CredentialCache.DefaultCredentials;
-            httpWebRequest.Timeout = 600000;
-            
-            httpWebRequest.ContentType = "application/json";
-            httpWebRequest.Method = "POST";
-
-            return httpWebRequest;
-        }
+     
 
 
         /// <summary>
@@ -72,7 +56,8 @@ namespace SoftwareForge.Mvc.WebApiClient
         public static IEnumerable<TeamCollection> GetTeamCollections()
         {
             String url = Properties.Settings.Default.WebApiUri + "api/TeamCollections";
-            var httpWebRequest = CreateGetRequest(url);
+            var httpWebRequest = CreateRequest(url);
+            httpWebRequest.Method = "GET";
            
             using (HttpWebResponse httpResponse = httpWebRequest.GetResponse() as HttpWebResponse)
             {
@@ -99,7 +84,8 @@ namespace SoftwareForge.Mvc.WebApiClient
         public static TeamCollection CreateTeamCollection(string name)
         {
             String url = Properties.Settings.Default.WebApiUri + "api/TeamCollections";
-            var httpWebRequest = CreatePostRequest(url);
+            var httpWebRequest = CreateRequest(url);
+            httpWebRequest.Method = "POST";
 
             using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
             {
@@ -137,7 +123,8 @@ namespace SoftwareForge.Mvc.WebApiClient
                 };
 
             string url = Properties.Settings.Default.WebApiUri + "api/ProjectMembership";
-            var httpWebRequest = CreatePostRequest(url);
+            var httpWebRequest = CreateRequest(url);
+            httpWebRequest.Method = "POST";
 
             using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
             {
@@ -168,7 +155,8 @@ namespace SoftwareForge.Mvc.WebApiClient
         public static Project GetTeamProject(Guid teamProjectGuid)
         {
             String url =  Properties.Settings.Default.WebApiUri + "api/TeamProjects?guid=" + teamProjectGuid;
-            var httpWebRequest = CreateGetRequest(url);
+            var httpWebRequest = CreateRequest(url);
+            httpWebRequest.Method = "GET";
 
             using (HttpWebResponse httpResponse = httpWebRequest.GetResponse() as HttpWebResponse)
             {
@@ -192,7 +180,8 @@ namespace SoftwareForge.Mvc.WebApiClient
         public static Project CreateProject(Project project)
         {
             String url = Properties.Settings.Default.WebApiUri + "api/TeamProjects";
-            var httpWebRequest = CreatePostRequest(url);
+            var httpWebRequest = CreateRequest(url);
+            httpWebRequest.Method = "POST";
 
             using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
             {
@@ -220,21 +209,70 @@ namespace SoftwareForge.Mvc.WebApiClient
             }
         }
 
+
         /// <summary>
-        /// Leave a Project
+        /// Rename a project
+        /// </summary>
+        /// <param name="guid">The projectGuid to rename</param>
+        /// <param name="newName">The new name of the project</param>
+        /// <returns>True if successful, false in error case</returns>
+        public static bool RenameProject(Guid guid, string newName)
+        {
+            RenameProjectModel rpm = new RenameProjectModel {Guid = guid, NewName = newName};
+
+            String url = Properties.Settings.Default.WebApiUri + "api/TeamProjects";
+            var httpWebRequest = CreateRequest(url);
+            httpWebRequest.Method = "PUT";
+
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(RenameProjectModel));
+                MemoryStream ms = new MemoryStream();
+                ser.WriteObject(ms, rpm);
+                String json = Encoding.UTF8.GetString(ms.ToArray());
+
+                streamWriter.Write(json);
+                streamWriter.Flush();
+            }
+
+            using (HttpWebResponse httpResponse = httpWebRequest.GetResponse() as HttpWebResponse)
+            {
+                if (httpResponse != null)
+                {
+                    var responseStream = httpResponse.GetResponseStream();
+                    if (responseStream != null)
+                    {
+                        DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(bool));
+                        return (bool)ser.ReadObject(responseStream);
+                    }
+                }
+                return false;
+            }
+        }
+
+
+        /// <summary>
+        /// Leave a Project.
         /// </summary>
         /// <param name="projectGuid">The projectGuid of the project to leave</param>
         /// <param name="username">The user that wants to leave</param>
-        /// <returns>true if successful, false in error case</returns>
+        /// <returns>True if successful, false in error case</returns>
         public static bool LeaveProject(Guid projectGuid, string username)
         {
             return PostProjectMembershipRequest(projectGuid, username);
         }
 
+        /// <summary>
+        /// Join a Project.
+        /// </summary>
+        /// <param name="projectGuid">The projectGuid of the project to join</param>
+        /// <param name="username">The user that wants to join</param>
+        /// <returns>True if successful, false in error case</returns>
         public static bool JoinProject(Guid projectGuid, string username)
         {
             return PostProjectMembershipRequest(projectGuid, username);
         }
 
+       
     }
 }

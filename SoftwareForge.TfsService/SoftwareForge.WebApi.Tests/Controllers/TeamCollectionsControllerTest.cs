@@ -19,6 +19,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SoftwareForge.Common.Models;
 using SoftwareForge.WebApi.Controllers;
@@ -28,7 +29,6 @@ namespace SoftwareForge.WebApi.Tests.Controllers
     [TestClass]
     public class TeamCollectionsControllerTest
     {
-
         private TeamCollectionsController _controller;
 
         /// <summary>
@@ -38,48 +38,53 @@ namespace SoftwareForge.WebApi.Tests.Controllers
         public void TestInit()
         {
             _controller = new TeamCollectionsController();
+            Assert.IsNotNull(_controller);
         }
 
         /// <summary>
         /// test the GetTeamCollections method (simple).
         /// </summary>
         [TestMethod]
-        public void GetTeamCollections()
+        public void TestGetTeamCollections()
         {
             List<TeamCollection> collections = _controller.GetTeamCollections();
             Assert.IsNotNull(collections);
-            Assert.AreNotEqual(0, collections.Count, "Expected one or more teamcollections, but found none.");
+
+            foreach (TeamCollection teamCollection in collections)
+            {
+                Assert.AreNotEqual(new Guid(), teamCollection.Guid);
+                Assert.IsFalse(String.IsNullOrEmpty(teamCollection.Name));
+                Assert.IsNotNull(teamCollection.Projects);
+
+                foreach (var project in teamCollection.Projects)
+                {
+                    Assert.AreNotEqual(new Guid(), project.Guid);
+                    Assert.IsFalse(String.IsNullOrEmpty(project.TfsName));
+                    Assert.IsNotNull(project.Name);
+                    Assert.IsTrue(project.Id > 0);
+                    Assert.IsNotNull(project.ProjectType);
+                    Assert.AreEqual((int) project.ProjectType, project.ProjectTypeValue);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// test the GetTeamCollections method (extended).
+        /// </summary>
+        [TestMethod]
+        public void TestGetTeamCollection()
+        {
+            List<TeamCollection> collections = _controller.GetTeamCollections();
+            Assert.IsNotNull(collections);
 
             foreach (TeamCollection teamCollection in collections)
             {
                 Assert.AreNotEqual(new Guid(), teamCollection.Guid);
                 Assert.IsFalse(String.IsNullOrEmpty(teamCollection.Name));
 
-                foreach (var project in teamCollection.Projects)
-                {
-                    Assert.AreNotEqual(new Guid(), project.Guid);
-                    Assert.IsFalse(String.IsNullOrEmpty(project.Name));
-                    Assert.IsTrue(project.Id > 0);
-                }
-            }
-        }
-
-        /// <summary>
-        /// test the GetTeamCollections method (extended).
-        /// </summary>
-        [TestMethod]
-        public void GetTeamCollection()
-        {
-            List<TeamCollection> result = _controller.GetTeamCollections();
-            Assert.IsNotNull(result);
-            Assert.AreNotEqual(0, result.Count, "Expected one or more teamcollections, but found none.");
-
-            foreach (TeamCollection teamCollection in result)
-            {
-                Assert.AreNotEqual(new Guid(), teamCollection.Guid);
-                Assert.IsFalse(String.IsNullOrEmpty(teamCollection.Name));
-
                 TeamCollection collection = _controller.GetTeamCollection(teamCollection.Guid);
+
                 Assert.AreNotEqual(new Guid(), collection.Guid);
                 Assert.IsFalse(String.IsNullOrEmpty(collection.Name));
                 Assert.IsNotNull(collection.Projects);
@@ -92,6 +97,12 @@ namespace SoftwareForge.WebApi.Tests.Controllers
                     Assert.AreEqual(teamCollection.Projects[i].Guid, collection.Projects[i].Guid);
                     Assert.AreEqual(teamCollection.Projects[i].Id, collection.Projects[i].Id);
                     Assert.AreEqual(teamCollection.Projects[i].Name, collection.Projects[i].Name);
+                    Assert.AreEqual(teamCollection.Projects[i].TfsName, collection.Projects[i].TfsName);
+                    Assert.AreEqual(teamCollection.Projects[i].ProjectType, collection.Projects[i].ProjectType);
+                    Assert.AreEqual(teamCollection.Projects[i].ProjectTypeValue, collection.Projects[i].ProjectTypeValue);
+                    Assert.AreEqual(teamCollection.Projects[i].TeamCollectionGuid, collection.Projects[i].TeamCollectionGuid);
+
+                    Assert.IsTrue(teamCollection.Projects[i].Users.SequenceEqual(collection.Projects[i].Users));
                 }
             }
         }
@@ -109,7 +120,6 @@ namespace SoftwareForge.WebApi.Tests.Controllers
             List<TeamCollection> collections = _controller.GetTeamCollections();
             Assert.AreNotEqual(0, collections.Count, "Expected one or more teamcollections, but found none.");
 
-
             TeamCollection teamCollection = _controller.CreateTeamCollection("newTestCollection");
             Assert.IsNotNull(teamCollection);
             Assert.IsFalse(String.IsNullOrEmpty(teamCollection.Name));
@@ -119,10 +129,8 @@ namespace SoftwareForge.WebApi.Tests.Controllers
             int expectedCollectionsCount = collections.Count + 1;
             collections = _controller.GetTeamCollections();
             Assert.AreEqual(expectedCollectionsCount, collections.Count);
-
-            //Assert.IsTrue(collections.Contains(teamCollection));
+            
             _controller.RemoveTeamCollection(teamCollection.Guid);
-            //Assert.IsFalse(collections.Contains(teamCollection));
 
             expectedCollectionsCount = expectedCollectionsCount - 1;
             collections = _controller.GetTeamCollections();

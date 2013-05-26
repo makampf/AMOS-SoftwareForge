@@ -145,8 +145,6 @@ namespace SoftwareForge.TfsService
         /// <returns>a list of of projects</returns>
         public List<Project> GetTeamProjectsOfTeamCollection(Guid teamCollectionGuid)
         {
-
-            ProjectsDao projectsDao = new ProjectsDao();
             List<Project> result = new List<Project>();
 
             if (HasAuthenticated == false)
@@ -163,12 +161,12 @@ namespace SoftwareForge.TfsService
             foreach (Microsoft.TeamFoundation.WorkItemTracking.Client.Project project in projects)
             {
                 Guid guid = new Guid(project.Guid);
-                Project projectModel = projectsDao.Get(new Guid(project.Guid));
+                Project projectModel = ProjectsDao.Get(new Guid(project.Guid));
                 if (projectModel == null)
                 {
                     //TODO: Language files - localization - no language specifictext in code!
                     const string noDescriptionAvailable = "No description available.";
-                    projectModel = projectsDao.Add(new Project(project.Name, noDescriptionAvailable, project.Id, guid, teamCollectionGuid, ProjectType.Application));
+                    projectModel = ProjectsDao.Add(new Project(project.Name, noDescriptionAvailable, project.Id, guid, teamCollectionGuid, ProjectType.Application));
                 }
                 result.Add(projectModel);
             }
@@ -319,7 +317,7 @@ namespace SoftwareForge.TfsService
             if (tc == null)
                 throw new Exception("Could not found TeamCollection with Guid: " + teamCollectionGuid);
 
-            if (tc.Projects.Count(a => a.Name == projectName) != 0)
+            if (tc.Projects.Count(a => a.TfsName == projectName) != 0)
                 throw  new Exception("The Project " + projectName + " in the TeamCollection " + tc.Name + " already exists");
 
             List<String> templates = GetTemplatesInCollection(teamCollectionGuid);
@@ -348,13 +346,14 @@ namespace SoftwareForge.TfsService
             {
                 throw new Exception("Error while creating new project. No new project found after creation command.");
             }
-            ProjectsDao projectsDao = new ProjectsDao();
-            return projectsDao.Add(new Project
+            
+            return ProjectsDao.Add(new Project
                 {
                     Description = projectDescription,
                     ProjectType = projectType,
                     Guid = new Guid(tfsProject.Guid),
                     Id = tfsProject.Id,
+                    TfsName = projectName,
                     Name = projectName,
                     TeamCollectionGuid = teamCollectionGuid
                 });

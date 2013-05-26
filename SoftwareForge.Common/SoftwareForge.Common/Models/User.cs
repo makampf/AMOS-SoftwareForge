@@ -39,7 +39,7 @@ namespace SoftwareForge.Common.Models
         /// <summary>
         /// The list with all projects that the user is member of.
         /// </summary>
-         [NotMapped]
+        [NotMapped]
         public ICollection<Project> Projects { get; set; }
 
     }

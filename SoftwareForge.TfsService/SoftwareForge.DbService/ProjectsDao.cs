@@ -36,67 +36,74 @@ namespace SoftwareForge.DbService
         /// <summary>
         /// The DatabaseContext
         /// </summary>
-        private readonly SoftwareForgeDbContext _softwareForgeDbContext;
-
-
-        /// <summary>
-        /// Create a new ProjectDao.
-        /// </summary>
-        public ProjectsDao()
-        {
-            _softwareForgeDbContext =  new SoftwareForgeDbContext();
-        }
+        private static readonly SoftwareForgeDbContext SoftwareForgeDbContext = new SoftwareForgeDbContext();
+       
 
 
         /// <summary>
         /// Add a project
         /// </summary>
         /// <param name="project">project to add</param>
-        public Project Add(Project project)
+        public static Project Add(Project project)
         {
-            if (_softwareForgeDbContext.Projects.Any(t => t.Guid == project.Guid))
+            if (SoftwareForgeDbContext.Projects.Any(t => t.Guid == project.Guid))
             {
                 throw new DataException("A project with the same guid is already in database.");
             }
-            _softwareForgeDbContext.Projects.Add(project);
-            _softwareForgeDbContext.SaveChanges();
+            SoftwareForgeDbContext.Projects.Add(project);
+            SoftwareForgeDbContext.SaveChanges();
             return project;
+        }
+
+
+        public static bool RenameProject(Guid projectGuid, String newName)
+        {
+            Project project = SoftwareForgeDbContext.Projects.SingleOrDefault(t => t.Guid == projectGuid);
+            if (project == null)
+                throw new Exception("RenameProject: Could not found the project with GUID: " + projectGuid);
+
+            project.Name = newName;
+            SoftwareForgeDbContext.SaveChanges();
+
+            return true;
         }
 
         /// <summary>
         /// Process a membership request. Joining or leaving of projects
         /// </summary>
         /// <param name="requestModel">the request model</param>
-        public void ProcessMembershipRequest(ProjectMembershipRequestModel requestModel)
+        public static void ProcessMembershipRequest(ProjectMembershipRequestModel requestModel)
         {
-            Project project = _softwareForgeDbContext.Projects.Single(t => t.Guid == requestModel.ProjectGuid);
-            User user = _softwareForgeDbContext.Users.SingleOrDefault(t => t.Username == requestModel.Username);
+            Project project = SoftwareForgeDbContext.Projects.Single(t => t.Guid == requestModel.ProjectGuid);
+            if (project == null)
+                throw new Exception("ProcessMembershipRequest: Could not found the project with GUID: " + requestModel.ProjectGuid);
+
+            User user = SoftwareForgeDbContext.Users.SingleOrDefault(t => t.Username == requestModel.Username);
             UserRole role = requestModel.UserRole;
             if (user == null)
             {
                 user = new User {Username = requestModel.Username};
-                _softwareForgeDbContext.Users.Add(user);
+                SoftwareForgeDbContext.Users.Add(user);
             }
 
             try
             {
-                ProjectUser projectUser = _softwareForgeDbContext.ProjectUsers.Single(t => t.Project_Guid == project.Guid && t.User_Id == user.Id);
-                _softwareForgeDbContext.ProjectUsers.Remove(projectUser);
+                ProjectUser projectUser = SoftwareForgeDbContext.ProjectUsers.Single(t => t.ProjectGuid == project.Guid && t.UserId == user.Id);
+                SoftwareForgeDbContext.ProjectUsers.Remove(projectUser);
             }
             catch
             {
-                _softwareForgeDbContext.ProjectUsers.Add(new ProjectUser
+                SoftwareForgeDbContext.ProjectUsers.Add(new ProjectUser
                     {
                         Project = project,
-                        Project_Guid = project.Guid,
+                        ProjectGuid = project.Guid,
                         User = user,
-                        User_Id = user.Id,
+                        UserId = user.Id,
                         UserRole = role
                     });
-
             }
-            _softwareForgeDbContext.SaveChanges();
 
+            SoftwareForgeDbContext.SaveChanges();
         }
 
         /// <summary>
@@ -104,11 +111,11 @@ namespace SoftwareForge.DbService
         /// </summary>
         /// <param name="guid">guid of project</param>
         /// <returns>A project or null if no project is found</returns>
-        public Project Get(Guid guid) 
+        public static Project Get(Guid guid) 
         {
             try
             {
-                Project project = _softwareForgeDbContext.Projects.Single(t => t.Guid == guid);
+                Project project = SoftwareForgeDbContext.Projects.Single(t => t.Guid == guid);
                 project.Users = GetUsers(project.Guid);
                 return project;
             }
@@ -116,7 +123,6 @@ namespace SoftwareForge.DbService
             {
                 return null;
             }
-           
         }
 
         /// <summary>
@@ -124,10 +130,10 @@ namespace SoftwareForge.DbService
         /// </summary>
         /// <param name="guid">guid of the project</param>
         /// <returns>a collection of users in the specific project</returns>
-        public ICollection<User> GetUsers(Guid guid)
+        public static ICollection<User> GetUsers(Guid guid)
         {
             Collection<User> users = new Collection<User>();
-            IQueryable<ProjectUser> x = _softwareForgeDbContext.ProjectUsers.Where(t => t.Project.Guid == guid);
+            IQueryable<ProjectUser> x = SoftwareForgeDbContext.ProjectUsers.Where(t => t.Project.Guid == guid);
             foreach (ProjectUser projectUser in x)
             {
                 users.Add(projectUser.User);
