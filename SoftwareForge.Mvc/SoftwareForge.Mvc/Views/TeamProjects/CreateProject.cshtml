@@ -43,6 +43,15 @@
             @Html.EditorFor(model => model.Name)
             @Html.ValidationMessageFor(model => model.Name)
         </div>
+        
+        <div class="editor-label">
+            @Html.LabelFor(model => model.TfsName)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.TfsName)
+            @Html.ValidationMessageFor(model => model.TfsName)
+        </div>
+
         <div class="editor-label">
             @Html.LabelFor(model => model.Description)
         </div>

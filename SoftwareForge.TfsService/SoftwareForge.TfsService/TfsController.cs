@@ -211,7 +211,7 @@ namespace SoftwareForge.TfsService
                 _tfsConfigurationServer.Authenticate();
 
             if (collectionName == null)
-                throw new ArgumentNullException(collectionName);
+                throw new ArgumentNullException("collectionName");
 
             List<TeamCollection> teamCollections = GetTeamCollections();
             if (teamCollections.Any(a => a.Name == collectionName))
@@ -301,26 +301,27 @@ namespace SoftwareForge.TfsService
         }
 
         /// <summary>
-        /// Creates a TeamProjectCollection.
+        /// Creates a TeamProjectCollection
         /// </summary>
-        /// <param name="teamCollectionGuid">the TeamProjectCollection Guid in which the project will be created</param>
-        /// <param name="projectName">the TeamProject name</param>
-        /// <param name="projectType">the type of the project</param>
-        /// <param name="templateName">the Template, which should be used</param>
-        /// <param name="projectDescription">the description of the project</param>
-        public Project CreateTeamProjectInTeamCollection(Guid teamCollectionGuid, String projectName, string projectDescription, ProjectType projectType, String templateName)
+        /// <param name="collectionGuid">The TeamProjectCollection Guid in which the project will be created</param>
+        /// <param name="projectName">The project name</param>
+        /// <param name="projectType">The type of the project</param>
+        /// <param name="templateName">The template, which should be used</param>
+        /// <param name="tfsProjectName">The tfs project name</param>
+        /// <param name="projectDescription">The description of the project</param>
+        public Project CreateTeamProjectInTeamCollection(Guid collectionGuid, String projectName, String tfsProjectName, string projectDescription, ProjectType projectType, String templateName)
         {
             if (HasAuthenticated == false)
                 _tfsConfigurationServer.Authenticate();
 
-            TeamCollection tc = GetTeamCollection(teamCollectionGuid);
+            TeamCollection tc = GetTeamCollection(collectionGuid);
             if (tc == null)
-                throw new Exception("Could not found TeamCollection with Guid: " + teamCollectionGuid);
+                throw new Exception("Could not found TeamCollection with Guid: " + collectionGuid);
 
             if (tc.Projects.Count(a => a.TfsName == projectName) != 0)
                 throw  new Exception("The Project " + projectName + " in the TeamCollection " + tc.Name + " already exists");
 
-            List<String> templates = GetTemplatesInCollection(teamCollectionGuid);
+            List<String> templates = GetTemplatesInCollection(collectionGuid);
             if (templates.Contains(templateName) == false)
                 throw new Exception("Could not found templateName in collection " + tc.Name);
 
@@ -335,7 +336,7 @@ namespace SoftwareForge.TfsService
             while (tfsProject == null && getProjectTrys < 30)
             {
                 ForceTfsCacheClean();
-                tfsProject = GetTfsProjectByName(projectName, teamCollectionGuid);
+                tfsProject = GetTfsProjectByName(projectName, collectionGuid);
                 Thread.Sleep(250);
                 getProjectTrys++;
             }
@@ -353,9 +354,9 @@ namespace SoftwareForge.TfsService
                     ProjectType = projectType,
                     Guid = new Guid(tfsProject.Guid),
                     Id = tfsProject.Id,
-                    TfsName = projectName,
+                    TfsName = tfsProjectName,
                     Name = projectName,
-                    TeamCollectionGuid = teamCollectionGuid
+                    TeamCollectionGuid = collectionGuid
                 });
         }
     }

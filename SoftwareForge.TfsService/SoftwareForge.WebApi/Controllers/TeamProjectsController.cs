@@ -78,10 +78,12 @@ namespace SoftwareForge.WebApi.Controllers
         public Project CreateProject([FromBody] Project project)
         {
             List<String> templates = TfsController.GetTemplatesInCollection(project.TeamCollectionGuid);
-            WindowsIdentity identity = (WindowsIdentity)HttpContext.Current.User.Identity;
-            if (templates.Count< 1) 
+            if (templates.Count < 1)
                 throw new ArgumentException("The project given is in a collection that has no templates! ");
-            Project createdProject = TfsController.CreateTeamProjectInTeamCollection(project.TeamCollectionGuid, project.Name, project.Description, project.ProjectType, templates[0]);
+
+            WindowsIdentity identity = (WindowsIdentity)HttpContext.Current.User.Identity;
+            
+            Project createdProject = TfsController.CreateTeamProjectInTeamCollection(project.TeamCollectionGuid, project.Name, project.TfsName, project.Description, project.ProjectType, templates[0]);
             ProjectsDao.ProcessMembershipRequest(new ProjectMembershipRequestModel { ProjectGuid = createdProject.Guid, Username = identity.Name, UserRole = UserRole.ProjectOwner });
             return createdProject;
         }
