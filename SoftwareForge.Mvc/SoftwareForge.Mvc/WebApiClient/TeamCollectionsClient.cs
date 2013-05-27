@@ -23,8 +23,10 @@ using System.IO;
 using System.Net;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using Newtonsoft.Json;
 using SoftwareForge.Common.Models;
 using SoftwareForge.Common.Models.Requests;
+using System.Runtime.Serialization;
 
 namespace SoftwareForge.Mvc.WebApiClient
 {
@@ -63,11 +65,14 @@ namespace SoftwareForge.Mvc.WebApiClient
             {
                 if (httpResponse != null)
                 {
-                    var stream = httpResponse.GetResponseStream();
+                    Stream stream = httpResponse.GetResponseStream();
                     if (stream != null)
                     {
-                        DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(IEnumerable<TeamCollection>));
-                        return (IEnumerable<TeamCollection>) ser.ReadObject(stream);
+                       
+
+                        IEnumerable<TeamCollection> teamCollections =
+                            JsonConvert.DeserializeObject<IEnumerable<TeamCollection>>(new StreamReader(stream).ReadToEnd());
+                        return teamCollections;
                     }
                 }
                 return null;

@@ -69,7 +69,7 @@ namespace SoftwareForge.Common.Models
         /// </summary>
         [NotMapped]
         [DataMember]
-        public ICollection<User> Users { get; set; }
+        public ICollection<ProjectMember> Users { get; set; }
 
         /// <summary>
         /// The teamCollection it is part of
@@ -98,7 +98,7 @@ namespace SoftwareForge.Common.Models
             Description = description;
             Id = id;
             Guid = guid;
-            Users = new Collection<User>();
+            Users = new Collection<ProjectMember>();
             TeamCollectionGuid = teamCollectionGuid;
             ProjectType = projectType;
         }
