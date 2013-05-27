@@ -138,7 +138,7 @@ namespace SoftwareForge.DbService
         /// <returns>The UserRole of a user in a project</returns>
         public static UserRole GetMembershipRoleOfUserInProject(Guid projectGuid, String username)
         {
-            var singleOrDefault = SoftwareForgeDbContext.ProjectUsers.SingleOrDefault(t => (t.ProjectGuid == projectGuid && t.User.Username == username));
+            ProjectUser singleOrDefault = SoftwareForgeDbContext.ProjectUsers.SingleOrDefault(t => (t.ProjectGuid == projectGuid && t.User.Username == username));
             if (singleOrDefault == null)
                 return UserRole.Reader;
 
@@ -151,13 +151,13 @@ namespace SoftwareForge.DbService
         /// </summary>
         /// <param name="guid">guid of the project</param>
         /// <returns>A collection of users in the specific project</returns>
-        public static ICollection<User> GetUsers(Guid guid)
+        public static Collection<ProjectMember> GetUsers(Guid guid)
         {
-            Collection<User> users = new Collection<User>();
+            Collection<ProjectMember> users = new Collection<ProjectMember>();
             IQueryable<ProjectUser> x = SoftwareForgeDbContext.ProjectUsers.Where(t => t.Project.Guid == guid);
             foreach (ProjectUser projectUser in x)
             {
-                users.Add(projectUser.User);
+                users.Add(new ProjectMember{User =projectUser.User, UserRole =  projectUser.UserRole});
             }
             return users;
         }

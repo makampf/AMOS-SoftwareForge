@@ -69,7 +69,7 @@ namespace SoftwareForge.Mvc.Controllers
             {
                 foreach (Project project in teamCollection.Projects)
                 {
-                    if (!project.Users.Any(user => user.Username.Equals(User.Identity.Name)))
+                    if (!project.Users.Any(user => user.User.Username.Equals(User.Identity.Name)))
                     {
                         randomProjects.Add(project);
                     }
@@ -111,7 +111,7 @@ namespace SoftwareForge.Mvc.Controllers
             {
                 foreach (Project project in teamCollection.Projects)
                 {
-                    if (project.Users.Any(user => user.Username.Equals(User.Identity.Name)))
+                    if (project.Users.Any(user => user.User.Username.Equals(User.Identity.Name)))
                     {
                         myProjects.Add(project);
                     }

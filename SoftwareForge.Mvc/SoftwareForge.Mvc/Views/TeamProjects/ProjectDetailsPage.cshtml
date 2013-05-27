@@ -27,7 +27,7 @@
     @Model.Description<br/>
     <i>@Model.ProjectType</i><br/>
     [
-    @if (@Model.Users.Any(t => t.Username.Equals(User.Identity.Name)))
+    @if (@Model.Users.Any(t => t.User.Username.Equals(User.Identity.Name)))
     {
         <text>@Html.ActionLink("Leave", "LeaveProject", "TeamProjects",new {guid=Model.Guid, username=User.Identity.Name},null)</text>
     }
