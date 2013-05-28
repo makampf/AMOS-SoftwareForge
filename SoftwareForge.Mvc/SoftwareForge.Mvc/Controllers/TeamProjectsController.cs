@@ -118,7 +118,7 @@ namespace SoftwareForge.Mvc.Controllers
         {
             if (ModelState.IsValid)
             {
-                //TeamCollectionsClient.CreateProject(project);
+                TeamCollectionsClient.CreateJoinProjectRequest(project);
             }
 
             return RedirectToAction("Index", "Home");

@@ -24,7 +24,7 @@
 
 <h2>Join a project</h2>
 
-@using (Html.BeginForm("PostProjectJoinRequest")) {
+@using (Html.BeginForm("PostProjectJoinRequest","TeamProjects", null)) {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
