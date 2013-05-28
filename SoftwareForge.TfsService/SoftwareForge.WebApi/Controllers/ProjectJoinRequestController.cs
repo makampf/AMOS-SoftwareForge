@@ -26,26 +26,27 @@ using SoftwareForge.DbService;
 
 namespace SoftwareForge.WebApi.Controllers
 {
-    public class ProjectMembershipController : ApiController
+    public class ProjectJoinRequestController : ApiController
     {
 
         #region GET
-        [HttpGet]
-        public IEnumerable<Project> GetProjectOwnerProjects(User user)
-        {
-            IEnumerable<Project> result = ProjectJoinDao.GetProjectOwnerProjects(user);
-            return result;
-        }
+
         #endregion
 
         #region POST
         [HttpPost]
-        public bool Post([FromBody] ProjectMembershipRequestModel model)
+        public bool Post([FromBody] ProjectJoinRequest model)
         {
-            ProjectsDao.ProcessMembershipRequest(model);
+            ProjectJoinDao.ProcessProjectJoinRequest(model);
             return true;
         }
+
         #endregion
+
+
+
+
+
 
     }
 }

@@ -118,6 +118,7 @@ namespace SoftwareForge.Mvc.Controllers
         {
             if (ModelState.IsValid)
             {
+                project.UserRole = UserRole.Contributor; //TODO: Requests for ProjectOwner, add to requestview then remove this line!
                 TeamCollectionsClient.CreateJoinProjectRequest(project);
             }
 

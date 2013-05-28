@@ -129,7 +129,7 @@ namespace SoftwareForge.Mvc.WebApiClient
 
         public static bool CreateJoinProjectRequest(ProjectJoinRequest project)
         {
-            return CreatePost<bool, ProjectJoinRequest>("api/TeamProjects", project);
+            return CreatePost<bool, ProjectJoinRequest>("api/ProjectJoinRequest", project);
         }
 
 

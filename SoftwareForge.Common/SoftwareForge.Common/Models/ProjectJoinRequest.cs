@@ -55,6 +55,8 @@ namespace SoftwareForge.Common.Models
             set { UserRoleValue = (int)value; }
         }
 
+        [MaxLength(4000)]
+        [DataType(DataType.MultilineText)]
         public string Message { get; set; }
     }
 }
