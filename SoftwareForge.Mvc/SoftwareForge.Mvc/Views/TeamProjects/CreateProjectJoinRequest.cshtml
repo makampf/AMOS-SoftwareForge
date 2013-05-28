@@ -17,15 +17,38 @@
     - License along with this program. If not, see
     - <http://www.gnu.org/licenses/>.
     -->
+@model SoftwareForge.Common.Models.ProjectJoinRequest
+@{
+    ViewBag.Title = "Join project";
+}
 
-@using SoftwareForge.Common.Models
-@model List<Project>
-<h3>Some random projects for you:<br/></h3> 
-<ul>            
-@foreach (Project project in Model)
-        {
-            <li>
-             @Html.Partial("ProjectPreviewPartial",project)
-            </li>
-        }   
-    </ul>
+<h2>Join a project</h2>
+
+@using (Html.BeginForm("PostProjectJoinRequest")) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Your join request</legend>
+        @Html.HiddenFor(model => model.ProjectGuid)
+        @Html.HiddenFor(model => model.UserId)
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Message)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Message)
+            @Html.ValidationMessageFor(model => model.Message)
+        </div>
+        <p>
+            <input type="submit" value="Join" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List","Index","Home")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -17,8 +17,10 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-using System;
+
+using System.Collections.Generic;
 using System.Web.Http;
+using SoftwareForge.Common.Models;
 using SoftwareForge.Common.Models.Requests;
 using SoftwareForge.DbService;
 
@@ -27,29 +29,20 @@ namespace SoftwareForge.WebApi.Controllers
     public class ProjectMembershipController : ApiController
     {
 
-        //Lazy initialization
-        private readonly Lazy<ProjectsDao> _projectsDao = new Lazy<ProjectsDao>(CreateProjectsDao);
-
-        ProjectsDao ProjectsDao
+        #region GET
+        [HttpGet]
+        public IEnumerable<Project> GetProjectOwnerProjects(User user)
         {
-            get { return _projectsDao.Value; }
+            var result = ProjectJoinDao.GetProjectOwnerProjects(user);
+            return result;
         }
-        /// <summary>
-        /// Function which creates a new ProjectsDao
-        /// </summary>
-        /// <returns> new ProjectsDao</returns>
-        private static ProjectsDao CreateProjectsDao()
-        {
-            return new ProjectsDao();
-        }
-
-
+        #endregion
 
         #region POST
         [HttpPost]
-        public bool Post([FromBody] ProjectMembershipRequestModel project)
+        public bool Post([FromBody] ProjectMembershipRequestModel model)
         {
-            ProjectsDao.ProcessMembershipRequest(project);
+            ProjectsDao.ProcessMembershipRequest(model);
             return true;
         }
         #endregion

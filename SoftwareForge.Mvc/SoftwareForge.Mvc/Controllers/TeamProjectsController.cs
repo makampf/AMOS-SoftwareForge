@@ -97,6 +97,34 @@ namespace SoftwareForge.Mvc.Controllers
         }
 
         /// <summary>
+        /// Join a project
+        /// </summary>
+        /// <param name="guid">The guid of project</param>
+        /// <param name="username">The username</param>
+        /// <returns>Redirects to overview page</returns>
+        public ActionResult CreateProjectJoinRequest(Guid guid, String username)
+        {
+            return View("CreateProjectJoinRequest",new ProjectJoinRequest{ProjectGuid = guid, UserId = 1});
+        }
+
+        /// <summary>
+        /// Creates a new project
+        /// </summary>
+        /// <param name="project">project to create</param>
+        /// <returns>redirects to overview page</returns>
+        [HttpPostAttribute]
+        [ValidateAntiForgeryTokenAttribute]
+        public ActionResult PostProjectJoinRequest(ProjectJoinRequest project)
+        {
+            if (ModelState.IsValid)
+            {
+                //TeamCollectionsClient.CreateProject(project);
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        /// <summary>
         /// Shows the page, where user can rename a project
         /// </summary>
         /// <param name="guid">The guid of the project</param>

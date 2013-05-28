@@ -17,42 +17,38 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
 
-namespace SoftwareForge.Common.Models
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SoftwareForge.Common.Models;
+using SoftwareForge.WebApi.Controllers;
+
+namespace SoftwareForge.WebApi.Tests.Controllers
 {
-    public class ProjectJoinRequest
+    [TestClass]
+    public class ProjectMembershipControllerTest
     {
-        /// <summary>
-        /// The project
-        /// </summary>
-        [Key, ForeignKey("Project"), Column(Order = 0)]
-        public Guid ProjectGuid { get; set; }
+        private ProjectMembershipController _controller;
 
         /// <summary>
-        /// A user in this project
+        /// Init the TeamCollectionsController.
         /// </summary>
-        [Key, ForeignKey("User"), Column(Order = 1)]
-        public int UserId { get; set; }
-
-        /// <summary>
-        /// The requested role of the user for this project
-        /// </summary>
-        [DataMember]
-        public int UserRoleValue { get; set; }
-        public UserRole UserRole
+        [TestInitialize]
+        public void TestInit()
         {
-            get { return (UserRole)UserRoleValue; }
-            set { UserRoleValue = (int)value; }
+            _controller = new ProjectMembershipController();
+            Assert.IsNotNull(_controller);
         }
 
-        [DataMember]
-        public string Message { get; set; }
+        /// <summary>
+        /// test the GetTeamCollections method (simple).
+        /// </summary>
+        [TestMethod]
+        public void TestGetProjectOwnerProjects()
+        {
+            var res = _controller.GetProjectOwnerProjects(new User {Username = "COMPUTERNAME\\Administrator"});
+            Assert.IsNotNull(res);
+        }
+
+
     }
 }

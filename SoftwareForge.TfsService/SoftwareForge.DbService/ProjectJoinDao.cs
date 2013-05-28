@@ -17,21 +17,20 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-using System;
+
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using SoftwareForge.Common.Models;
 
 namespace SoftwareForge.DbService
 {
-    class ProjectJoinDao
+    public class ProjectJoinDao
     {
         private static readonly SoftwareForgeDbContext SoftwareForgeDbContext = new SoftwareForgeDbContext();
 
-        public static List<Project>GetProjectOwnerProjects(User user)
+        public static IEnumerable<Project> GetProjectOwnerProjects(User user)
         {
-            return null;
+            return SoftwareForgeDbContext.Projects.Where(t => t.Users.Any(u => ((u.User == user) && (u.UserRole == UserRole.ProjectOwner))));
         }
 
     }
