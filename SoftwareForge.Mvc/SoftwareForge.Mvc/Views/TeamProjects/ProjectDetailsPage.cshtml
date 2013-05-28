@@ -20,7 +20,7 @@
 @using SoftwareForge.Common.Models
 @model Project
 <p>
-    <b>@Model.Name</b> @Html.ActionLink("Rename", "RenameProjectPage", "TeamProjects",new {guid=Model.Guid},null)<br/>
+    <b>@Model.Name</b> @Html.ActionLink("[Rename]", "RenameProjectPage", "TeamProjects",new {guid=Model.Guid},null)<br/>
     TFS-Project: @Model.TfsName
 
     <br/>
@@ -39,14 +39,14 @@
     }
     ]
 
-    @Html.ActionLink("Create join request", "CreateProjectJoinRequest", "TeamProjects",new {guid=Model.Guid, username=User.Identity.Name},null)
+    @Html.ActionLink("[Create join request]", "CreateProjectJoinRequest", "TeamProjects",new {guid=Model.Guid, username=User.Identity.Name},null)
 
     <br/>
     <b>ProjectOwner:</b>
     <ul>
         @foreach (ProjectMember projectMember in Model.Users.Where(t=>t.UserRole == UserRole.ProjectOwner))
         {
-            <li>@projectMember</li>
+            <li>@projectMember.User.Username</li>
         }
     </ul>
 
@@ -54,7 +54,7 @@
     <ul>
     @foreach (ProjectMember projectMember in Model.Users.Where(t=>t.UserRole == UserRole.Contributor))
     {
-        <li>@projectMember</li>
+        <li>@projectMember.User.Username</li>
     }
     </ul>
 </p>

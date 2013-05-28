@@ -57,29 +57,8 @@ namespace SoftwareForge.Mvc.WebApiClient
         /// <returns>all Team Collections</returns>
         public static IEnumerable<TeamCollection> GetTeamCollections()
         {
-            String url = Properties.Settings.Default.WebApiUri + "api/TeamCollections";
-            var httpWebRequest = CreateRequest(url);
-            httpWebRequest.Method = "GET";
-           
-            using (HttpWebResponse httpResponse = httpWebRequest.GetResponse() as HttpWebResponse)
-            {
-                if (httpResponse != null)
-                {
-                    Stream stream = httpResponse.GetResponseStream();
-                    if (stream != null)
-                    {
-                       
-
-                        IEnumerable<TeamCollection> teamCollections =
-                            JsonConvert.DeserializeObject<IEnumerable<TeamCollection>>(new StreamReader(stream).ReadToEnd());
-                        return teamCollections;
-                    }
-                }
-                return null;
-            }
+            return CreateGet<IEnumerable<TeamCollection>>("api/TeamCollections");
         }
-
-
 
         /// <summary>
         /// Creates a new TeamCollection.
@@ -88,34 +67,7 @@ namespace SoftwareForge.Mvc.WebApiClient
         /// <returns>The created Team Collection</returns>
         public static TeamCollection CreateTeamCollection(string name)
         {
-            String url = Properties.Settings.Default.WebApiUri + "api/TeamCollections";
-            var httpWebRequest = CreateRequest(url);
-            httpWebRequest.Method = "POST";
-
-            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
-            {
-                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(String));
-                MemoryStream ms = new MemoryStream();
-                ser.WriteObject(ms, name);
-                String json = Encoding.UTF8.GetString(ms.ToArray());
-
-                streamWriter.Write(json);
-                streamWriter.Flush();
-            }
-
-            using (HttpWebResponse httpResponse = httpWebRequest.GetResponse() as HttpWebResponse)
-            {
-                if (httpResponse != null)
-                {
-                    var responseStream = httpResponse.GetResponseStream();
-                    if (responseStream != null)
-                    {
-                        DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(TeamCollection));
-                        return (TeamCollection)ser.ReadObject(responseStream);
-                    }
-                }
-                return null;
-            }
+            return CreatePost<TeamCollection, String>("api/TeamCollections", name);
         }
 
         private static bool PostProjectMembershipRequest(Guid projectGuid, string username)
@@ -126,94 +78,18 @@ namespace SoftwareForge.Mvc.WebApiClient
                     Username = username,
                     UserRole = UserRole.Reader
                 };
-
-            string url = Properties.Settings.Default.WebApiUri + "api/ProjectMembership";
-            var httpWebRequest = CreateRequest(url);
-            httpWebRequest.Method = "POST";
-
-            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
-            {
-                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(ProjectMembershipRequestModel));
-                MemoryStream ms = new MemoryStream();
-                ser.WriteObject(ms, joinProjectRequestModel);
-                String json = Encoding.UTF8.GetString(ms.ToArray());
-
-                streamWriter.Write(json);
-                streamWriter.Flush();
-            }
-
-            using (HttpWebResponse httpResponse = httpWebRequest.GetResponse() as HttpWebResponse)
-            {
-                if (httpResponse != null)
-                {
-                    var responseStream = httpResponse.GetResponseStream();
-                    if (responseStream != null)
-                    {
-                        DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(bool));
-                        return (bool)ser.ReadObject(responseStream);
-                    }
-                }
-                return false;
-            }
+            return CreatePost<bool, ProjectMembershipRequestModel>("api/ProjectMembership", joinProjectRequestModel);
         }
 
         public static Project GetTeamProject(Guid teamProjectGuid)
         {
-            String url =  Properties.Settings.Default.WebApiUri + "api/TeamProjects?guid=" + teamProjectGuid;
-            var httpWebRequest = CreateRequest(url);
-            httpWebRequest.Method = "GET";
-
-            using (HttpWebResponse httpResponse = httpWebRequest.GetResponse() as HttpWebResponse)
-            {
-                if (httpResponse != null)
-                {
-                    var stream = httpResponse.GetResponseStream();
-                    if (stream != null)
-                    {
-                        DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Project));
-                        return (Project)ser.ReadObject(stream);
-                    }
-                }
-                return null;
-            }
+            return CreateGet<Project>("api/TeamProjects?guid=" + teamProjectGuid);
         }
-
-
-
-
 
         public static Project CreateProject(Project project)
         {
-            String url = Properties.Settings.Default.WebApiUri + "api/TeamProjects";
-            var httpWebRequest = CreateRequest(url);
-            httpWebRequest.Method = "POST";
-
-            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
-            {
-                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Project));
-                MemoryStream ms = new MemoryStream();
-                ser.WriteObject(ms, project);
-                String json = Encoding.UTF8.GetString(ms.ToArray());
-
-                streamWriter.Write(json);
-                streamWriter.Flush();
-            }
-
-            using (HttpWebResponse httpResponse = httpWebRequest.GetResponse() as HttpWebResponse)
-            {
-                if (httpResponse != null)
-                {
-                    var responseStream = httpResponse.GetResponseStream();
-                    if (responseStream != null)
-                    {
-                        DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Project));
-                        return (Project)ser.ReadObject(responseStream);
-                    }
-                }
-                return null;
-            }
+            return CreatePost<Project, Project>("api/TeamProjects", project);
         }
-
 
         /// <summary>
         /// Rename a project
@@ -224,35 +100,7 @@ namespace SoftwareForge.Mvc.WebApiClient
         public static bool RenameProject(Guid guid, string newName)
         {
             RenameProjectModel rpm = new RenameProjectModel {Guid = guid, NewName = newName};
-
-            String url = Properties.Settings.Default.WebApiUri + "api/TeamProjects";
-            var httpWebRequest = CreateRequest(url);
-            httpWebRequest.Method = "PUT";
-
-            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
-            {
-                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(RenameProjectModel));
-                MemoryStream ms = new MemoryStream();
-                ser.WriteObject(ms, rpm);
-                String json = Encoding.UTF8.GetString(ms.ToArray());
-
-                streamWriter.Write(json);
-                streamWriter.Flush();
-            }
-
-            using (HttpWebResponse httpResponse = httpWebRequest.GetResponse() as HttpWebResponse)
-            {
-                if (httpResponse != null)
-                {
-                    var responseStream = httpResponse.GetResponseStream();
-                    if (responseStream != null)
-                    {
-                        DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(bool));
-                        return (bool)ser.ReadObject(responseStream);
-                    }
-                }
-                return false;
-            }
+            return CreatePost<bool, RenameProjectModel>("api/TeamProjects", rpm);
         }
 
 
@@ -278,6 +126,82 @@ namespace SoftwareForge.Mvc.WebApiClient
             return PostProjectMembershipRequest(projectGuid, username);
         }
 
-       
+
+        public static bool CreateJoinProjectRequest(ProjectJoinRequest project)
+        {
+            return CreatePost<bool, ProjectJoinRequest>("api/TeamProjects", project);
+        }
+
+
+        /// <summary>
+        /// Create a Get webRequest
+        /// </summary>
+        /// <typeparam name="T">the expected type of the answer</typeparam>
+        /// <param name="getUrl">the url for the get call</param>
+        /// <returns>a object with type T</returns>
+        private static T CreateGet<T>(string getUrl)
+        {
+
+            String url = Properties.Settings.Default.WebApiUri + getUrl;
+            var httpWebRequest = CreateRequest(url);
+            httpWebRequest.Method = "GET";
+
+            using (HttpWebResponse httpResponse = httpWebRequest.GetResponse() as HttpWebResponse)
+            {
+                if (httpResponse != null)
+                {
+                    Stream stream = httpResponse.GetResponseStream();
+                    if (stream != null)
+                    {
+                        T teamCollections =
+                            JsonConvert.DeserializeObject<T>(new StreamReader(stream).ReadToEnd());
+                        return teamCollections;
+                    }
+                }
+ 
+            }
+            return default(T);
+        }
+
+        /// <summary>
+        /// Create a post WebRequest
+        /// </summary>
+        /// <typeparam name="T">the expected type of the answer</typeparam>
+        /// <typeparam name="TM">the type of the posted model</typeparam>
+        /// <param name="postUrl">the url for the post call</param>
+        /// <param name="model">the model to post</param>
+        /// <returns>a object with type T</returns>
+        private static T CreatePost<T, TM>(string postUrl, TM model)
+        {
+            String url = Properties.Settings.Default.WebApiUri + postUrl;
+            var httpWebRequest = CreateRequest(url);
+            httpWebRequest.Method = "POST";
+
+            using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(TM));
+                MemoryStream ms = new MemoryStream();
+                ser.WriteObject(ms, model);
+                String json = Encoding.UTF8.GetString(ms.ToArray());
+
+                streamWriter.Write(json);
+                streamWriter.Flush();
+            }
+
+            using (HttpWebResponse httpResponse = httpWebRequest.GetResponse() as HttpWebResponse)
+            {
+                if (httpResponse != null)
+                {
+                    var responseStream = httpResponse.GetResponseStream();
+                    if (responseStream != null)
+                    {
+                        DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(T));
+                        return (T)ser.ReadObject(responseStream);
+                    }
+                }
+            }
+
+            return default(T);
+        }
     }
 }
