@@ -40,11 +40,12 @@ namespace SoftwareForge.DbService
             if (project == null)
                 throw new Exception("ProcessProjectJoinRequest: Could not found the project with GUID: " + model.ProjectGuid);
 
-            User user = SoftwareForgeDbContext.Users.SingleOrDefault(t => t.Id == model.UserId);
+            User user = SoftwareForgeDbContext.Users.SingleOrDefault(t => t.Username == model.User.Username);
             UserRole role = model.UserRole;
             if (user == null)
             {
-                throw new Exception("ProcessProjectJoinRequest: Could not found an user with ID: " + model.UserId);
+                user = new User { Username = model.User.Username };
+                SoftwareForgeDbContext.Users.Add(user);
             }
 
             try

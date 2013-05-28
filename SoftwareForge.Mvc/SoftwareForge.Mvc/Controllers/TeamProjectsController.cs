@@ -102,9 +102,9 @@ namespace SoftwareForge.Mvc.Controllers
         /// <param name="guid">The guid of project</param>
         /// <param name="username">The username</param>
         /// <returns>Redirects to overview page</returns>
-        public ActionResult CreateProjectJoinRequest(Guid guid, String username)
+        public ActionResult CreateProjectJoinRequest(Guid guid)
         {
-            return View("CreateProjectJoinRequest",new ProjectJoinRequest{ProjectGuid = guid, UserId = 1});
+            return View("CreateProjectJoinRequest", new ProjectJoinRequest { ProjectGuid = guid});
         }
 
         /// <summary>
@@ -119,6 +119,7 @@ namespace SoftwareForge.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 project.UserRole = UserRole.Contributor; //TODO: Requests for ProjectOwner, add to requestview then remove this line!
+                project.User = new User { Username = User.Identity.Name };
                 TeamCollectionsClient.CreateJoinProjectRequest(project);
             }
 
