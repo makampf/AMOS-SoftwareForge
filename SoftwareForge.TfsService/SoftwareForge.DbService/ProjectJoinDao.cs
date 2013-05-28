@@ -19,40 +19,20 @@
  */
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
+using SoftwareForge.Common.Models;
 
-namespace SoftwareForge.Common.Models
+namespace SoftwareForge.DbService
 {
-    public class ProjectJoinRequest
+    class ProjectJoinDao
     {
-        /// <summary>
-        /// The project
-        /// </summary>
-        [Key, ForeignKey("Project"), Column(Order = 0)]
-        public Guid ProjectGuid { get; set; }
+        private static readonly SoftwareForgeDbContext SoftwareForgeDbContext = new SoftwareForgeDbContext();
 
-        /// <summary>
-        /// A user in this project
-        /// </summary>
-        [Key, ForeignKey("User"), Column(Order = 1)]
-        public int UserId { get; set; }
-
-        /// <summary>
-        /// The requested role of the user for this project
-        /// </summary>
-        [DataMember]
-        public int UserRoleValue { get; set; }
-        public UserRole UserRole
+        public static List<Project>GetProjectOwnerProjects(User user)
         {
-            get { return (UserRole)UserRoleValue; }
-            set { UserRoleValue = (int)value; }
+            return null;
         }
 
-        [DataMember]
-        public string Message { get; set; }
     }
 }
