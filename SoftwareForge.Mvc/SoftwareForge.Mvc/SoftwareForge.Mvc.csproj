@@ -281,6 +281,7 @@
     <Content Include="Views\TeamProjects\ProjectDetailsPage.cshtml" />
     <Content Include="Views\TeamProjects\RenameProjectPage.cshtml" />
     <Content Include="Views\TeamProjects\CreateProjectJoinRequest.cshtml" />
+    <Content Include="Views\Home\DashboardProjectRequestMessages.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -19,35 +19,19 @@
  */
 
 using System.Collections.Generic;
-using System.Web.Http;
+using System.Linq;
 using SoftwareForge.Common.Models;
-using SoftwareForge.Common.Models.Requests;
-using SoftwareForge.DbService;
 
-namespace SoftwareForge.WebApi.Controllers
+namespace SoftwareForge.DbService
 {
-    public class ProjectMembershipController : ApiController
+    public class ProjectJoinDao
     {
+        private static readonly SoftwareForgeDbContext SoftwareForgeDbContext = new SoftwareForgeDbContext();
 
-        #region GET
-        [HttpGet]
-        public IEnumerable<Project> GetProjectOwnerProjects(User user)
+        public static IEnumerable<Project> GetProjectOwnerProjects(User user)
         {
-            var result = ProjectJoinDao.GetProjectOwnerProjects(user);
-            return result;
+            return SoftwareForgeDbContext.Projects.Where(t => t.Users.Any(u => ((u.User == user) && (u.UserRole == UserRole.ProjectOwner))));
         }
-        #endregion
-
-        #region POST
-        [HttpPost]
-        public bool Post([FromBody] ProjectMembershipRequestModel model)
-        {
-            ProjectsDao.ProcessMembershipRequest(model);
-            return true;
-        }
-        #endregion
-
-
 
     }
 }
