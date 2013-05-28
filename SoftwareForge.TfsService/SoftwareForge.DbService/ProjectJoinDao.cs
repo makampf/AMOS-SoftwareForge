@@ -18,6 +18,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SoftwareForge.Common.Models;
@@ -31,6 +32,43 @@ namespace SoftwareForge.DbService
         public static IEnumerable<Project> GetProjectOwnerProjects(User user)
         {
             return SoftwareForgeDbContext.Projects.Where(t => t.Users.Any(u => ((u.User == user) && (u.UserRole == UserRole.ProjectOwner))));
+        }
+
+        public static void ProcessProjectJoinRequest(ProjectJoinRequest model)
+        {
+            Project project = SoftwareForgeDbContext.Projects.Single(t => t.Guid == model.ProjectGuid);
+            if (project == null)
+                throw new Exception("ProcessProjectJoinRequest: Could not found the project with GUID: " + model.ProjectGuid);
+
+            User user = SoftwareForgeDbContext.Users.SingleOrDefault(t => t.Id == model.UserId);
+            UserRole role = model.UserRole;
+            if (user == null)
+            {
+                throw new Exception("ProcessProjectJoinRequest: Could not found an user with ID: " + model.UserId);
+            }
+
+            try
+            {
+                //First try to remove old requests 
+                ProjectJoinRequest projectUser =
+                    SoftwareForgeDbContext.ProjectJoinRequests.Single(
+                        t => t.ProjectGuid == project.Guid && t.UserId == user.Id);
+                SoftwareForgeDbContext.ProjectJoinRequests.Remove(projectUser);
+            }
+            catch
+            {
+            }
+            SoftwareForgeDbContext.ProjectJoinRequests.Add(new ProjectJoinRequest
+            {
+                Project = project,
+                ProjectGuid = project.Guid,
+                User = user,
+                UserId = user.Id,
+                UserRole = role,
+                Message = model.Message
+            });
+
+            SoftwareForgeDbContext.SaveChanges();
         }
 
     }

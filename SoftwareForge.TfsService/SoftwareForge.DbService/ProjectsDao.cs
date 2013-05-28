@@ -87,7 +87,7 @@ namespace SoftwareForge.DbService
             UserRole role = requestModel.UserRole;
             if (user == null)
             {
-                user = new User {Username = requestModel.Username};
+                user = new User { Username = requestModel.Username };
                 SoftwareForgeDbContext.Users.Add(user);
             }
 
@@ -99,13 +99,13 @@ namespace SoftwareForge.DbService
             catch
             {
                 SoftwareForgeDbContext.ProjectUsers.Add(new ProjectUser
-                    {
-                        Project = project,
-                        ProjectGuid = project.Guid,
-                        User = user,
-                        UserId = user.Id,
-                        UserRole = role
-                    });
+                {
+                    Project = project,
+                    ProjectGuid = project.Guid,
+                    User = user,
+                    UserId = user.Id,
+                    UserRole = role
+                });
             }
 
             SoftwareForgeDbContext.SaveChanges();
