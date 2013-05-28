@@ -359,5 +359,75 @@ namespace SoftwareForge.TfsService
                     TeamCollectionGuid = collectionGuid
                 });
         }
+
+
+        /// <summary>
+        /// Gets all Reader, Administrators and Readers of all projects in all team collections
+        /// </summary>
+        /// <returns>List with all user, reader and administrators</returns>
+        public List<ProjectUser> GetTfsProjectUserList()
+        {
+            if (HasAuthenticated == false)
+                _tfsConfigurationServer.Authenticate();
+
+            List<ProjectUser> result = new List<ProjectUser>();
+
+            List<TeamCollection> list = GetTeamCollections();
+            foreach (var tc in list)
+            {
+                TfsTeamProjectCollection tpc = _tfsConfigurationServer.GetTeamProjectCollection(tc.Guid);
+                if (tpc == null)
+                    throw new Exception("GetTeamProjectsOfTeamCollection: Could not find TeamCollection with Guid: " + tc.Guid.ToString());
+
+                WorkItemStore store = tpc.GetService<WorkItemStore>();
+
+
+                foreach (Microsoft.TeamFoundation.WorkItemTracking.Client.Project project in store.Projects)
+                {
+                    IGroupSecurityService sec = (IGroupSecurityService) tpc.GetService(typeof(IGroupSecurityService));
+                    Identity[] appGroups = sec.ListApplicationGroups(project.Uri.AbsoluteUri);
+
+                    foreach (Identity group in appGroups)
+                    {
+                        //ToDo: Only in German TFS Projektadministratoren!
+                        if (group.DisplayName.Equals("Projektadministratoren") || (group.DisplayName.Equals("Readers")) || (group.DisplayName.Equals("Contributors")))
+                        {
+                            Identity[] groupMembers = sec.ReadIdentities(SearchFactor.Sid, new[] {group.Sid},
+                                                                         QueryMembership.Expanded);
+                            foreach (Identity member in groupMembers)
+                            {
+                                if (member.Members != null)
+                                {
+                                    foreach (string memberSid in member.Members)
+                                    {
+                                        Identity memberInfo = sec.ReadIdentity(SearchFactor.Sid, memberSid, QueryMembership.Direct);
+                                        ProjectUser projectUser = new ProjectUser
+                                            {
+                                                User = new User { Username = memberInfo.Domain + "\\" + memberInfo.AccountName },
+                                                ProjectGuid = new Guid(project.Guid),
+                                                Project = new Project {Guid = tc.Guid, TfsName = tc.Name}
+                                            };
+                                        if (group.DisplayName.Equals("Projektadministratoren"))
+                                            projectUser.UserRole = UserRole.ProjectOwner;
+                                        else if (group.DisplayName.Equals("Contributors"))
+                                            projectUser.UserRole = UserRole.Contributor;
+                                        else if (group.DisplayName.Equals("Readers"))
+                                            projectUser.UserRole = UserRole.Reader;
+
+                                        if (memberInfo.Domain.StartsWith("vstfs://"))
+                                            continue;
+
+                                        result.Add(projectUser);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
     }
 }

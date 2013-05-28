@@ -231,5 +231,13 @@ namespace SoftwareForge.TfsService.UnitTests
         }
 
 
+        //ToDo: Better Testing
+        [TestMethod]
+        public void TestGetTfsProjectUserList()
+        {
+            List<ProjectUser> list = _tfsController.GetTfsProjectUserList();
+            Assert.IsNotNull(list);
+        }
+
     }
 }
