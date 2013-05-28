@@ -8,24 +8,27 @@ using System.Text;
 
 namespace SoftwareForge.Common.Models
 {
-    public class ProjektJoinModel
+    public class ProjectJoinRequest
     {
         /// <summary>
         /// The project
         /// </summary>
         [Key, ForeignKey("Project"), Column(Order = 0)]
         public Guid ProjectGuid { get; set; }
+        public virtual Project Project { get; set; }
+
 
         /// <summary>
         /// A user in this project
         /// </summary>
         [Key, ForeignKey("User"), Column(Order = 1)]
         public int UserId { get; set; }
+        public virtual User User { get; set; }
+
 
         /// <summary>
         /// The requested role of the user for this project
         /// </summary>
-        [DataMember]
         public int UserRoleValue { get; set; }
         public UserRole UserRole
         {
@@ -33,7 +36,6 @@ namespace SoftwareForge.Common.Models
             set { UserRoleValue = (int)value; }
         }
 
-        [DataMember]
         public string Message { get; set; }
     }
 }

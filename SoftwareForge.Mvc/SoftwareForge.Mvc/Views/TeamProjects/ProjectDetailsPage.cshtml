@@ -26,15 +26,35 @@
     <br/>
     @Model.Description<br/>
     <i>@Model.ProjectType</i><br/>
+    
+
     [
     @if (@Model.Users.Any(t => t.User.Username.Equals(User.Identity.Name)))
     {
-        <text>@Html.ActionLink("Leave", "LeaveProject", "TeamProjects",new {guid=Model.Guid, username=User.Identity.Name},null)</text>
+        <text>@Html.ActionLink("Unwatch", "LeaveProject", "TeamProjects",new {guid=Model.Guid, username=User.Identity.Name},null)</text>
     }
     else
     {
-        <text>@Html.ActionLink("Join", "JoinProject", "TeamProjects",new {guid=Model.Guid, username=User.Identity.Name},null)</text>
+        <text>@Html.ActionLink("Watch", "JoinProject", "TeamProjects",new {guid=Model.Guid, username=User.Identity.Name},null)</text>
     }
     ]
-    
+
+    @Html.ActionLink("Create join request", "CreateProjectJoinRequest", "TeamProjects",new {guid=Model.Guid, username=User.Identity.Name},null)
+
+    <br/>
+    <b>ProjectOwner:</b>
+    <ul>
+        @foreach (ProjectMember projectMember in Model.Users.Where(t=>t.UserRole == UserRole.ProjectOwner))
+        {
+            <li>@projectMember</li>
+        }
+    </ul>
+
+    <b>Contributor:</b>
+    <ul>
+    @foreach (ProjectMember projectMember in Model.Users.Where(t=>t.UserRole == UserRole.Contributor))
+    {
+        <li>@projectMember</li>
+    }
+    </ul>
 </p>
