@@ -100,7 +100,7 @@ namespace SoftwareForge.Mvc.WebApiClient
         public static bool RenameProject(Guid guid, string newName)
         {
             RenameProjectModel rpm = new RenameProjectModel {Guid = guid, NewName = newName};
-            return CreatePost<bool, RenameProjectModel>("api/TeamProjects", rpm);
+            return CreatePut<bool, RenameProjectModel>("api/TeamProjects", rpm);
         }
 
 
@@ -203,5 +203,48 @@ namespace SoftwareForge.Mvc.WebApiClient
 
             return default(T);
         }
+
+
+        /// <summary>
+        /// Create a put WebRequest
+        /// </summary>
+        /// <typeparam name="T">the expected type of the answer</typeparam>
+        /// <typeparam name="TM">the type of the posted model</typeparam>
+        /// <param name="postUrl">the url for the post call</param>
+        /// <param name="model">the model to post</param>
+        /// <returns>a object with type T</returns>
+        private static T CreatePut<T, TM>(string postUrl, TM model)
+        {
+            String url = Properties.Settings.Default.WebApiUri + postUrl;
+            var httpWebRequest = CreateRequest(url);
+            httpWebRequest.Method = "PUT";
+
+            using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(TM));
+                MemoryStream ms = new MemoryStream();
+                ser.WriteObject(ms, model);
+                String json = Encoding.UTF8.GetString(ms.ToArray());
+
+                streamWriter.Write(json);
+                streamWriter.Flush();
+            }
+
+            using (HttpWebResponse httpResponse = httpWebRequest.GetResponse() as HttpWebResponse)
+            {
+                if (httpResponse != null)
+                {
+                    var responseStream = httpResponse.GetResponseStream();
+                    if (responseStream != null)
+                    {
+                        DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(T));
+                        return (T)ser.ReadObject(responseStream);
+                    }
+                }
+            }
+
+            return default(T);
+        }
+
     }
 }
