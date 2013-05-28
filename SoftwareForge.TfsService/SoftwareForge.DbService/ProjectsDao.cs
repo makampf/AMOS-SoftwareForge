@@ -29,7 +29,7 @@ using SoftwareForge.Common.Models.Requests;
 namespace SoftwareForge.DbService
 {
     /// <summary>
-    /// The project dao class.
+    /// The project Dao class.
     /// </summary>
     public class ProjectsDao
     {
@@ -43,7 +43,7 @@ namespace SoftwareForge.DbService
         /// <summary>
         /// Add a project
         /// </summary>
-        /// <param name="project">project to add</param>
+        /// <param name="project">Project to add</param>
         public static Project Add(Project project)
         {
             if (SoftwareForgeDbContext.Projects.Any(t => t.Guid == project.Guid))
@@ -55,12 +55,17 @@ namespace SoftwareForge.DbService
             return project;
         }
 
-
+        /// <summary>
+        /// Rename a project in the database
+        /// </summary>
+        /// <param name="projectGuid">The GUID of the project</param>
+        /// <param name="newName">The new name of the project</param>
+        /// <returns>True if succesful, otherwise false</returns>
         public static bool RenameProject(Guid projectGuid, String newName)
         {
             Project project = SoftwareForgeDbContext.Projects.SingleOrDefault(t => t.Guid == projectGuid);
             if (project == null)
-                throw new Exception("RenameProject: Could not found the project with GUID: " + projectGuid);
+                throw new Exception("RenameProject: Could not find the project with GUID: " + projectGuid);
 
             project.Name = newName;
             SoftwareForgeDbContext.SaveChanges();
@@ -71,12 +76,12 @@ namespace SoftwareForge.DbService
         /// <summary>
         /// Process a membership request. Joining or leaving of projects
         /// </summary>
-        /// <param name="requestModel">the request model</param>
+        /// <param name="requestModel">The request model</param>
         public static void ProcessMembershipRequest(ProjectMembershipRequestModel requestModel)
         {
             Project project = SoftwareForgeDbContext.Projects.Single(t => t.Guid == requestModel.ProjectGuid);
             if (project == null)
-                throw new Exception("ProcessMembershipRequest: Could not found the project with GUID: " + requestModel.ProjectGuid);
+                throw new Exception("ProcessMembershipRequest: Could not find the project with GUID: " + requestModel.ProjectGuid);
 
             User user = SoftwareForgeDbContext.Users.SingleOrDefault(t => t.Username == requestModel.Username);
             UserRole role = requestModel.UserRole;
@@ -130,7 +135,7 @@ namespace SoftwareForge.DbService
         /// </summary>
         /// <param name="projectGuid">The guid of the project</param>
         /// <param name="username">The username</param>
-        /// <returns></returns>
+        /// <returns>The UserRole of a user in a project</returns>
         public static UserRole GetMembershipRoleOfUserInProject(Guid projectGuid, String username)
         {
             ProjectUser singleOrDefault = SoftwareForgeDbContext.ProjectUsers.SingleOrDefault(t => (t.ProjectGuid == projectGuid && t.User.Username == username));
@@ -145,7 +150,7 @@ namespace SoftwareForge.DbService
         /// Get the users of a project
         /// </summary>
         /// <param name="guid">guid of the project</param>
-        /// <returns>a collection of users in the specific project</returns>
+        /// <returns>A collection of users in the specific project</returns>
         public static Collection<ProjectMember> GetUsers(Guid guid)
         {
             Collection<ProjectMember> users = new Collection<ProjectMember>();
