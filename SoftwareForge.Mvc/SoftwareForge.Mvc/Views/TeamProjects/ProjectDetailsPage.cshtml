@@ -20,18 +20,41 @@
 @using SoftwareForge.Common.Models
 @model Project
 <p>
-    <b>@Model.Name</b><br/>
+    <b>@Model.Name</b> @Html.ActionLink("[Rename]", "RenameProjectPage", "TeamProjects",new {guid=Model.Guid},null)<br/>
+    TFS-Project: @Model.TfsName
+
+    <br/>
     @Model.Description<br/>
     <i>@Model.ProjectType</i><br/>
+    
+
     [
-    @if (@Model.Users.Any(t => t.Username.Equals(User.Identity.Name)))
+    @if (@Model.Users.Any(t => t.User.Username.Equals(User.Identity.Name)))
     {
-        <text>@Html.ActionLink("Leave", "LeaveProject", "TeamProjects",new {guid=Model.Guid, username=User.Identity.Name},null)</text>
+        <text>@Html.ActionLink("Unwatch", "LeaveProject", "TeamProjects",new {guid=Model.Guid, username=User.Identity.Name},null)</text>
     }
     else
     {
-        <text>@Html.ActionLink("Join", "JoinProject", "TeamProjects",new {guid=Model.Guid, username=User.Identity.Name},null)</text>
+        <text>@Html.ActionLink("Watch", "JoinProject", "TeamProjects",new {guid=Model.Guid, username=User.Identity.Name},null)</text>
     }
     ]
-    
+
+    @Html.ActionLink("[Create join request]", "CreateProjectJoinRequest", "TeamProjects",new {guid=Model.Guid},null)
+
+    <br/>
+    <b>ProjectOwner:</b>
+    <ul>
+        @foreach (ProjectMember projectMember in Model.Users.Where(t=>t.UserRole == UserRole.ProjectOwner))
+        {
+            <li>@projectMember.User.Username</li>
+        }
+    </ul>
+
+    <b>Contributor:</b>
+    <ul>
+    @foreach (ProjectMember projectMember in Model.Users.Where(t=>t.UserRole == UserRole.Contributor))
+    {
+        <li>@projectMember.User.Username</li>
+    }
+    </ul>
 </p>

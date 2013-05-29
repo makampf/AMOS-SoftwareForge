@@ -17,30 +17,46 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Text;
 
 namespace SoftwareForge.Common.Models
 {
-    public class User
+    public class ProjectJoinRequest
     {
         /// <summary>
-        /// The Username <example>domain\john.doe</example>
+        /// The project
         /// </summary>
-        public string Username { get; set; }
+        [Key, ForeignKey("Project"), Column(Order = 0)]
+        public Guid ProjectGuid { get; set; }
+        public virtual Project Project { get; set; }
+
 
         /// <summary>
-        /// The user id.
+        /// A user in this project
         /// </summary>
-        [Key]
-        public int Id { get; set; }
+        [Key, ForeignKey("User"), Column(Order = 1)]
+        public int UserId { get; set; }
+        public virtual User User { get; set; }
+
 
         /// <summary>
-        /// The list with all projects that the user is member of.
+        /// The requested role of the user for this project
         /// </summary>
-        [NotMapped]
-        public ICollection<Project> Projects { get; set; }
+        public int UserRoleValue { get; set; }
+        public UserRole UserRole
+        {
+            get { return (UserRole)UserRoleValue; }
+            set { UserRoleValue = (int)value; }
+        }
 
+        [MaxLength(4000)]
+        [DataType(DataType.MultilineText)]
+        public string Message { get; set; }
     }
 }

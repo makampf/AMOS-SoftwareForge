@@ -145,8 +145,6 @@ namespace SoftwareForge.TfsService
         /// <returns>a list of of projects</returns>
         public List<Project> GetTeamProjectsOfTeamCollection(Guid teamCollectionGuid)
         {
-
-            ProjectsDao projectsDao = new ProjectsDao();
             List<Project> result = new List<Project>();
 
             if (HasAuthenticated == false)
@@ -163,12 +161,12 @@ namespace SoftwareForge.TfsService
             foreach (Microsoft.TeamFoundation.WorkItemTracking.Client.Project project in projects)
             {
                 Guid guid = new Guid(project.Guid);
-                Project projectModel = projectsDao.Get(new Guid(project.Guid));
+                Project projectModel = ProjectsDao.Get(new Guid(project.Guid));
                 if (projectModel == null)
                 {
                     //TODO: Language files - localization - no language specifictext in code!
                     const string noDescriptionAvailable = "No description available.";
-                    projectModel = projectsDao.Add(new Project(project.Name, noDescriptionAvailable, project.Id, guid, teamCollectionGuid, ProjectType.Application));
+                    projectModel = ProjectsDao.Add(new Project(project.Name, noDescriptionAvailable, project.Id, guid, teamCollectionGuid, ProjectType.Application));
                 }
                 result.Add(projectModel);
             }
@@ -213,7 +211,7 @@ namespace SoftwareForge.TfsService
                 _tfsConfigurationServer.Authenticate();
 
             if (collectionName == null)
-                throw new ArgumentNullException(collectionName);
+                throw new ArgumentNullException("collectionName");
 
             List<TeamCollection> teamCollections = GetTeamCollections();
             if (teamCollections.Any(a => a.Name == collectionName))
@@ -303,26 +301,27 @@ namespace SoftwareForge.TfsService
         }
 
         /// <summary>
-        /// Creates a TeamProjectCollection.
+        /// Creates a TeamProjectCollection
         /// </summary>
-        /// <param name="teamCollectionGuid">the TeamProjectCollection Guid in which the project will be created</param>
-        /// <param name="projectName">the TeamProject name</param>
-        /// <param name="projectType">the type of the project</param>
-        /// <param name="templateName">the Template, which should be used</param>
-        /// <param name="projectDescription">the description of the project</param>
-        public Project CreateTeamProjectInTeamCollection(Guid teamCollectionGuid, String projectName, string projectDescription, ProjectType projectType, String templateName)
+        /// <param name="collectionGuid">The TeamProjectCollection Guid in which the project will be created</param>
+        /// <param name="projectName">The project name</param>
+        /// <param name="projectType">The type of the project</param>
+        /// <param name="templateName">The template, which should be used</param>
+        /// <param name="tfsProjectName">The tfs project name</param>
+        /// <param name="projectDescription">The description of the project</param>
+        public Project CreateTeamProjectInTeamCollection(Guid collectionGuid, String projectName, String tfsProjectName, string projectDescription, ProjectType projectType, String templateName)
         {
             if (HasAuthenticated == false)
                 _tfsConfigurationServer.Authenticate();
 
-            TeamCollection tc = GetTeamCollection(teamCollectionGuid);
+            TeamCollection tc = GetTeamCollection(collectionGuid);
             if (tc == null)
-                throw new Exception("Could not found TeamCollection with Guid: " + teamCollectionGuid);
+                throw new Exception("Could not found TeamCollection with Guid: " + collectionGuid);
 
-            if (tc.Projects.Count(a => a.Name == projectName) != 0)
+            if (tc.Projects.Count(a => a.TfsName == projectName) != 0)
                 throw  new Exception("The Project " + projectName + " in the TeamCollection " + tc.Name + " already exists");
 
-            List<String> templates = GetTemplatesInCollection(teamCollectionGuid);
+            List<String> templates = GetTemplatesInCollection(collectionGuid);
             if (templates.Contains(templateName) == false)
                 throw new Exception("Could not found templateName in collection " + tc.Name);
 
@@ -337,7 +336,7 @@ namespace SoftwareForge.TfsService
             while (tfsProject == null && getProjectTrys < 30)
             {
                 ForceTfsCacheClean();
-                tfsProject = GetTfsProjectByName(projectName, teamCollectionGuid);
+                tfsProject = GetTfsProjectByName(projectName, collectionGuid);
                 Thread.Sleep(250);
                 getProjectTrys++;
             }
@@ -348,16 +347,87 @@ namespace SoftwareForge.TfsService
             {
                 throw new Exception("Error while creating new project. No new project found after creation command.");
             }
-            ProjectsDao projectsDao = new ProjectsDao();
-            return projectsDao.Add(new Project
+            
+            return ProjectsDao.Add(new Project
                 {
                     Description = projectDescription,
                     ProjectType = projectType,
                     Guid = new Guid(tfsProject.Guid),
                     Id = tfsProject.Id,
+                    TfsName = tfsProjectName,
                     Name = projectName,
-                    TeamCollectionGuid = teamCollectionGuid
+                    TeamCollectionGuid = collectionGuid
                 });
         }
+
+
+        /// <summary>
+        /// Gets all Reader, Administrators and Readers of all projects in all team collections
+        /// </summary>
+        /// <returns>List with all user, reader and administrators</returns>
+        public List<ProjectUser> GetTfsProjectUserList()
+        {
+            if (HasAuthenticated == false)
+                _tfsConfigurationServer.Authenticate();
+
+            List<ProjectUser> result = new List<ProjectUser>();
+
+            List<TeamCollection> list = GetTeamCollections();
+            foreach (var tc in list)
+            {
+                TfsTeamProjectCollection tpc = _tfsConfigurationServer.GetTeamProjectCollection(tc.Guid);
+                if (tpc == null)
+                    throw new Exception("GetTeamProjectsOfTeamCollection: Could not find TeamCollection with Guid: " + tc.Guid.ToString());
+
+                WorkItemStore store = tpc.GetService<WorkItemStore>();
+
+
+                foreach (Microsoft.TeamFoundation.WorkItemTracking.Client.Project project in store.Projects)
+                {
+                    IGroupSecurityService sec = (IGroupSecurityService) tpc.GetService(typeof(IGroupSecurityService));
+                    Identity[] appGroups = sec.ListApplicationGroups(project.Uri.AbsoluteUri);
+
+                    foreach (Identity group in appGroups)
+                    {
+                        //ToDo: Only in German TFS Projektadministratoren!
+                        if (group.DisplayName.Equals("Projektadministratoren") || (group.DisplayName.Equals("Readers")) || (group.DisplayName.Equals("Contributors")))
+                        {
+                            Identity[] groupMembers = sec.ReadIdentities(SearchFactor.Sid, new[] {group.Sid},
+                                                                         QueryMembership.Expanded);
+                            foreach (Identity member in groupMembers)
+                            {
+                                if (member.Members != null)
+                                {
+                                    foreach (string memberSid in member.Members)
+                                    {
+                                        Identity memberInfo = sec.ReadIdentity(SearchFactor.Sid, memberSid, QueryMembership.Direct);
+                                        ProjectUser projectUser = new ProjectUser
+                                            {
+                                                User = new User { Username = memberInfo.Domain + "\\" + memberInfo.AccountName },
+                                                ProjectGuid = new Guid(project.Guid),
+                                                Project = new Project {Guid = tc.Guid, TfsName = tc.Name}
+                                            };
+                                        if (group.DisplayName.Equals("Projektadministratoren"))
+                                            projectUser.UserRole = UserRole.ProjectOwner;
+                                        else if (group.DisplayName.Equals("Contributors"))
+                                            projectUser.UserRole = UserRole.Contributor;
+                                        else if (group.DisplayName.Equals("Readers"))
+                                            projectUser.UserRole = UserRole.Reader;
+
+                                        if (memberInfo.Domain.StartsWith("vstfs://"))
+                                            continue;
+
+                                        result.Add(projectUser);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
     }
 }

@@ -61,7 +61,7 @@ namespace SoftwareForge.WebApi.Controllers
         [HttpGet]
         public Project GetTeamProject(Guid guid)
         {
-            return new ProjectsDao().Get(guid);
+            return ProjectsDao.Get(guid);
         }
         #endregion
 
@@ -78,20 +78,35 @@ namespace SoftwareForge.WebApi.Controllers
         public Project CreateProject([FromBody] Project project)
         {
             List<String> templates = TfsController.GetTemplatesInCollection(project.TeamCollectionGuid);
-            WindowsIdentity identity = (WindowsIdentity)HttpContext.Current.User.Identity;
-            if (templates.Count< 1) 
+            if (templates.Count < 1)
                 throw new ArgumentException("The project given is in a collection that has no templates! ");
-            Project createdProject = TfsController.CreateTeamProjectInTeamCollection(project.TeamCollectionGuid, project.Name, project.Description, project.ProjectType, templates[0]);
-            new ProjectsDao().ProcessMembershipRequest(new ProjectMembershipRequestModel{ProjectGuid = createdProject.Guid,Username = identity.Name,UserRole = UserRole.ProjectOwner});
+
+            WindowsIdentity identity = (WindowsIdentity)HttpContext.Current.User.Identity;
+            
+            Project createdProject = TfsController.CreateTeamProjectInTeamCollection(project.TeamCollectionGuid, project.Name, project.TfsName, project.Description, project.ProjectType, templates[0]);
+            ProjectsDao.ProcessMembershipRequest(new ProjectMembershipRequestModel { ProjectGuid = createdProject.Guid, Username = identity.Name, UserRole = UserRole.ProjectOwner });
             return createdProject;
         }
         #endregion
 
 
 
-        //#region PUT
+        #region PUT
+        /// <summary>
+        /// Renames a project
+        /// </summary>
+        /// <param name="rpm">rename project model</param>
+        /// <returns>true if succesful, false in error case</returns>
+        [HttpPut]
+        public bool RenameProject([FromBody] RenameProjectModel rpm)
+        {
+            WindowsIdentity identity = (WindowsIdentity)HttpContext.Current.User.Identity;
+            if (ProjectsDao.GetMembershipRoleOfUserInProject(rpm.Guid, identity.Name) != UserRole.ProjectOwner)
+                throw new Exception("Only a project owner can rename a project!");
 
-        //#endregion
+            return ProjectsDao.RenameProject(rpm.Guid, rpm.NewName);
+        }
+        #endregion
         
 
 

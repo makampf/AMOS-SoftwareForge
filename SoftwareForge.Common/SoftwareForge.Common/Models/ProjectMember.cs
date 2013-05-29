@@ -17,35 +17,21 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
+using System;
 using System.Collections.Generic;
-using System.Web.Http;
-using SoftwareForge.Common.Models;
-using SoftwareForge.Common.Models.Requests;
-using SoftwareForge.DbService;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Text;
 
-namespace SoftwareForge.WebApi.Controllers
+namespace SoftwareForge.Common.Models
 {
-    public class ProjectMembershipController : ApiController
+    [DataContract]
+    public class ProjectMember
     {
+        [DataMember]
+        public User User { get; set; }
 
-        #region GET
-        [HttpGet]
-        public IEnumerable<Project> GetProjectOwnerProjects(User user)
-        {
-            IEnumerable<Project> result = ProjectJoinDao.GetProjectOwnerProjects(user);
-            return result;
-        }
-        #endregion
-
-        #region POST
-        [HttpPost]
-        public bool Post([FromBody] ProjectMembershipRequestModel model)
-        {
-            ProjectsDao.ProcessMembershipRequest(model);
-            return true;
-        }
-        #endregion
-
+        [DataMember]
+        public UserRole UserRole { get; set; }
     }
 }

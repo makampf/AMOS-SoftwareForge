@@ -65,6 +65,16 @@ namespace SoftwareForge.TfsService.UnitTests
                 Assert.AreNotEqual(new Guid(), teamCollection.Guid);
                 Assert.IsFalse(String.IsNullOrEmpty(teamCollection.Name));
                 Assert.IsNotNull(teamCollection.Projects);
+
+                foreach (var project in teamCollection.Projects)
+                {
+                    Assert.AreNotEqual(new Guid(), project.Guid);
+                    Assert.IsFalse(String.IsNullOrEmpty(project.TfsName));
+                    Assert.IsNotNull(project.Name);
+                    Assert.IsTrue(project.Id > 0);
+                    Assert.IsNotNull(project.ProjectType);
+                    Assert.AreEqual((int)project.ProjectType, project.ProjectTypeValue);
+                }
             }
         }
 
@@ -98,7 +108,7 @@ namespace SoftwareForge.TfsService.UnitTests
                 foreach (var project in list)
                 {
                     Assert.AreNotEqual(new Guid(), project.Guid);
-                    Assert.IsFalse(String.IsNullOrEmpty(project.Name));
+                    Assert.IsFalse(String.IsNullOrEmpty(project.TfsName));
                     Assert.IsTrue(project.Id > 0);
                 }
             }
@@ -116,7 +126,11 @@ namespace SoftwareForge.TfsService.UnitTests
 
             foreach (var teamCollection in collections)
             {
+                Assert.AreNotEqual(new Guid(), teamCollection.Guid);
+                Assert.IsFalse(String.IsNullOrEmpty(teamCollection.Name));
+
                 TeamCollection collection = _tfsController.GetTeamCollection(teamCollection.Guid);
+
                 Assert.AreNotEqual(new Guid(), collection.Guid);
                 Assert.IsFalse(String.IsNullOrEmpty(collection.Name));
                 Assert.IsNotNull(collection.Projects);
@@ -129,6 +143,12 @@ namespace SoftwareForge.TfsService.UnitTests
                     Assert.AreEqual(teamCollection.Projects[i].Guid, collection.Projects[i].Guid);
                     Assert.AreEqual(teamCollection.Projects[i].Id, collection.Projects[i].Id);
                     Assert.AreEqual(teamCollection.Projects[i].Name, collection.Projects[i].Name);
+                    Assert.AreEqual(teamCollection.Projects[i].TfsName, collection.Projects[i].TfsName);
+                    Assert.AreEqual(teamCollection.Projects[i].ProjectType, collection.Projects[i].ProjectType);
+                    Assert.AreEqual(teamCollection.Projects[i].ProjectTypeValue, collection.Projects[i].ProjectTypeValue);
+                    Assert.AreEqual(teamCollection.Projects[i].TeamCollectionGuid, collection.Projects[i].TeamCollectionGuid);
+
+                    Assert.IsTrue(teamCollection.Projects[i].Users.SequenceEqual(collection.Projects[i].Users));
                 }
             }
         }
@@ -145,7 +165,6 @@ namespace SoftwareForge.TfsService.UnitTests
 
             List<TeamCollection> collections = _tfsController.GetTeamCollections();
             Assert.IsNotNull(collections);
-
 
             TeamCollection teamCollection = _tfsController.CreateTeamCollection(TestCollectionName);
             Assert.IsNotNull(teamCollection);
@@ -206,11 +225,19 @@ namespace SoftwareForge.TfsService.UnitTests
             List<String> templates = _tfsController.GetTemplatesInCollection(teamCollection.Guid);
             Assert.IsNotNull(templates);
             Assert.IsTrue(templates.Count > 0);
-            _tfsController.CreateTeamProjectInTeamCollection(teamCollection.Guid, TestProjectName, "Description", ProjectType.Application, templates[0] );
+            _tfsController.CreateTeamProjectInTeamCollection(teamCollection.Guid, TestProjectName, TestProjectName, "Description", ProjectType.Application, templates[0]);
             
             _tfsController.RemoveTeamCollection(teamCollection.Guid);
         }
 
+
+        //ToDo: Better Testing
+        [TestMethod]
+        public void TestGetTfsProjectUserList()
+        {
+            List<ProjectUser> list = _tfsController.GetTfsProjectUserList();
+            Assert.IsNotNull(list);
+        }
 
     }
 }

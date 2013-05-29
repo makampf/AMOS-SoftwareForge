@@ -18,34 +18,37 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-using System.Collections.Generic;
-using System.Web.Http;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SoftwareForge.Common.Models;
-using SoftwareForge.Common.Models.Requests;
-using SoftwareForge.DbService;
+using SoftwareForge.WebApi.Controllers;
 
-namespace SoftwareForge.WebApi.Controllers
+namespace SoftwareForge.WebApi.Tests.Controllers
 {
-    public class ProjectMembershipController : ApiController
+    [TestClass]
+    public class ProjectMembershipControllerTest
     {
+        private ProjectMembershipController _controller;
 
-        #region GET
-        [HttpGet]
-        public IEnumerable<Project> GetProjectOwnerProjects(User user)
+        /// <summary>
+        /// Init the TeamCollectionsController.
+        /// </summary>
+        [TestInitialize]
+        public void TestInit()
         {
-            IEnumerable<Project> result = ProjectJoinDao.GetProjectOwnerProjects(user);
-            return result;
+            _controller = new ProjectMembershipController();
+            Assert.IsNotNull(_controller);
         }
-        #endregion
 
-        #region POST
-        [HttpPost]
-        public bool Post([FromBody] ProjectMembershipRequestModel model)
+        /// <summary>
+        /// test the GetTeamCollections method (simple).
+        /// </summary>
+        [TestMethod]
+        public void TestGetProjectOwnerProjects()
         {
-            ProjectsDao.ProcessMembershipRequest(model);
-            return true;
+            var res = _controller.GetProjectOwnerProjects(new User {Username = "COMPUTERNAME\\Administrator"});
+            Assert.IsNotNull(res);
         }
-        #endregion
+
 
     }
 }

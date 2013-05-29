@@ -18,8 +18,12 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+using System.Runtime.Serialization;
+
 namespace SoftwareForge.Common.Models
 {
+
+    [DataContract]
     public enum UserRole
     {
         Reader,

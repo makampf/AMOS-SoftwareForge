@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 by Denis Bach, Marvin Kampf, Konstantin Tsysin, Taner Tunc, Florian Wittmann
+ * Copyright (c) 2013 by Denis Bach, Konstantin Tsysin, Taner Tunc, Marvin Kampf, Florian Wittmann
  *
  * This file is part of the Software Forge Overlay rating application.
  *
@@ -18,12 +18,24 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Runtime.Serialization;
+
 namespace SoftwareForge.Common.Models
 {
-    public enum ProjectType
+    [DataContract]
+    public class RenameProjectModel
     {
-        Application,
-        Library,
-        Nonsoftware
+        /// <summary>
+        /// The Guid of the Project.
+        /// </summary>
+        [DataMember]
+        public Guid Guid { get; set; }
+
+        /// <summary>
+        /// The new name of the Project in SoftwareForge.
+        /// </summary>
+        [DataMember]
+        public string NewName { get; set; }
     }
 }
