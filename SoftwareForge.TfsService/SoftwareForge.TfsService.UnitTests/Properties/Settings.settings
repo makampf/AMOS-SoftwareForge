@@ -8,5 +8,11 @@
     <Setting Name="DbTestConnectionString" Type="System.String" Scope="User">
       <Value Profile="(Default)">Data Source=localhost\SQLEXPRESS;Integrated Security=True</Value>
     </Setting>
+    <Setting Name="TestCollectionName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">newTestCollection</Value>
+    </Setting>
+    <Setting Name="TestProjectName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">newTestProject</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
