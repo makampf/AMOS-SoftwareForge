@@ -17,6 +17,7 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
+
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -362,7 +363,7 @@ namespace SoftwareForge.TfsService
 
 
         /// <summary>
-        /// Gets all Reader, Administrators and Readers of all projects in all team collections
+        /// Get all reader, contributer and administrator of all projects in all team collections
         /// </summary>
         /// <returns>List with all user, reader and administrators</returns>
         public List<ProjectUser> GetTfsProjectUserList()

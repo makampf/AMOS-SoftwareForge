@@ -18,33 +18,13 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-using System.Web.Http;
-using SoftwareForge.Common.Models;
-using SoftwareForge.DbService;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace SoftwareForge.WebApi.Controllers
+namespace SoftwareForge.TfsService.UnitTests
 {
-    public class ProjectJoinRequestController : ApiController
+    [TestClass]
+    public class PowerToolsUtilUtc
     {
-
-        #region GET
-
-        #endregion
-
-        #region POST
-        [HttpPost]
-        public bool Post([FromBody] ProjectJoinRequest model)
-        {
-            ProjectJoinDao.ProcessProjectJoinRequest(model);
-            return true;
-        }
-
-        #endregion
-
-
-
-
-
-
+        
     }
 }

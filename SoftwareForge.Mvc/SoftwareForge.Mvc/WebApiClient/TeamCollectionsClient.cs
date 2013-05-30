@@ -26,7 +26,6 @@ using System.Text;
 using Newtonsoft.Json;
 using SoftwareForge.Common.Models;
 using SoftwareForge.Common.Models.Requests;
-using System.Runtime.Serialization;
 
 namespace SoftwareForge.Mvc.WebApiClient
 {

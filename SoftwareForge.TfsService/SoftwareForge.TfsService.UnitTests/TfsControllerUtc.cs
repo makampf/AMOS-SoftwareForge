@@ -17,6 +17,7 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
+
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -33,8 +34,7 @@ namespace SoftwareForge.TfsService.UnitTests
     public class TfsControllerUtc
     {
         private TfsController _tfsController;
-        private const string TestCollectionName = "newTestCollection";
-        private const string TestProjectName = "newTestProject";
+        
 
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace SoftwareForge.TfsService.UnitTests
         /// Test the GetTeamProjectsOfTeamCollection method.
         /// </summary>
         [TestMethod]
-        public void TestGetProjectsOfTeamCollectionGuid()
+        public void TestGetTeamProjectsOfTeamCollection()
         {
             List<TeamCollection> collections = _tfsController.GetTeamCollections();
             Assert.IsNotNull(collections);
@@ -166,7 +166,7 @@ namespace SoftwareForge.TfsService.UnitTests
             List<TeamCollection> collections = _tfsController.GetTeamCollections();
             Assert.IsNotNull(collections);
 
-            TeamCollection teamCollection = _tfsController.CreateTeamCollection(TestCollectionName);
+            TeamCollection teamCollection = _tfsController.CreateTeamCollection(Properties.Settings.Default.TestCollectionName);
             Assert.IsNotNull(teamCollection);
             Assert.IsFalse(String.IsNullOrEmpty(teamCollection.Name));
             Assert.AreNotEqual(new Guid(), teamCollection.Guid);
@@ -210,11 +210,14 @@ namespace SoftwareForge.TfsService.UnitTests
             List<TeamCollection> collections = _tfsController.GetTeamCollections();
             Assert.IsNotNull(collections);
 
+            String testCollectionName = Properties.Settings.Default.TestCollectionName;
+            String testProjectName = Properties.Settings.Default.TestProjectName;
+
             TeamCollection teamCollection;
-            if (collections.Any(a => a.Name == TestCollectionName))
-                teamCollection = collections.Find(a => a.Name == TestCollectionName);
+            if (collections.Any(a => a.Name == testCollectionName))
+                teamCollection = collections.Find(a => a.Name == testCollectionName);
             else
-                teamCollection = _tfsController.CreateTeamCollection(TestCollectionName);
+                teamCollection = _tfsController.CreateTeamCollection(testCollectionName);
 
 
             Assert.IsNotNull(teamCollection);
@@ -225,7 +228,7 @@ namespace SoftwareForge.TfsService.UnitTests
             List<String> templates = _tfsController.GetTemplatesInCollection(teamCollection.Guid);
             Assert.IsNotNull(templates);
             Assert.IsTrue(templates.Count > 0);
-            _tfsController.CreateTeamProjectInTeamCollection(teamCollection.Guid, TestProjectName, TestProjectName, "Description", ProjectType.Application, templates[0]);
+            _tfsController.CreateTeamProjectInTeamCollection(teamCollection.Guid, testProjectName, testProjectName, "Description", ProjectType.Application, templates[0]);
             
             _tfsController.RemoveTeamCollection(teamCollection.Guid);
         }
@@ -238,6 +241,8 @@ namespace SoftwareForge.TfsService.UnitTests
             List<ProjectUser> list = _tfsController.GetTfsProjectUserList();
             Assert.IsNotNull(list);
         }
+
+        
 
     }
 }
