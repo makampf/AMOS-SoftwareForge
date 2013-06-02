@@ -17,6 +17,7 @@
     - License along with this program. If not, see
     - <http://www.gnu.org/licenses/>.
     -->
+@using SoftwareForge.Common.Models
 @model SoftwareForge.Common.Models.ProjectJoinRequest
 @{
     ViewBag.Title = "Join project";
@@ -31,6 +32,12 @@
     <fieldset>
         <legend>Your join request</legend>
         @Html.HiddenFor(model => model.ProjectGuid)
+        <div class="editor-label">
+            @Html.LabelFor(model => model.UserRole)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.UserRoleValue,((IEnumerable<SelectListItem>)ViewData["UserRoles"]))
+        </div>
         <div class="editor-label">
             @Html.LabelFor(model => model.Message)
         </div>

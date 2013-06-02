@@ -18,6 +18,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 using SoftwareForge.Common.Models;
 using SoftwareForge.Mvc.WebApiClient;
@@ -104,6 +105,12 @@ namespace SoftwareForge.Mvc.Controllers
         /// <returns>Redirects to overview page</returns>
         public ActionResult CreateProjectJoinRequest(Guid guid)
         {
+            ViewData["UserRoles"] = new List<SelectListItem>{ 
+                new SelectListItem {Text = UserRole.Contributor.ToString(), Value = ((int) UserRole.Contributor).ToString()}, 
+                new SelectListItem {Text = UserRole.ProjectOwner.ToString(), Value = ((int) UserRole.ProjectOwner).ToString()}, 
+   
+            };
+
             return View("CreateProjectJoinRequest", new ProjectJoinRequest { ProjectGuid = guid});
         }
 
@@ -118,7 +125,6 @@ namespace SoftwareForge.Mvc.Controllers
         {
             if (ModelState.IsValid)
             {
-                project.UserRole = UserRole.Contributor; //TODO: Requests for ProjectOwner, add to requestview then remove this line!
                 project.User = new User { Username = User.Identity.Name };
                 TeamCollectionsClient.CreateJoinProjectRequest(project);
             }
