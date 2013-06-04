@@ -114,7 +114,7 @@ namespace SoftwareForge.Mvc.Controllers
         }
 
         /// <summary>
-        /// Creates a new project
+        /// Called after project joining
         /// </summary>
         /// <param name="project">project to create</param>
         /// <returns>redirects to overview page</returns>

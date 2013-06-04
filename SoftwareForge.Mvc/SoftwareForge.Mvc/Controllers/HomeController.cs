@@ -136,25 +136,40 @@ namespace SoftwareForge.Mvc.Controllers
 
         public ActionResult AcceptRequest(int requestId)
         {
+            ProjectJoinMessageModel model = CreateMessageModel(requestId);
+            return View("AcceptRequest", model);
 
-            return View("AcceptRequest", CreateMessageModel(requestId));
-            
         }
 
         public ActionResult DeclineRequest(int requestId)
         {
-            return View("DeclineRequest", CreateMessageModel(requestId));
+            ProjectJoinMessageModel model = CreateMessageModel(requestId);
+            return View("DeclineRequest", model);
 
         }
 
-        public void PostDeclineMessage()
+        [HttpPostAttribute]
+        [ValidateAntiForgeryTokenAttribute]
+        public ActionResult PostDeclineMessage(ProjectJoinMessageModel model)
         {
-            
+            //TODO
+            if (ModelState.IsValid)
+            {
+
+            }
+            return RedirectToAction("Dashboard", "Home");
         }
 
-        public void PostAcceptMessage()
+        [HttpPostAttribute]
+        [ValidateAntiForgeryTokenAttribute]
+        public ActionResult PostAcceptMessage(ProjectJoinMessageModel model)
         {
-            
+            //TODO
+            if (ModelState.IsValid)
+            {
+
+            }
+            return RedirectToAction("Dashboard", "Home");
         }
 
         private ProjectJoinMessageModel CreateMessageModel(int requestId)

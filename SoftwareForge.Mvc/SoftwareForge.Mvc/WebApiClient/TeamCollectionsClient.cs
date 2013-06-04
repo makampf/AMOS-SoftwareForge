@@ -148,8 +148,7 @@ namespace SoftwareForge.Mvc.WebApiClient
 
         public static ProjectJoinRequest GetProjectJoinRequestById(int requestId)
         {
-            //TODO
-            return CreateGet<ProjectJoinRequest>("api/" + requestId);
+            return CreateGet<ProjectJoinRequest>("api/ProjectMembershipRequest/?requestId=" + requestId);
         }
 
 

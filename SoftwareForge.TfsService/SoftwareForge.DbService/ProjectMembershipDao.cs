@@ -108,5 +108,13 @@ namespace SoftwareForge.DbService
 
             return requests;
         }
+
+        public static ProjectJoinRequest GetProjectRequestById(int requestId)
+        {
+            ProjectJoinRequest request = SoftwareForgeDbContext.ProjectJoinRequests.SingleOrDefault(r => (r.Id == requestId));
+            if (request == null)
+                throw new Exception("GetProjectRequestById: Could not find ProjectJoinRequest with id: " + requestId);
+            return request;
+        }
     }
 }

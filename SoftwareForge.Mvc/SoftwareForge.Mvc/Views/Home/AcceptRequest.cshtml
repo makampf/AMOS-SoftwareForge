@@ -17,17 +17,22 @@
     - License along with this program. If not, see
     - <http://www.gnu.org/licenses/>.
     -->
-@using SoftwareForge.Common.Models
+
+@model SoftwareForge.Common.Models.ProjectJoinMessageModel
 @{
-    ViewBag.Title = "AcceptRequest";
+    ViewBag.Title = "Accept Request";
 }
 
 <h2>AcceptRequest</h2>
 
-@using (Html.BeginForm("PostAcceptMessage","Home", null)) {
+@using (Html.BeginForm("PostAcceptMessage", "Home", null, FormMethod.Post))
+{
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
+    <fieldset>
+        <legend>Message request</legend>
+        @Html.HiddenFor(model => model.ProjectJoinRequest.Id)
         <div class="editor-label">
             @Html.LabelFor(model => model.Message.Text)
         </div>
@@ -38,5 +43,14 @@
         <p>
             <input type="submit" value="Accept and send Message" />
         </p>
-        
+    </fieldset>
+}
+
+
+<div>
+    @Html.ActionLink("Back to Dashboard","Dashboard","Home")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
 }

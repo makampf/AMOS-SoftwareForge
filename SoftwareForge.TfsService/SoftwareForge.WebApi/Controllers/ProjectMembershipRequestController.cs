@@ -31,6 +31,12 @@ namespace SoftwareForge.WebApi.Controllers
 
         #region GET
         [HttpGet]
+        public ProjectJoinRequest Get(int requestId)
+        {
+            return ProjectMembershipDao.GetProjectRequestById(requestId);
+        }
+
+        [HttpGet]
         public List<ProjectJoinRequest> Get(String username)
         {
             return ProjectMembershipDao.GetProjectRequestsOfUser(username);
