@@ -26,9 +26,15 @@ namespace SoftwareForge.Common.Models
     public class ProjectJoinRequest
     {
         /// <summary>
+        /// The ProjectJoinRequest-Id
+        /// </summary>
+        [Key]
+        public int Id { get; set; }
+
+        /// <summary>
         /// The project
         /// </summary>
-        [Key, ForeignKey("Project"), Column(Order = 0)]
+        [ForeignKey("Project"), Column(Order = 0)]
         public Guid ProjectGuid { get; set; }
         public virtual Project Project { get; set; }
 
@@ -36,7 +42,7 @@ namespace SoftwareForge.Common.Models
         /// <summary>
         /// A user in this project
         /// </summary>
-        [Key, ForeignKey("User"), Column(Order = 1)]
+        [ForeignKey("User"), Column(Order = 1)]
         public int UserId { get; set; }
         public virtual User User { get; set; }
 

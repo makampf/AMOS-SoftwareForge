@@ -69,11 +69,7 @@ namespace SoftwareForge.Mvc.Controllers
 
         private List<ProjectJoinRequest> GetMyRequests()
         {
-            //TODO
-            List<ProjectJoinRequest> requests = new List<ProjectJoinRequest>();
-
-
-
+            List<ProjectJoinRequest> requests = TeamCollectionsClient.GetProjectJoinRequests(User.Identity.Name);
             return requests;
         }
 
@@ -114,8 +110,6 @@ namespace SoftwareForge.Mvc.Controllers
                 randomProjects.RemoveAt(random);
                 counter++;
                 iterations--;
-
-
             }
             return fiveProjects;
         }
@@ -138,6 +132,15 @@ namespace SoftwareForge.Mvc.Controllers
             }
             return myProjects;
         }
-        
+
+        public ActionResult AcceptRequest(int requestId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ActionResult DeclineRequest(int requestId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
