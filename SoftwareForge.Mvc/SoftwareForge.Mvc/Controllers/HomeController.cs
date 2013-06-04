@@ -133,21 +133,29 @@ namespace SoftwareForge.Mvc.Controllers
             }
             return myProjects;
         }
-
+        /// <summary>
+        /// Accepting a request.
+        /// </summary>
+        /// <param name="requestId">Id of a request</param>
+        /// <returns>A view where you can type in an answer for the request</returns>
         public ActionResult AcceptRequest(int requestId)
         {
             ProjectJoinMessageModel model = CreateMessageModel(requestId);
             return View("AcceptRequest", model);
 
         }
-
+        /// <summary>
+        /// Declining a request.
+        /// </summary>
+        /// <param name="requestId">Id of a request</param>
+        /// <returns>A view where you can type in an answer for the request</returns>
         public ActionResult DeclineRequest(int requestId)
         {
             ProjectJoinMessageModel model = CreateMessageModel(requestId);
             return View("DeclineRequest", model);
 
         }
-
+        /// <summary>
         [HttpPostAttribute]
         [ValidateAntiForgeryTokenAttribute]
         public ActionResult PostDeclineMessage(ProjectJoinMessageModel model)
@@ -159,7 +167,7 @@ namespace SoftwareForge.Mvc.Controllers
             }
             return RedirectToAction("Dashboard", "Home");
         }
-
+        /// </summary>
         [HttpPostAttribute]
         [ValidateAntiForgeryTokenAttribute]
         public ActionResult PostAcceptMessage(ProjectJoinMessageModel model)
@@ -171,7 +179,11 @@ namespace SoftwareForge.Mvc.Controllers
             }
             return RedirectToAction("Dashboard", "Home");
         }
-
+        /// <summary>
+        /// Creates the message model for a request
+        /// </summary>
+        /// <param name="requestId">Id off a request</param>
+        /// <returns>the message model</returns>
         private ProjectJoinMessageModel CreateMessageModel(int requestId)
         {
             ProjectJoinRequest request = TeamCollectionsClient.GetProjectJoinRequestById(requestId);
