@@ -22,8 +22,15 @@ namespace SoftwareForge.Common.Models
 {
     public class ProjectJoinMessageModel
     {
+        /// <summary>
+        /// The message model.
+        /// </summary>
         public Message Message { get; set; }
 
+
+        /// <summary>
+        /// The projectJoinRequest model.
+        /// </summary>
         public ProjectJoinRequest ProjectJoinRequest { get; set; }
     }
 }

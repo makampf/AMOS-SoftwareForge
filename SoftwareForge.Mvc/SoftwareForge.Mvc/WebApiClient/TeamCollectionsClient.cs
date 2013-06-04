@@ -132,20 +132,32 @@ namespace SoftwareForge.Mvc.WebApiClient
             return PostWatchRequest(projectGuid, username);
         }
 
-
+        /// <summary>
+        /// Creates the request for project joining
+        /// </summary>
+        /// <param name="projectJoinRequest"></param>
+        /// <returns></returns>
         public static bool CreateJoinProjectRequest(ProjectJoinRequest projectJoinRequest)
         {
             return CreatePost<bool, ProjectJoinRequest>("api/ProjectMembershipRequest", projectJoinRequest);
         }
 
 
-
+        /// <summary>
+        /// Lists all Project Join Request from a User
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns>A list with all Requests</returns>
         public static List<ProjectJoinRequest> GetProjectJoinRequests(String username)
         {
             return CreateGet<List<ProjectJoinRequest>>("api/ProjectMembershipRequest/?username=" + username);
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="requestId"></param>
+        /// <returns></returns>
         public static ProjectJoinRequest GetProjectJoinRequestById(int requestId)
         {
             //TODO

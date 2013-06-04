@@ -133,30 +133,46 @@ namespace SoftwareForge.Mvc.Controllers
             }
             return myProjects;
         }
-
+        /// <summary>
+        /// Accepting a request.
+        /// </summary>
+        /// <param name="requestId">Id of a request</param>
+        /// <returns>A view where you can type in an answer for the request</returns>
         public ActionResult AcceptRequest(int requestId)
         {
 
             return View("AcceptRequest", CreateMessageModel(requestId));
             
         }
-
+        /// <summary>
+        /// Declining a request.
+        /// </summary>
+        /// <param name="requestId">Id of a request</param>
+        /// <returns>A view where you can type in an answer for the request</returns>
         public ActionResult DeclineRequest(int requestId)
         {
             return View("DeclineRequest", CreateMessageModel(requestId));
 
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public void PostDeclineMessage()
         {
             
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public void PostAcceptMessage()
         {
             
         }
-
+        /// <summary>
+        /// Creates the message model for a request
+        /// </summary>
+        /// <param name="requestId">Id off a request</param>
+        /// <returns>the message model</returns>
         private ProjectJoinMessageModel CreateMessageModel(int requestId)
         {
             ProjectJoinRequest request = TeamCollectionsClient.GetProjectJoinRequestById(requestId);
