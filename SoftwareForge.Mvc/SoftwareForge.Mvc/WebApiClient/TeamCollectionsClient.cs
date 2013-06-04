@@ -146,6 +146,12 @@ namespace SoftwareForge.Mvc.WebApiClient
         }
 
 
+        public static ProjectJoinRequest GetProjectJoinRequestById(int requestId)
+        {
+            //TODO
+            return CreateGet<ProjectJoinRequest>("api/" + requestId);
+        }
+
 
 
 
@@ -264,6 +270,9 @@ namespace SoftwareForge.Mvc.WebApiClient
 
             return default(T);
         }
+
+
+        
 
     }
 }

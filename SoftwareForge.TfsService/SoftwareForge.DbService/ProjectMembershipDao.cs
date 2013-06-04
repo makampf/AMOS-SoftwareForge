@@ -81,7 +81,7 @@ namespace SoftwareForge.DbService
 
         private static User GetUser(String username)
         {
-            User user = SoftwareForgeDbContext.Users.Single(a => a.Username == username);
+            User user = SoftwareForgeDbContext.Users.SingleOrDefault(a => a.Username == username);
             if (user == null)
             {
                 user = new User { Username = username };

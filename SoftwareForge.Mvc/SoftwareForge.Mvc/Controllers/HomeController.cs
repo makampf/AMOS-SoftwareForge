@@ -19,6 +19,7 @@
  */
 using System;
 using System.Linq;
+using System.Web.UI.WebControls;
 using SoftwareForge.Common.Models;
 using System.Collections.Generic;
 using System.Web.Mvc;
@@ -135,12 +136,39 @@ namespace SoftwareForge.Mvc.Controllers
 
         public ActionResult AcceptRequest(int requestId)
         {
-            throw new NotImplementedException();
+
+            return View("AcceptRequest", CreateMessageModel(requestId));
+            
         }
 
         public ActionResult DeclineRequest(int requestId)
         {
-            throw new NotImplementedException();
+            return View("DeclineRequest", CreateMessageModel(requestId));
+
         }
+
+        public void PostDeclineMessage()
+        {
+            
+        }
+
+        public void PostAcceptMessage()
+        {
+            
+        }
+
+        private ProjectJoinMessageModel CreateMessageModel(int requestId)
+        {
+            ProjectJoinRequest request = TeamCollectionsClient.GetProjectJoinRequestById(requestId);
+            ProjectJoinMessageModel model = new ProjectJoinMessageModel();
+            model.ProjectJoinRequest = request;
+            model.Message = new Message();
+            model.Message.FromUser = new User();
+            model.Message.FromUser.Username = User.Identity.Name;
+            model.Message.ToUser = request.User;
+            model.Message.ToUserId = request.UserId;
+            return model;
+        }
+        
     }
 }
