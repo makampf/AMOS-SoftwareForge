@@ -69,7 +69,14 @@ namespace SoftwareForge.Mvc.WebApiClient
             return CreatePost<TeamCollection, String>("api/TeamCollections", name);
         }
 
-        private static bool PostProjectMembershipRequest(Guid projectGuid, string username)
+
+        /// <summary>
+        /// Creates a watch request, so the user will get reader or will be removed as a reader in the project
+        /// </summary>
+        /// <param name="projectGuid">The guid of the project, the user watches/unwatches</param>
+        /// <param name="username">The username of the user</param>
+        /// <returns></returns>
+        private static bool PostWatchRequest(Guid projectGuid, string username)
         {
             ProjectMembershipRequestModel joinProjectRequestModel = new ProjectMembershipRequestModel
                 {
@@ -109,9 +116,9 @@ namespace SoftwareForge.Mvc.WebApiClient
         /// <param name="projectGuid">The projectGuid of the project to leave</param>
         /// <param name="username">The user that wants to leave</param>
         /// <returns>True if successful, false in error case</returns>
-        public static bool LeaveProject(Guid projectGuid, string username)
+        public static bool UnwatchProject(Guid projectGuid, string username)
         {
-            return PostProjectMembershipRequest(projectGuid, username);
+            return PostWatchRequest(projectGuid, username);
         }
 
         /// <summary>
@@ -120,16 +127,29 @@ namespace SoftwareForge.Mvc.WebApiClient
         /// <param name="projectGuid">The projectGuid of the project to join</param>
         /// <param name="username">The user that wants to join</param>
         /// <returns>True if successful, false in error case</returns>
-        public static bool JoinProject(Guid projectGuid, string username)
+        public static bool WatchProject(Guid projectGuid, string username)
         {
-            return PostProjectMembershipRequest(projectGuid, username);
+            return PostWatchRequest(projectGuid, username);
         }
 
 
-        public static bool CreateJoinProjectRequest(ProjectJoinRequest project)
+        public static bool CreateJoinProjectRequest(ProjectJoinRequest projectJoinRequest)
         {
-            return CreatePost<bool, ProjectJoinRequest>("api/ProjectJoinRequest", project);
+            return CreatePost<bool, ProjectJoinRequest>("api/ProjectMembershipRequest", projectJoinRequest);
         }
+
+
+
+        public static List<ProjectJoinRequest> GetProjectJoinRequests(String username)
+        {
+            return CreateGet<List<ProjectJoinRequest>>("api/ProjectMembershipRequest/?username=" + username);
+        }
+
+
+
+
+
+
 
 
         /// <summary>

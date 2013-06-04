@@ -49,13 +49,32 @@ namespace SoftwareForge.Mvc.Controllers
         {
             DashboardModel dashboardModel = new DashboardModel();
             List<TeamCollection> teamCollections = TeamCollectionsClient.GetTeamCollections().ToList();
-
+            
             dashboardModel.RandomProjects = GetRandomProjects(teamCollections);
             dashboardModel.MyProjects = GetMyProjects(teamCollections);
 
+            dashboardModel.Requests = GetMyRequests();
+            dashboardModel.Messages = GetMyMessages();
+
             return View(dashboardModel);
-            
-            
+        }
+
+        private List<string> GetMyMessages()
+        {
+            //TODO
+            List<String> messages = new List<string>();
+
+            return messages;
+        }
+
+        private List<ProjectJoinRequest> GetMyRequests()
+        {
+            //TODO
+            List<ProjectJoinRequest> requests = new List<ProjectJoinRequest>();
+
+
+
+            return requests;
         }
 
         /// <summary>

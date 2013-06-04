@@ -18,21 +18,14 @@
     - <http://www.gnu.org/licenses/>.
     -->
 
-@model SoftwareForge.Common.Models.DashboardModel
+@model List<string>
 
-@{
-    ViewBag.Title = "Dashboard";
-}
-
-<div>
-    @Html.Partial("DashboardMyProjectsPartial", Model.MyProjects)
-</div>
-<div>
-    @Html.Partial("DashboardRandomProjectsPartial", Model.RandomProjects)
-</div>
-<div>
-    @Html.Partial("DashboardMyRequests", Model.Requests)
-</div>
-<div>
-    @Html.Partial("DashboardMyMessages", Model.Messages)
-</div>
+Your Messages:
+<ul>             
+    @foreach (String message in Model)
+    {
+        <li>   
+        @message
+        </li>
+    } 
+</ul>   

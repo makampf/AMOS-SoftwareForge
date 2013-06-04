@@ -18,5 +18,16 @@
  - <http://www.gnu.org/licenses/>.
  -->
 @using SoftwareForge.Common.Models
-@model SoftwareForge.Common.Models.DashboardModel
+@model List<ProjectJoinRequest>
 
+Your Requests:
+<ul>             
+    @foreach (ProjectJoinRequest request in Model)
+    {
+        <li>
+            User @request.User.Username wants to join project @request.Project.Name <br/>
+            Message: @request.Message <br/>
+            <br/>
+        </li>
+    } 
+</ul>   

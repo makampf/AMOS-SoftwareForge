@@ -18,24 +18,30 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
 using System.Web.Http;
 using SoftwareForge.Common.Models;
 using SoftwareForge.DbService;
 
 namespace SoftwareForge.WebApi.Controllers
 {
-    public class ProjectJoinRequestController : ApiController
+    public class ProjectMembershipRequestController : ApiController
     {
 
         #region GET
-
+        [HttpGet]
+        public List<ProjectJoinRequest> Get(String username)
+        {
+            return ProjectMembershipDao.GetProjectRequestsOfUser(username);
+        }
         #endregion
 
         #region POST
         [HttpPost]
         public bool Post([FromBody] ProjectJoinRequest model)
         {
-            ProjectJoinDao.ProcessProjectJoinRequest(model);
+            ProjectMembershipDao.ProcessProjectJoinRequest(model);
             return true;
         }
 

@@ -38,7 +38,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ProjectJoinDao.cs" />
+    <Compile Include="ProjectMembershipDao.cs" />
     <Compile Include="ProjectsDao.cs" />
     <Compile Include="SoftwareForgeDbContext.cs" />
     <Compile Include="TfsDbController.cs" />

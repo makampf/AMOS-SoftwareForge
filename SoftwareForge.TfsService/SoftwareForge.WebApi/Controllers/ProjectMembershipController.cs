@@ -33,7 +33,7 @@ namespace SoftwareForge.WebApi.Controllers
         [HttpGet]
         public IEnumerable<Project> GetProjectOwnerProjects(User user)
         {
-            IEnumerable<Project> result = ProjectJoinDao.GetProjectOwnerProjects(user);
+            IEnumerable<Project> result = ProjectMembershipDao.GetProjectOwnerProjects(user);
             return result;
         }
         #endregion

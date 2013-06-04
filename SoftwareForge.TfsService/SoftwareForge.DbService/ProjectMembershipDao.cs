@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 by Denis Bach, Marvin Kampf, Konstantin Tsysin, Taner Tunc, Florian Wittmann
+ * Copyright (c) 2013 by Denis Bach, Konstantin Tsysin, Taner Tunc, Marvin Kampf, Florian Wittmann
  *
  * This file is part of the Software Forge Overlay rating application.
  *
@@ -25,13 +25,20 @@ using SoftwareForge.Common.Models;
 
 namespace SoftwareForge.DbService
 {
-    public class ProjectJoinDao
+    public class ProjectMembershipDao
     {
         private static readonly SoftwareForgeDbContext SoftwareForgeDbContext = new SoftwareForgeDbContext();
 
-        public static IEnumerable<Project> GetProjectOwnerProjects(User user)
+        public static List<Project> GetProjectOwnerProjects(User user)
         {
-            return SoftwareForgeDbContext.Projects.Where(t => t.Users.Any(u => ((u.User == user) && (u.UserRole == UserRole.ProjectOwner))));
+            List<Project> projects = new List<Project>();
+            foreach (ProjectUser projectUser in SoftwareForgeDbContext.ProjectUsers)
+            {
+               if (projectUser.UserRole == UserRole.ProjectOwner && projectUser.User.Username == user.Username)
+                   projects.Add(ProjectsDao.Get(projectUser.ProjectGuid));
+            }
+
+            return projects;
         }
 
         public static void ProcessProjectJoinRequest(ProjectJoinRequest model)
@@ -56,21 +63,50 @@ namespace SoftwareForge.DbService
                         t => t.ProjectGuid == project.Guid && t.UserId == user.Id);
                 SoftwareForgeDbContext.ProjectJoinRequests.Remove(projectUser);
             }
-            catch
+            catch (Exception)
             {
             }
             SoftwareForgeDbContext.ProjectJoinRequests.Add(new ProjectJoinRequest
-            {
-                Project = project,
-                ProjectGuid = project.Guid,
-                User = user,
-                UserId = user.Id,
-                UserRole = role,
-                Message = model.Message
-            });
+                {
+                    Project = project,
+                    ProjectGuid = project.Guid,
+                    User = user,
+                    UserId = user.Id,
+                    UserRole = role,
+                    Message = model.Message
+                });
 
             SoftwareForgeDbContext.SaveChanges();
         }
 
+        private static User GetUser(String username)
+        {
+            User user = SoftwareForgeDbContext.Users.Single(a => a.Username == username);
+            if (user == null)
+            {
+                user = new User { Username = username };
+                SoftwareForgeDbContext.Users.Add(user);
+                SoftwareForgeDbContext.SaveChanges();
+
+                user = SoftwareForgeDbContext.Users.Single(a => a.Username == username);
+            }
+            return user;
+        }
+
+        public static List<ProjectJoinRequest> GetProjectRequestsOfUser(String username)
+        {
+            List<ProjectJoinRequest> requests = new List<ProjectJoinRequest>();
+
+            User user = GetUser(username);
+            IEnumerable<Project> projects = GetProjectOwnerProjects(user);
+            foreach (var project in projects)
+            {
+                ProjectJoinRequest projectJoinRequest = SoftwareForgeDbContext.ProjectJoinRequests.Single(p => p.ProjectGuid == project.Guid);
+                if (projectJoinRequest != null)
+                    requests.Add(projectJoinRequest);
+            }
+
+            return requests;
+        }
     }
 }

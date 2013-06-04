@@ -73,27 +73,27 @@ namespace SoftwareForge.Mvc.Controllers
         }
 
         /// <summary>
-        /// Join a project
+        /// Watch a project
         /// </summary>
         /// <param name="guid">The guid of project</param>
         /// <param name="username">The username</param>
         /// <returns>Redirects to overview page</returns>
-        public ActionResult JoinProject(Guid guid, String username)
+        public ActionResult WatchProject(Guid guid, String username)
         {
-            TeamCollectionsClient.JoinProject(guid, username);
+            TeamCollectionsClient.WatchProject(guid, username);
             return RedirectToAction("ProjectDetailsPage",new {guid});
 
         }
 
         /// <summary>
-        /// Leave a project
+        /// Unwatch a project
         /// </summary>
         /// <param name="guid">guid of project</param>
         /// <param name="username">username</param>
         /// <returns>Redirects to overview page</returns>
-        public ActionResult LeaveProject(Guid guid, String username)
+        public ActionResult UnwatchProject(Guid guid, String username)
         {
-            TeamCollectionsClient.LeaveProject(guid, username);
+            TeamCollectionsClient.UnwatchProject(guid, username);
             return RedirectToAction("ProjectDetailsPage", new { guid });
         }
 
@@ -101,7 +101,6 @@ namespace SoftwareForge.Mvc.Controllers
         /// Join a project
         /// </summary>
         /// <param name="guid">The guid of project</param>
-        /// <param name="username">The username</param>
         /// <returns>Redirects to overview page</returns>
         public ActionResult CreateProjectJoinRequest(Guid guid)
         {

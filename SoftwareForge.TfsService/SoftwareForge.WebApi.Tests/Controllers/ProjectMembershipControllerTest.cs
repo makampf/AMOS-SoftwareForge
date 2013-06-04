@@ -40,15 +40,21 @@ namespace SoftwareForge.WebApi.Tests.Controllers
         }
 
         /// <summary>
-        /// test the GetTeamCollections method (simple).
+        /// Test the GetTeamCollections method (simple).
         /// </summary>
         [TestMethod]
         public void TestGetProjectOwnerProjects()
         {
-            var res = _controller.GetProjectOwnerProjects(new User {Username = "COMPUTERNAME\\Administrator"});
-            Assert.IsNotNull(res);
+            var windowsIdentity = System.Security.Principal.WindowsIdentity.GetCurrent();
+            if (windowsIdentity != null)
+            {
+                var res = _controller.GetProjectOwnerProjects(new User {Username = windowsIdentity.Name});
+                foreach (var project in res)
+                {
+                    Assert.IsNotNull(project);
+                }
+                Assert.IsNotNull(res);
+            }
         }
-
-
     }
 }
