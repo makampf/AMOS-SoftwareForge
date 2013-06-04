@@ -163,7 +163,18 @@ namespace SoftwareForge.Mvc.WebApiClient
             return CreateGet<ProjectJoinRequest>("api/ProjectMembershipRequest/?requestId=" + requestId);
         }
 
+        public static bool LeaveProject(Guid projectGuid, string username, UserRole role)
+        {
+            ProjectMembershipRequestModel leaveProjectRequestModel = new ProjectMembershipRequestModel
+            {
+                ProjectGuid = projectGuid,
+                Username = username,
+                UserRole = UserRole.Reader
+            };
 
+            //TODO: FIX URL
+            return CreateDelete<bool, ProjectMembershipRequestModel>("api/", leaveProjectRequestModel);
+        }
 
 
 
@@ -242,6 +253,48 @@ namespace SoftwareForge.Mvc.WebApiClient
 
 
         /// <summary>
+        /// Create a post WebRequest
+        /// </summary>
+        /// <typeparam name="T">the expected type of the answer</typeparam>
+        /// <typeparam name="TM">the type of the posted model</typeparam>
+        /// <param name="postUrl">the url for the post call</param>
+        /// <param name="model">the model to post</param>
+        /// <returns>a object with type T</returns>
+        private static T CreateDelete<T, TM>(string postUrl, TM model)
+        {
+            String url = Properties.Settings.Default.WebApiUri + postUrl;
+            var httpWebRequest = CreateRequest(url);
+            httpWebRequest.Method = "DELETE";
+
+            using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(TM));
+                MemoryStream ms = new MemoryStream();
+                ser.WriteObject(ms, model);
+                String json = Encoding.UTF8.GetString(ms.ToArray());
+
+                streamWriter.Write(json);
+                streamWriter.Flush();
+            }
+
+            using (HttpWebResponse httpResponse = httpWebRequest.GetResponse() as HttpWebResponse)
+            {
+                if (httpResponse != null)
+                {
+                    var responseStream = httpResponse.GetResponseStream();
+                    if (responseStream != null)
+                    {
+                        DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(T));
+                        return (T)ser.ReadObject(responseStream);
+                    }
+                }
+            }
+
+            return default(T);
+        }
+
+
+        /// <summary>
         /// Create a put WebRequest
         /// </summary>
         /// <typeparam name="T">the expected type of the answer</typeparam>
@@ -284,6 +337,5 @@ namespace SoftwareForge.Mvc.WebApiClient
 
 
         
-
     }
 }

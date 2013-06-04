@@ -97,6 +97,9 @@ namespace SoftwareForge.Mvc.Controllers
             return RedirectToAction("ProjectDetailsPage", new { guid });
         }
 
+
+
+
         /// <summary>
         /// Join a project
         /// </summary>
@@ -156,6 +159,13 @@ namespace SoftwareForge.Mvc.Controllers
                 TeamCollectionsClient.RenameProject(project.Guid, project.Name);
             }
             return RedirectToAction("ProjectDetailsPage", new { project.Guid });
+        }
+
+
+        public ActionResult LeaveProject(Guid projectGuid, string username, UserRole role)
+        {
+            TeamCollectionsClient.LeaveProject(projectGuid, username, role);
+            return RedirectToAction("ProjectDetailsPage", new { projectGuid });
         }
     }
 }

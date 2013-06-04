@@ -28,16 +28,30 @@
     <i>@Model.ProjectType</i><br/>
     
 
-    [
+    
     @if (@Model.Users.Any(t => t.User.Username.Equals(User.Identity.Name)))
     {
-        @Html.ActionLink("Unwatch", "UnwatchProject", "TeamProjects",new {guid=Model.Guid, username=User.Identity.Name},null)
+        @Html.ActionLink("[Unwatch]", "UnwatchProject", "TeamProjects",new {guid=Model.Guid, username=User.Identity.Name},null)
     }
     else
     {
-        @Html.ActionLink("Watch", "WatchProject", "TeamProjects",new {guid=Model.Guid, username=User.Identity.Name},null)
+        @Html.ActionLink("[Watch]", "WatchProject", "TeamProjects",new {guid=Model.Guid, username=User.Identity.Name},null)
     }
-    ]
+   
+    
+    
+    @if (@Model.Users.Any(t => (t.User.Username.Equals(User.Identity.Name)) && (t.UserRole == UserRole.Contributor)))
+    {
+        @Html.ActionLink("[Leave as Contributor]", "LeaveProject", "TeamProjects", new {guid = Model.Guid, username = User.Identity.Name, role=UserRole.Contributor}, null)
+    }
+    else if (@Model.Users.Any(t => (t.User.Username.Equals(User.Identity.Name)) && (t.UserRole == UserRole.ProjectOwner)))
+    {
+        if ((@Model.Users.Where(u => (u.UserRole == UserRole.ProjectOwner))).Count() > 1)
+        {
+            @Html.ActionLink("[Leave as Owner]", "LeaveProject", "TeamProjects", new {guid = Model.Guid, username = User.Identity.Name, role=UserRole.ProjectOwner}, null)
+        }
+    }
+    
 
     @Html.ActionLink("[Create join request]", "CreateProjectJoinRequest", "TeamProjects",new {guid=Model.Guid},null)
 

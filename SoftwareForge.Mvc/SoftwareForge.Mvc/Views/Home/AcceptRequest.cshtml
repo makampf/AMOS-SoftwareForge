@@ -28,7 +28,7 @@
 @using (Html.BeginForm("PostAcceptMessage", "Home", null, FormMethod.Post))
 {
     @Html.AntiForgeryToken()
-    @Html.ValidationSummary(true)
+   @Html.ValidationSummary(true)
 
     <fieldset>
         <legend>Message request</legend>
