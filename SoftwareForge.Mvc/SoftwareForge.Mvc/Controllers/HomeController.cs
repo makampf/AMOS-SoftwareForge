@@ -142,8 +142,9 @@ namespace SoftwareForge.Mvc.Controllers
         {
             ProjectJoinMessageModel model = CreateMessageModel(requestId);
             return View("AcceptRequest", model);
-
         }
+
+
         /// <summary>
         /// Declining a request.
         /// </summary>
@@ -155,7 +156,8 @@ namespace SoftwareForge.Mvc.Controllers
             return View("DeclineRequest", model);
 
         }
-        /// <summary>
+       
+
         [HttpPostAttribute]
         [ValidateAntiForgeryTokenAttribute]
         public ActionResult PostDeclineMessage(ProjectJoinMessageModel model)
@@ -167,7 +169,8 @@ namespace SoftwareForge.Mvc.Controllers
             }
             return RedirectToAction("Dashboard", "Home");
         }
-        /// </summary>
+       
+
         [HttpPostAttribute]
         [ValidateAntiForgeryTokenAttribute]
         public ActionResult PostAcceptMessage(ProjectJoinMessageModel model)

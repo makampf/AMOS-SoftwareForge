@@ -47,5 +47,15 @@ namespace SoftwareForge.WebApi.Controllers
         }
         #endregion
 
+
+        #region Delete
+        [HttpDelete]
+        public bool Delete([FromBody] ProjectMembershipRequestModel model)
+        {
+            ProjectsDao.LeaveProject(model);
+            return true;
+        }
+        #endregion
+
     }
 }

@@ -169,11 +169,11 @@ namespace SoftwareForge.Mvc.WebApiClient
             {
                 ProjectGuid = projectGuid,
                 Username = username,
-                UserRole = UserRole.Reader
+                UserRole = role
             };
 
-            //TODO: FIX URL
-            return CreateDelete<bool, ProjectMembershipRequestModel>("api/", leaveProjectRequestModel);
+            
+            return CreateDelete<bool, ProjectMembershipRequestModel>("api/ProjectMembership", leaveProjectRequestModel);
         }
 
 

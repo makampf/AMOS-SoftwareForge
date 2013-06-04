@@ -165,7 +165,7 @@ namespace SoftwareForge.Mvc.Controllers
         public ActionResult LeaveProject(Guid projectGuid, string username, UserRole role)
         {
             TeamCollectionsClient.LeaveProject(projectGuid, username, role);
-            return RedirectToAction("ProjectDetailsPage", new { projectGuid });
+            return RedirectToAction("ProjectDetailsPage", new { guid = projectGuid });
         }
     }
 }
