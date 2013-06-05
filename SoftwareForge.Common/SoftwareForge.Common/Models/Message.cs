@@ -18,9 +18,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SoftwareForge.Common.Models
 {
@@ -37,20 +35,18 @@ namespace SoftwareForge.Common.Models
         /// </summary>
         [MaxLength(4000)]
         [DataType(DataType.MultilineText)]
-        public String Text;
+        public string Text { get; set; }
 
         /// <summary>
-        /// A user in this project
+        /// The user id, the message is sent from
         /// </summary>
-        [ForeignKey("User"), Column(Order = 1)]
         public int FromUserId { get; set; }
-        public virtual User FromUser { get; set; }
+       
 
         /// <summary>
-        /// A user in this project
+        /// The user id, the message is sent to
         /// </summary>
-        [ForeignKey("User"), Column(Order = 1)]
         public int ToUserId { get; set; }
-        public virtual User ToUser { get; set; }
+        
     }
 }

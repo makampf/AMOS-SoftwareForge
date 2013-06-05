@@ -177,8 +177,28 @@ namespace SoftwareForge.Mvc.WebApiClient
         }
 
 
+        public static bool CreateMessage(ProjectJoinMessageModel model)
+        {
+            return CreatePost<bool, ProjectJoinMessageModel>("api/Message", model);
+        }
 
 
+        public static bool DeleteMessage(ProjectJoinMessageModel model)
+        {
+            return CreateDelete<bool, ProjectJoinMessageModel>("api/Message", model);
+        }
+
+
+        public static User GetUserByName(string userName)
+        {
+            return CreateGet<User>("api/User/?userName=" + userName);
+        }
+
+
+        public static List<Message> GetMessages(string userName)
+        {
+            return CreateGet<List<Message>>("api/Message/?userName=" + userName);
+        }
 
         /// <summary>
         /// Create a Get webRequest
@@ -336,6 +356,6 @@ namespace SoftwareForge.Mvc.WebApiClient
         }
 
 
-        
+       
     }
 }

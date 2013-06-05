@@ -55,6 +55,8 @@ namespace SoftwareForge.DbService
                 SoftwareForgeDbContext.Users.Add(user);
             }
 
+            
+
             try
             {
                 //First try to remove old requests 
@@ -79,7 +81,10 @@ namespace SoftwareForge.DbService
             SoftwareForgeDbContext.SaveChanges();
         }
 
-        private static User GetUser(String username)
+
+        
+
+        public static User GetUser(String username)
         {
             User user = SoftwareForgeDbContext.Users.SingleOrDefault(a => a.Username == username);
             if (user == null)
@@ -101,7 +106,7 @@ namespace SoftwareForge.DbService
             IEnumerable<Project> projects = GetProjectOwnerProjects(user);
             foreach (var project in projects)
             {
-                ProjectJoinRequest projectJoinRequest = SoftwareForgeDbContext.ProjectJoinRequests.Single(p => p.ProjectGuid == project.Guid);
+                ProjectJoinRequest projectJoinRequest = SoftwareForgeDbContext.ProjectJoinRequests.SingleOrDefault(p => p.ProjectGuid == project.Guid);
                 if (projectJoinRequest != null)
                     requests.Add(projectJoinRequest);
             }
@@ -115,6 +120,16 @@ namespace SoftwareForge.DbService
             if (request == null)
                 throw new Exception("GetProjectRequestById: Could not find ProjectJoinRequest with id: " + requestId);
             return request;
+        }
+
+        public static void RemoveProjectJoinRequest(ProjectJoinRequest projectJoinRequest)
+        {
+            ProjectJoinRequest req = SoftwareForgeDbContext.ProjectJoinRequests.SingleOrDefault(r => r.Id == projectJoinRequest.Id);
+            if (req != null)
+            {
+                SoftwareForgeDbContext.ProjectJoinRequests.Remove(req);
+                SoftwareForgeDbContext.SaveChanges();
+            }
         }
     }
 }

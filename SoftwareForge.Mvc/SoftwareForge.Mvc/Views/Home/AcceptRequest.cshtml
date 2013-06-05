@@ -28,11 +28,12 @@
 @using (Html.BeginForm("PostAcceptMessage", "Home", null, FormMethod.Post))
 {
     @Html.AntiForgeryToken()
-   @Html.ValidationSummary(true)
+    @Html.ValidationSummary(true)
 
     <fieldset>
         <legend>Message request</legend>
         @Html.HiddenFor(model => model.ProjectJoinRequest.Id)
+  
         <div class="editor-label">
             @Html.LabelFor(model => model.Message.Text)
         </div>

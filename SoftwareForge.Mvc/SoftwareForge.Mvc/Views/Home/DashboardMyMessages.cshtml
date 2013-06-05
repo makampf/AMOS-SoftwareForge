@@ -18,14 +18,16 @@
     - <http://www.gnu.org/licenses/>.
     -->
 
-@model List<string>
+@using SoftwareForge.Common.Models
+@using SoftwareForge.Mvc.WebApiClient
+@model List<SoftwareForge.Common.Models.Message>
 
 Your Messages:
 <ul>             
-    @foreach (String message in Model)
+    @foreach (Message message in Model)
     {
-        <li>   
-        @message
+        <li>
+            @message.Text
         </li>
     } 
 </ul>   

@@ -38,6 +38,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="MessageDao.cs" />
     <Compile Include="ProjectMembershipDao.cs" />
     <Compile Include="ProjectsDao.cs" />
     <Compile Include="SoftwareForgeDbContext.cs" />

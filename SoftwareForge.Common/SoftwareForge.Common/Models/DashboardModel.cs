@@ -41,7 +41,7 @@ namespace SoftwareForge.Common.Models
         /// <summary>
         /// A list of Messages, the user will be informed
         /// </summary>
-        public List<String> Messages { get; set; }
+        public List<Message> Messages { get; set; }
 
         /// <summary>
         /// A list of Project Join Requests, the user gets

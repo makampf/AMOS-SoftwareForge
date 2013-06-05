@@ -19,7 +19,6 @@
  */
 using System;
 using System.Linq;
-using System.Web.UI.WebControls;
 using SoftwareForge.Common.Models;
 using System.Collections.Generic;
 using System.Web.Mvc;
@@ -60,11 +59,9 @@ namespace SoftwareForge.Mvc.Controllers
             return View(dashboardModel);
         }
 
-        private List<string> GetMyMessages()
+        private List<Message> GetMyMessages()
         {
-            //TODO
-            List<String> messages = new List<string>();
-
+            List<Message> messages = TeamCollectionsClient.GetMessages(User.Identity.Name);
             return messages;
         }
 
@@ -160,26 +157,34 @@ namespace SoftwareForge.Mvc.Controllers
 
         [HttpPostAttribute]
         [ValidateAntiForgeryTokenAttribute]
-        public ActionResult PostDeclineMessage(ProjectJoinMessageModel model)
+        public ActionResult PostDeclineMessage(FormCollection collection)
         {
-            //TODO
-            if (ModelState.IsValid)
-            {
+            String message = collection.GetValue("Message.Text").AttemptedValue;
+            String requestId = collection.GetValue("ProjectJoinRequest.Id").AttemptedValue;
 
-            }
+            ProjectJoinMessageModel model = CreateMessageModel(Convert.ToInt32(requestId));
+
+            model.Message.Text = message;
+
+            TeamCollectionsClient.DeleteMessage(model);
+
             return RedirectToAction("Dashboard", "Home");
         }
        
 
         [HttpPostAttribute]
         [ValidateAntiForgeryTokenAttribute]
-        public ActionResult PostAcceptMessage(ProjectJoinMessageModel model)
+        public ActionResult PostAcceptMessage(FormCollection collection)
         {
-            //TODO
-            if (ModelState.IsValid)
-            {
+            String message = collection.GetValue("Message.Text").AttemptedValue;
+            String requestId = collection.GetValue("ProjectJoinRequest.Id").AttemptedValue;
 
-            }
+            ProjectJoinMessageModel model = CreateMessageModel(Convert.ToInt32(requestId));
+
+            model.Message.Text = message;
+            
+            TeamCollectionsClient.CreateMessage(model);
+            
             return RedirectToAction("Dashboard", "Home");
         }
         /// <summary>
@@ -193,9 +198,7 @@ namespace SoftwareForge.Mvc.Controllers
             ProjectJoinMessageModel model = new ProjectJoinMessageModel();
             model.ProjectJoinRequest = request;
             model.Message = new Message();
-            model.Message.FromUser = new User();
-            model.Message.FromUser.Username = User.Identity.Name;
-            model.Message.ToUser = request.User;
+            model.Message.FromUserId = TeamCollectionsClient.GetUserByName(User.Identity.Name).Id;
             model.Message.ToUserId = request.UserId;
             return model;
         }

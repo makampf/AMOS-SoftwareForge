@@ -30,6 +30,10 @@
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
+    <fieldset>
+        <legend>Message request</legend>
+        @Html.HiddenFor(model => model.ProjectJoinRequest.Id)
+  
         <div class="editor-label">
             @Html.LabelFor(model => model.Message.Text)
         </div>
@@ -38,9 +42,16 @@
             @Html.ValidationMessageFor(model => model.Message.Text)
         </div>
         <p>
-            <input type="submit" value="Decline and send an optional Message" />
+            <input type="submit" value="Decline and send Message" />
         </p>
-        
+    </fieldset>
 }
 
 
+<div>
+    @Html.ActionLink("Back to Dashboard","Dashboard","Home")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
