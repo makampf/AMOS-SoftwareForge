@@ -1,7 +1,7 @@
 ﻿/*
  * Copyright (c) 2013 by Denis Bach, Konstantin Tsysin, Taner Tunc, Marvin Kampf, Florian Wittmann
  *
- * This file is part of the Software Forge Overlay application.
+ * This file is part of the Software Forge Overlay rating application.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -17,40 +17,30 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-using System.Data.Entity;
+
+using System.Collections.Generic;
 using SoftwareForge.Common.Models;
+using System.Linq;
 
 namespace SoftwareForge.DbService
 {
-    /// <summary>
-    /// The SoftwareForgeDbContext.
-    /// </summary>
-    class SoftwareForgeDbContext : DbContext
+    public class MessageDao
     {
         /// <summary>
-        /// The DbSet for projects.
+        /// The DatabaseContext
         /// </summary>
-        public DbSet<Project> Projects { get; set; }
+        private static readonly SoftwareForgeDbContext SoftwareForgeDbContext = new SoftwareForgeDbContext();
+       
+        public static Message AddMessage(Message message)
+        {
+            Message createdMessage = SoftwareForgeDbContext.Messages.Add(message);
+            SoftwareForgeDbContext.SaveChanges();
+            return createdMessage;
+        }
 
-        /// <summary>
-        /// The DbSet for users.
-        /// </summary>
-        public DbSet<User> Users { get; set; }
-
-        /// <summary>
-        /// The DbSet for users.
-        /// </summary>
-        public DbSet<ProjectUser> ProjectUsers { get; set; }
-
-        /// <summary>
-        /// The DbSet for project join requests
-        /// </summary>
-        public DbSet<ProjectJoinRequest> ProjectJoinRequests { get; set; }
-
-        /// <summary>
-        /// The DbSet for messages
-        /// </summary>
-        public DbSet<Message> Messages { get; set; }
-
+        public static List<Message> GetMessagesOfUser(User user)
+        {
+            return SoftwareForgeDbContext.Messages.Where(m => m.ToUserId == user.Id).ToList();
+        }
     }
 }

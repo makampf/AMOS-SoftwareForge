@@ -19,7 +19,6 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
@@ -46,12 +45,21 @@ namespace SoftwareForge.DbService
         /// <param name="project">Project to add</param>
         public static Project Add(Project project)
         {
-            if (SoftwareForgeDbContext.Projects.Any(t => t.Guid == project.Guid))
+            try
             {
-                throw new DataException("A project with the same guid is already in database.");
+                if (SoftwareForgeDbContext.Projects.Any(t => t.Guid == project.Guid))
+                {
+                    throw new DataException("A project with the same guid is already in database.");
+                }
+
+                SoftwareForgeDbContext.Projects.Add(project);
+                SoftwareForgeDbContext.SaveChanges();
+
             }
-            SoftwareForgeDbContext.Projects.Add(project);
-            SoftwareForgeDbContext.SaveChanges();
+            catch (Exception ex)
+            {
+                throw ex;
+            }
             return project;
         }
 
@@ -160,6 +168,75 @@ namespace SoftwareForge.DbService
                 users.Add(new ProjectMember{User =projectUser.User, UserRole =  projectUser.UserRole});
             }
             return users;
+        }
+
+
+        public static void JoinProject(ProjectMembershipRequestModel requestModel)
+        {
+            Project project = SoftwareForgeDbContext.Projects.Single(t => t.Guid == requestModel.ProjectGuid);
+            if (project == null)
+                throw new Exception("LeaveProject: Could not find the project with GUID: " + requestModel.ProjectGuid);
+
+            User user = SoftwareForgeDbContext.Users.SingleOrDefault(t => t.Username == requestModel.Username);
+            if (user == null)
+                throw new Exception("LeaveProject: Could not find user:" + requestModel.Username);
+
+            ProjectUser projectUser = SoftwareForgeDbContext.ProjectUsers.SingleOrDefault(t => t.ProjectGuid == project.Guid && t.UserId == user.Id);
+            if (projectUser == null)
+                throw new Exception("LeaveProject: Could not find ProjectUser with projectGuid " + project.Guid + " and UserId " + user.Id);
+
+            SoftwareForgeDbContext.ProjectUsers.Remove(projectUser);
+
+            //After leaving you still watch the project as a reader
+            SoftwareForgeDbContext.ProjectUsers.Add(new ProjectUser
+            {
+                Project = project,
+                ProjectGuid = project.Guid,
+                User = user,
+                UserId = user.Id,
+                UserRole = requestModel.UserRole
+            });
+
+            SoftwareForgeDbContext.SaveChanges();
+        }
+
+        public static void LeaveProject(ProjectMembershipRequestModel requestModel)
+        {
+            Project project = SoftwareForgeDbContext.Projects.Single(t => t.Guid == requestModel.ProjectGuid);
+            if (project == null)
+                throw new Exception("LeaveProject: Could not find the project with GUID: " + requestModel.ProjectGuid);
+
+            User user = SoftwareForgeDbContext.Users.SingleOrDefault(t => t.Username == requestModel.Username);
+            if (user == null)
+                throw new Exception("LeaveProject: Could not find user:" + requestModel.Username);
+
+            ProjectUser projectUser = SoftwareForgeDbContext.ProjectUsers.SingleOrDefault(t => t.ProjectGuid == project.Guid && t.UserId == user.Id);
+            if (projectUser == null)
+                throw new Exception("LeaveProject: Could not find ProjectUser with projectGuid " + project.Guid + " and UserId " + user.Id);
+
+            Collection<ProjectMember> users = GetUsers(project.Guid);
+
+            if (requestModel.UserRole == UserRole.ProjectOwner)
+            {
+                if (users.Count(u => (u.User.Username == requestModel.Username) && (u.UserRole == UserRole.ProjectOwner)) <= 1)
+                    throw new Exception("LeaveProject: You can't leave the project, because you are the only project owner!");
+            }
+
+            SoftwareForgeDbContext.ProjectUsers.Remove(projectUser);
+
+            //After leaving you still watch the project as a reader
+            SoftwareForgeDbContext.ProjectUsers.Add(new ProjectUser
+            {
+                Project = project,
+                ProjectGuid = project.Guid,
+                User = user,
+                UserId = user.Id,
+                UserRole = UserRole.Reader
+            });
+            
+            
+            SoftwareForgeDbContext.SaveChanges();
+
         }
     }
 }

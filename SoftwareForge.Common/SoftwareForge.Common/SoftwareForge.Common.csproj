@@ -48,6 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Message.cs" />
+    <Compile Include="Models\ProjectJoinMessageModel.cs" />
     <Compile Include="Models\ProjectMember.cs" />
     <Compile Include="Models\ProjectType.cs" />
     <Compile Include="Models\DashboardModel.cs" />

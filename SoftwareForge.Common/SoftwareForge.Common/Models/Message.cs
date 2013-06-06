@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 by Denis Bach, Marvin Kampf, Konstantin Tsysin, Taner Tunc, Florian Wittmann
+ * Copyright (c) 2013 by Denis Bach, Konstantin Tsysin, Taner Tunc, Marvin Kampf, Florian Wittmann
  *
  * This file is part of the Software Forge Overlay rating application.
  *
@@ -17,48 +17,36 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-using System;
+
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SoftwareForge.Common.Models
 {
-    public class ProjectJoinRequest
+    public class Message
     {
         /// <summary>
-        /// The ProjectJoinRequest-Id
+        /// The message id
         /// </summary>
         [Key]
         public int Id { get; set; }
 
         /// <summary>
-        /// The project
+        /// The text message
         /// </summary>
-        [ForeignKey("Project"), Column(Order = 0)]
-        public Guid ProjectGuid { get; set; }
-        public virtual Project Project { get; set; }
-
-
-        /// <summary>
-        /// A user in this project
-        /// </summary>
-        [ForeignKey("User"), Column(Order = 1)]
-        public int UserId { get; set; }
-        public virtual User User { get; set; }
-
-
-        /// <summary>
-        /// The requested role of the user for this project
-        /// </summary>
-        public int UserRoleValue { get; set; }
-        public UserRole UserRole
-        {
-            get { return (UserRole)UserRoleValue; }
-            set { UserRoleValue = (int)value; }
-        }
-
         [MaxLength(4000)]
         [DataType(DataType.MultilineText)]
-        public string Message { get; set; }
+        public string Text { get; set; }
+
+        /// <summary>
+        /// The user id, the message is sent from
+        /// </summary>
+        public int FromUserId { get; set; }
+       
+
+        /// <summary>
+        /// The user id, the message is sent to
+        /// </summary>
+        public int ToUserId { get; set; }
+        
     }
 }

@@ -69,7 +69,14 @@ namespace SoftwareForge.Mvc.WebApiClient
             return CreatePost<TeamCollection, String>("api/TeamCollections", name);
         }
 
-        private static bool PostProjectMembershipRequest(Guid projectGuid, string username)
+
+        /// <summary>
+        /// Creates a watch request, so the user will get reader or will be removed as a reader in the project
+        /// </summary>
+        /// <param name="projectGuid">The guid of the project, the user watches/unwatches</param>
+        /// <param name="username">The username of the user</param>
+        /// <returns></returns>
+        private static bool PostWatchRequest(Guid projectGuid, string username)
         {
             ProjectMembershipRequestModel joinProjectRequestModel = new ProjectMembershipRequestModel
                 {
@@ -109,9 +116,9 @@ namespace SoftwareForge.Mvc.WebApiClient
         /// <param name="projectGuid">The projectGuid of the project to leave</param>
         /// <param name="username">The user that wants to leave</param>
         /// <returns>True if successful, false in error case</returns>
-        public static bool LeaveProject(Guid projectGuid, string username)
+        public static bool UnwatchProject(Guid projectGuid, string username)
         {
-            return PostProjectMembershipRequest(projectGuid, username);
+            return PostWatchRequest(projectGuid, username);
         }
 
         /// <summary>
@@ -120,17 +127,78 @@ namespace SoftwareForge.Mvc.WebApiClient
         /// <param name="projectGuid">The projectGuid of the project to join</param>
         /// <param name="username">The user that wants to join</param>
         /// <returns>True if successful, false in error case</returns>
-        public static bool JoinProject(Guid projectGuid, string username)
+        public static bool WatchProject(Guid projectGuid, string username)
         {
-            return PostProjectMembershipRequest(projectGuid, username);
+            return PostWatchRequest(projectGuid, username);
+        }
+
+        /// <summary>
+        /// Creates the request for project joining
+        /// </summary>
+        /// <param name="projectJoinRequest"></param>
+        /// <returns></returns>
+        public static bool CreateJoinProjectRequest(ProjectJoinRequest projectJoinRequest)
+        {
+            return CreatePost<bool, ProjectJoinRequest>("api/ProjectMembershipRequest", projectJoinRequest);
         }
 
 
-        public static bool CreateJoinProjectRequest(ProjectJoinRequest project)
+        /// <summary>
+        /// Lists all Project Join Request from a User
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns>A list with all Requests</returns>
+        public static List<ProjectJoinRequest> GetProjectJoinRequests(String username)
         {
-            return CreatePost<bool, ProjectJoinRequest>("api/ProjectJoinRequest", project);
+            return CreateGet<List<ProjectJoinRequest>>("api/ProjectMembershipRequest/?username=" + username);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="requestId"></param>
+        /// <returns></returns>
+        public static ProjectJoinRequest GetProjectJoinRequestById(int requestId)
+        {
+            return CreateGet<ProjectJoinRequest>("api/ProjectMembershipRequest/?requestId=" + requestId);
+        }
+
+        public static bool LeaveProject(Guid projectGuid, string username, UserRole role)
+        {
+            ProjectMembershipRequestModel leaveProjectRequestModel = new ProjectMembershipRequestModel
+            {
+                ProjectGuid = projectGuid,
+                Username = username,
+                UserRole = role
+            };
+
+            
+            return CreateDelete<bool, ProjectMembershipRequestModel>("api/ProjectMembership", leaveProjectRequestModel);
+        }
+
+
+        public static bool CreateMessage(ProjectJoinMessageModel model)
+        {
+            return CreatePost<bool, ProjectJoinMessageModel>("api/Message", model);
+        }
+
+
+        public static bool DeleteMessage(ProjectJoinMessageModel model)
+        {
+            return CreateDelete<bool, ProjectJoinMessageModel>("api/Message", model);
+        }
+
+
+        public static User GetUserByName(string userName)
+        {
+            return CreateGet<User>("api/User/?userName=" + userName);
+        }
+
+
+        public static List<Message> GetMessages(string userName)
+        {
+            return CreateGet<List<Message>>("api/Message/?userName=" + userName);
+        }
 
         /// <summary>
         /// Create a Get webRequest
@@ -205,6 +273,48 @@ namespace SoftwareForge.Mvc.WebApiClient
 
 
         /// <summary>
+        /// Create a post WebRequest
+        /// </summary>
+        /// <typeparam name="T">the expected type of the answer</typeparam>
+        /// <typeparam name="TM">the type of the posted model</typeparam>
+        /// <param name="postUrl">the url for the post call</param>
+        /// <param name="model">the model to post</param>
+        /// <returns>a object with type T</returns>
+        private static T CreateDelete<T, TM>(string postUrl, TM model)
+        {
+            String url = Properties.Settings.Default.WebApiUri + postUrl;
+            var httpWebRequest = CreateRequest(url);
+            httpWebRequest.Method = "DELETE";
+
+            using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(TM));
+                MemoryStream ms = new MemoryStream();
+                ser.WriteObject(ms, model);
+                String json = Encoding.UTF8.GetString(ms.ToArray());
+
+                streamWriter.Write(json);
+                streamWriter.Flush();
+            }
+
+            using (HttpWebResponse httpResponse = httpWebRequest.GetResponse() as HttpWebResponse)
+            {
+                if (httpResponse != null)
+                {
+                    var responseStream = httpResponse.GetResponseStream();
+                    if (responseStream != null)
+                    {
+                        DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(T));
+                        return (T)ser.ReadObject(responseStream);
+                    }
+                }
+            }
+
+            return default(T);
+        }
+
+
+        /// <summary>
         /// Create a put WebRequest
         /// </summary>
         /// <typeparam name="T">the expected type of the answer</typeparam>
@@ -245,5 +355,7 @@ namespace SoftwareForge.Mvc.WebApiClient
             return default(T);
         }
 
+
+       
     }
 }

@@ -23,8 +23,21 @@ namespace SoftwareForge.Common.Models.Requests
 {
     public class ProjectMembershipRequestModel
     {
+        /// <summary>
+        /// the projectguid
+        /// </summary>
         public Guid ProjectGuid { get; set; }
+
+
+        /// <summary>
+        /// The username.
+        /// </summary>
         public String Username { get; set; }
+
+
+        /// <summary>
+        /// The userrole.
+        /// </summary>
         public  UserRole UserRole { get; set; }
     }
 }

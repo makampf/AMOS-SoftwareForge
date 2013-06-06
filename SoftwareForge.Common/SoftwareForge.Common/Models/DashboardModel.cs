@@ -18,6 +18,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 
 namespace SoftwareForge.Common.Models
@@ -36,5 +37,15 @@ namespace SoftwareForge.Common.Models
         /// A list of all projects, the user is member of.
         /// </summary>
         public List<Project> MyProjects { get; set; }
+
+        /// <summary>
+        /// A list of Messages, the user will be informed
+        /// </summary>
+        public List<Message> Messages { get; set; }
+
+        /// <summary>
+        /// A list of Project Join Requests, the user gets
+        /// </summary>
+        public List<ProjectJoinRequest> Requests { get; set; }
     }
 }

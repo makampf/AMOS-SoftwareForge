@@ -18,17 +18,23 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-using System.Runtime.Serialization;
+using System;
+using System.Web.Http;
+using SoftwareForge.Common.Models;
+using SoftwareForge.DbService;
 
-namespace SoftwareForge.Common.Models
+namespace SoftwareForge.WebApi.Controllers
 {
-    [DataContract]
-    public class ProjectMember
+    public class UserController : ApiController
     {
-        [DataMember]
-        public User User { get; set; }
 
-        [DataMember]
-        public UserRole UserRole { get; set; }
+        #region GET
+        [HttpGet]
+        public User Get(String userName)
+        {
+            return ProjectMembershipDao.GetUser(userName);
+        }
+        #endregion
+
     }
 }

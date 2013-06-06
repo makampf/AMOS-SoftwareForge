@@ -18,21 +18,40 @@
     - <http://www.gnu.org/licenses/>.
     -->
 
-@model SoftwareForge.Common.Models.DashboardModel
-
+@model SoftwareForge.Common.Models.ProjectJoinMessageModel
 @{
-    ViewBag.Title = "Dashboard";
+    ViewBag.Title = "Accept Request";
 }
 
+<h2>AcceptRequest</h2>
+
+@using (Html.BeginForm("PostAcceptMessage", "Home", null, FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Message request</legend>
+        @Html.HiddenFor(model => model.ProjectJoinRequest.Id)
+  
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Message.Text)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Message.Text)
+            @Html.ValidationMessageFor(model => model.Message.Text)
+        </div>
+        <p>
+            <input type="submit" value="Accept and send Message" />
+        </p>
+    </fieldset>
+}
+
+
 <div>
-    @Html.Partial("DashboardMyProjectsPartial", Model.MyProjects)
+    @Html.ActionLink("Back to Dashboard","Dashboard","Home")
 </div>
-<div>
-    @Html.Partial("DashboardRandomProjectsPartial", Model.RandomProjects)
-</div>
-<div>
-    @Html.Partial("DashboardMyRequestsPartial", Model.Requests)
-</div>
-<div>
-    @Html.Partial("DashboardMyMessages", Model.Messages)
-</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

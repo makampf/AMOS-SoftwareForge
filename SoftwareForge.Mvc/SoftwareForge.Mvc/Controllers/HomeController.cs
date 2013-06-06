@@ -49,13 +49,26 @@ namespace SoftwareForge.Mvc.Controllers
         {
             DashboardModel dashboardModel = new DashboardModel();
             List<TeamCollection> teamCollections = TeamCollectionsClient.GetTeamCollections().ToList();
-
+            
             dashboardModel.RandomProjects = GetRandomProjects(teamCollections);
             dashboardModel.MyProjects = GetMyProjects(teamCollections);
 
+            dashboardModel.Requests = GetMyRequests();
+            dashboardModel.Messages = GetMyMessages();
+
             return View(dashboardModel);
-            
-            
+        }
+
+        private List<Message> GetMyMessages()
+        {
+            List<Message> messages = TeamCollectionsClient.GetMessages(User.Identity.Name);
+            return messages;
+        }
+
+        private List<ProjectJoinRequest> GetMyRequests()
+        {
+            List<ProjectJoinRequest> requests = TeamCollectionsClient.GetProjectJoinRequests(User.Identity.Name);
+            return requests;
         }
 
         /// <summary>
@@ -95,8 +108,6 @@ namespace SoftwareForge.Mvc.Controllers
                 randomProjects.RemoveAt(random);
                 counter++;
                 iterations--;
-
-
             }
             return fiveProjects;
         }
@@ -118,6 +129,78 @@ namespace SoftwareForge.Mvc.Controllers
                 }
             }
             return myProjects;
+        }
+        /// <summary>
+        /// Accepting a request.
+        /// </summary>
+        /// <param name="requestId">Id of a request</param>
+        /// <returns>A view where you can type in an answer for the request</returns>
+        public ActionResult AcceptRequest(int requestId)
+        {
+            ProjectJoinMessageModel model = CreateMessageModel(requestId);
+            return View("AcceptRequest", model);
+        }
+
+
+        /// <summary>
+        /// Declining a request.
+        /// </summary>
+        /// <param name="requestId">Id of a request</param>
+        /// <returns>A view where you can type in an answer for the request</returns>
+        public ActionResult DeclineRequest(int requestId)
+        {
+            ProjectJoinMessageModel model = CreateMessageModel(requestId);
+            return View("DeclineRequest", model);
+
+        }
+       
+
+        [HttpPostAttribute]
+        [ValidateAntiForgeryTokenAttribute]
+        public ActionResult PostDeclineMessage(FormCollection collection)
+        {
+            String message = collection.GetValue("Message.Text").AttemptedValue;
+            String requestId = collection.GetValue("ProjectJoinRequest.Id").AttemptedValue;
+
+            ProjectJoinMessageModel model = CreateMessageModel(Convert.ToInt32(requestId));
+
+            model.Message.Text = message;
+
+            TeamCollectionsClient.DeleteMessage(model);
+
+            return RedirectToAction("Dashboard", "Home");
+        }
+       
+
+        [HttpPostAttribute]
+        [ValidateAntiForgeryTokenAttribute]
+        public ActionResult PostAcceptMessage(FormCollection collection)
+        {
+            String message = collection.GetValue("Message.Text").AttemptedValue;
+            String requestId = collection.GetValue("ProjectJoinRequest.Id").AttemptedValue;
+
+            ProjectJoinMessageModel model = CreateMessageModel(Convert.ToInt32(requestId));
+
+            model.Message.Text = message;
+            
+            TeamCollectionsClient.CreateMessage(model);
+            
+            return RedirectToAction("Dashboard", "Home");
+        }
+        /// <summary>
+        /// Creates the message model for a request
+        /// </summary>
+        /// <param name="requestId">Id off a request</param>
+        /// <returns>the message model</returns>
+        private ProjectJoinMessageModel CreateMessageModel(int requestId)
+        {
+            ProjectJoinRequest request = TeamCollectionsClient.GetProjectJoinRequestById(requestId);
+            ProjectJoinMessageModel model = new ProjectJoinMessageModel();
+            model.ProjectJoinRequest = request;
+            model.Message = new Message();
+            model.Message.FromUserId = TeamCollectionsClient.GetUserByName(User.Identity.Name).Id;
+            model.Message.ToUserId = request.UserId;
+            return model;
         }
         
     }

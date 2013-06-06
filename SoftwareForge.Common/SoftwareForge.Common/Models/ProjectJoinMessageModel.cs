@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 by Denis Bach, Marvin Kampf, Konstantin Tsysin, Taner Tunc, Florian Wittmann
+ * Copyright (c) 2013 by Denis Bach, Konstantin Tsysin, Taner Tunc, Marvin Kampf, Florian Wittmann
  *
  * This file is part of the Software Forge Overlay rating application.
  *
@@ -18,17 +18,19 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-using System.Runtime.Serialization;
-
 namespace SoftwareForge.Common.Models
 {
-    [DataContract]
-    public class ProjectMember
+    public class ProjectJoinMessageModel
     {
-        [DataMember]
-        public User User { get; set; }
+        /// <summary>
+        /// The message model.
+        /// </summary>
+        public Message Message { get; set; }
 
-        [DataMember]
-        public UserRole UserRole { get; set; }
+
+        /// <summary>
+        /// The projectJoinRequest model.
+        /// </summary>
+        public ProjectJoinRequest ProjectJoinRequest { get; set; }
     }
 }

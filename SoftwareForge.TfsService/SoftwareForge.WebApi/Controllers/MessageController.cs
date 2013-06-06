@@ -26,36 +26,45 @@ using SoftwareForge.DbService;
 
 namespace SoftwareForge.WebApi.Controllers
 {
-    public class ProjectMembershipController : ApiController
+    public class MessageController : ApiController
     {
 
-        #region GET
+         #region GET
         [HttpGet]
-        public IEnumerable<Project> GetProjectOwnerProjects(User user)
+        public List<Message> Get(string userName)
         {
-            IEnumerable<Project> result = ProjectMembershipDao.GetProjectOwnerProjects(user);
-            return result;
+            return MessageDao.GetMessagesOfUser(ProjectMembershipDao.GetUser(userName));
         }
         #endregion
 
         #region POST
         [HttpPost]
-        public bool Post([FromBody] ProjectMembershipRequestModel model)
+        public bool Post([FromBody] ProjectJoinMessageModel model)
         {
-            ProjectsDao.ProcessMembershipRequest(model);
+            MessageDao.AddMessage(model.Message);
+            ProjectMembershipRequestModel requestModel = new ProjectMembershipRequestModel();
+            requestModel.Username = model.ProjectJoinRequest.User.Username;
+            requestModel.UserRole = model.ProjectJoinRequest.UserRole;
+            requestModel.ProjectGuid = model.ProjectJoinRequest.ProjectGuid;
+
+            ProjectsDao.JoinProject(requestModel);
+
+            ProjectMembershipDao.RemoveProjectJoinRequest(model.ProjectJoinRequest);
+
             return true;
         }
         #endregion
 
 
-        #region Delete
+        #region POST
         [HttpDelete]
-        public bool Delete([FromBody] ProjectMembershipRequestModel model)
+        public bool Delete([FromBody] ProjectJoinMessageModel model)
         {
-            ProjectsDao.LeaveProject(model);
+            MessageDao.AddMessage(model.Message);
+            ProjectMembershipDao.RemoveProjectJoinRequest(model.ProjectJoinRequest);
+
             return true;
         }
         #endregion
-
     }
 }

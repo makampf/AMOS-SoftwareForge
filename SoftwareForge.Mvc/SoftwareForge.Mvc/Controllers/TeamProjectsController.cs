@@ -18,6 +18,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 using SoftwareForge.Common.Models;
 using SoftwareForge.Mvc.WebApiClient;
@@ -72,43 +73,51 @@ namespace SoftwareForge.Mvc.Controllers
         }
 
         /// <summary>
-        /// Join a project
+        /// Watch a project
         /// </summary>
         /// <param name="guid">The guid of project</param>
         /// <param name="username">The username</param>
         /// <returns>Redirects to overview page</returns>
-        public ActionResult JoinProject(Guid guid, String username)
+        public ActionResult WatchProject(Guid guid, String username)
         {
-            TeamCollectionsClient.JoinProject(guid, username);
+            TeamCollectionsClient.WatchProject(guid, username);
             return RedirectToAction("ProjectDetailsPage",new {guid});
 
         }
 
         /// <summary>
-        /// Leave a project
+        /// Unwatch a project
         /// </summary>
         /// <param name="guid">guid of project</param>
         /// <param name="username">username</param>
         /// <returns>Redirects to overview page</returns>
-        public ActionResult LeaveProject(Guid guid, String username)
+        public ActionResult UnwatchProject(Guid guid, String username)
         {
-            TeamCollectionsClient.LeaveProject(guid, username);
+            TeamCollectionsClient.UnwatchProject(guid, username);
             return RedirectToAction("ProjectDetailsPage", new { guid });
         }
+
+
+
 
         /// <summary>
         /// Join a project
         /// </summary>
         /// <param name="guid">The guid of project</param>
-        /// <param name="username">The username</param>
         /// <returns>Redirects to overview page</returns>
         public ActionResult CreateProjectJoinRequest(Guid guid)
         {
+            ViewData["UserRoles"] = new List<SelectListItem>{ 
+                new SelectListItem {Text = UserRole.Contributor.ToString(), Value = ((int) UserRole.Contributor).ToString()}, 
+                new SelectListItem {Text = UserRole.ProjectOwner.ToString(), Value = ((int) UserRole.ProjectOwner).ToString()}, 
+   
+            };
+
             return View("CreateProjectJoinRequest", new ProjectJoinRequest { ProjectGuid = guid});
         }
 
         /// <summary>
-        /// Creates a new project
+        /// Called after project joining
         /// </summary>
         /// <param name="project">project to create</param>
         /// <returns>redirects to overview page</returns>
@@ -118,7 +127,6 @@ namespace SoftwareForge.Mvc.Controllers
         {
             if (ModelState.IsValid)
             {
-                project.UserRole = UserRole.Contributor; //TODO: Requests for ProjectOwner, add to requestview then remove this line!
                 project.User = new User { Username = User.Identity.Name };
                 TeamCollectionsClient.CreateJoinProjectRequest(project);
             }
@@ -151,6 +159,13 @@ namespace SoftwareForge.Mvc.Controllers
                 TeamCollectionsClient.RenameProject(project.Guid, project.Name);
             }
             return RedirectToAction("ProjectDetailsPage", new { project.Guid });
+        }
+
+
+        public ActionResult LeaveProject(Guid projectGuid, string username, UserRole role)
+        {
+            TeamCollectionsClient.LeaveProject(projectGuid, username, role);
+            return RedirectToAction("ProjectDetailsPage", new { guid = projectGuid });
         }
     }
 }
