@@ -57,7 +57,7 @@
 
     @{
         ProjectMember user = Model.Users.SingleOrDefault(u => u.User.Username == User.Identity.Name);
-        //if ((user == null) || user.UserRole != UserRole.ProjectOwner)
+        if ((user == null) || user.UserRole != UserRole.ProjectOwner)
         {
             @Html.ActionLink("[Create join request]", "CreateProjectJoinRequest", "TeamProjects", new {guid = Model.Guid}, null)
         }
