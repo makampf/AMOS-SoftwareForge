@@ -49,6 +49,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Message.cs" />
+    <Compile Include="Models\ProjectInvitationMessageModel.cs" />
+    <Compile Include="Models\ProjectInvitationRequest.cs" />
     <Compile Include="Models\ProjectJoinMessageModel.cs" />
     <Compile Include="Models\ProjectMember.cs" />
     <Compile Include="Models\ProjectType.cs" />
@@ -57,6 +59,7 @@
     <Compile Include="Models\ProjectUser.cs" />
     <Compile Include="Models\ProjectJoinRequest.cs" />
     <Compile Include="Models\RenameProjectModel.cs" />
+    <Compile Include="Models\Requests\ProjectInvitationModel.cs" />
     <Compile Include="Models\Requests\ProjectMembershipRequestModel.cs" />
     <Compile Include="Models\TeamCollection.cs" />
     <Compile Include="Models\User.cs" />
