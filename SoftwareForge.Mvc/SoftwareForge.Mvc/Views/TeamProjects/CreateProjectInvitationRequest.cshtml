@@ -25,7 +25,7 @@
 
 <h2>Invite somebody to a project</h2>
 
-@using (Html.BeginForm("PostProjectJoinRequest", "TeamProjects", null))
+@using (Html.BeginForm("PostProjectInvitationRequest", "TeamProjects", null))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
@@ -38,6 +38,13 @@
         </div>
         <div class="editor-field">
             @Html.DropDownListFor(model => model.UserRoleValue,((IEnumerable<SelectListItem>)ViewData["UserRoles"]))
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.User.Username)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.User.Username)
+            @Html.ValidationMessageFor(model => model.User.Username)
         </div>
         <div class="editor-label">
             @Html.LabelFor(model => model.Message)

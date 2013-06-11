@@ -62,6 +62,12 @@
             @Html.ActionLink("[Create join request]", "CreateProjectJoinRequest", "TeamProjects", new {guid = Model.Guid}, null)
         }
     }
+    @{
+        if ((user != null) && (user.UserRole == UserRole.ProjectOwner))
+        {
+            @Html.ActionLink("[Invite a User]", "CreateInvitationRequest", "TeamProjects", new {guid = Model.Guid}, null)
+        }
+    }
 
     <br/>
     <b>ProjectOwner:</b>
