@@ -141,7 +141,15 @@ namespace SoftwareForge.Mvc.WebApiClient
         {
             return CreatePost<bool, ProjectJoinRequest>("api/ProjectMembershipRequest", projectJoinRequest);
         }
-
+        /// <summary>
+        /// Creates request for prject invitation
+        /// </summary>
+        /// <param name="projectInvitationRequest"></param>
+        /// <returns></returns>
+        public static bool CreateProjectInvitationRequest(ProjectInvitationRequest projectInvitationRequest)
+        {
+            return CreatePost<bool, ProjectInvitationRequest>("api/ProjectMembershipRequest", projectInvitationRequest);
+        }
 
         /// <summary>
         /// Lists all Project Join Request from a User
@@ -153,6 +161,7 @@ namespace SoftwareForge.Mvc.WebApiClient
             return CreateGet<List<ProjectJoinRequest>>("api/ProjectMembershipRequest/?username=" + username);
         }
 
+        
         /// <summary>
         /// 
         /// </summary>
@@ -161,6 +170,13 @@ namespace SoftwareForge.Mvc.WebApiClient
         public static ProjectJoinRequest GetProjectJoinRequestById(int requestId)
         {
             return CreateGet<ProjectJoinRequest>("api/ProjectMembershipRequest/?requestId=" + requestId);
+        }
+
+        public static ProjectInvitationRequest GetInvitationRequestById(int invitationId)
+        {
+            //TODO
+            return new ProjectInvitationRequest { Id = 1, Message = "message", User = new User {Id = 1, Username = "Admin"}};
+            //return CreateGet<ProjectInvitationRequest>("api/ProjectInvitationRequest/?invitationId=" + invitationId);
         }
 
         public static bool LeaveProject(Guid projectGuid, string username, UserRole role)
@@ -198,6 +214,45 @@ namespace SoftwareForge.Mvc.WebApiClient
         public static List<Message> GetMessages(string userName)
         {
             return CreateGet<List<Message>>("api/Message/?userName=" + userName);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public static List<ProjectInvitationRequest> GetInvitations(string userName)
+        {
+            //TODO
+            List<ProjectInvitationRequest> list = new List<ProjectInvitationRequest>();
+            list.Add(new ProjectInvitationRequest { Id = 1, Message = "asd",User = new User { Username = "Denis"}, Project = new Project{ Description = "Desc"}, UserId = 1, UserRoleValue = 1});
+            return list;
+            //return CreateGet<List<ProjectInvitationRequest>>("api/" + userName);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public static bool DeleteInvitationMessage(ProjectInvitationMessageModel model)
+        {
+            //TODO
+            return true;
+            //return CreateDelete<bool, ProjectInvitationMessageModel>("api/Message", model);
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public static bool CreateInvitationMessage(ProjectInvitationMessageModel model)
+        {
+            //TODO
+            return true;
+            //return CreatePost<bool, ProjectInvitationMessageModel>("api/", model);
         }
 
         /// <summary>
@@ -355,7 +410,5 @@ namespace SoftwareForge.Mvc.WebApiClient
             return default(T);
         }
 
-
-       
     }
 }

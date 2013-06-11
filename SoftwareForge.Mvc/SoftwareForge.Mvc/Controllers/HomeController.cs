@@ -56,7 +56,15 @@ namespace SoftwareForge.Mvc.Controllers
             dashboardModel.Requests = GetMyRequests();
             dashboardModel.Messages = GetMyMessages();
 
+            dashboardModel.InvitationRequests = GetMyInvitationRequests();
+
             return View(dashboardModel);
+        }
+
+        private List<ProjectInvitationRequest> GetMyInvitationRequests()
+        {
+            List<ProjectInvitationRequest> messages = TeamCollectionsClient.GetInvitations(User.Identity.Name);
+            return messages;
         }
 
         private List<Message> GetMyMessages()
@@ -153,7 +161,64 @@ namespace SoftwareForge.Mvc.Controllers
             return View("DeclineRequest", model);
 
         }
-       
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="invitationId"></param>
+        /// <returns></returns>
+        public ActionResult AcceptInvitation(int invitationId)
+        {
+
+            ProjectInvitationMessageModel model = CreateInvitationModel(invitationId);
+            return View("AcceptInvitation", model);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="invitationId"></param>
+        /// <returns></returns>
+        public ActionResult DeclineInvitation(int invitationId)
+        {
+            ProjectInvitationMessageModel model = CreateInvitationModel(invitationId);
+            return View("DeclineInvitation", model);
+        }
+
+
+
+        [HttpPostAttribute]
+        [ValidateAntiForgeryTokenAttribute]
+        public ActionResult PostDeclineInvitationMessage(FormCollection collection)
+        {
+            String message = collection.GetValue("Message.Text").AttemptedValue;
+            String invitationId = collection.GetValue("ProjectInvitationRequest.Id").AttemptedValue;
+
+            ProjectInvitationMessageModel model = CreateInvitationModel(Convert.ToInt32(invitationId));
+
+            model.Message.Text = message;
+
+            TeamCollectionsClient.DeleteInvitationMessage(model);
+
+            return RedirectToAction("Dashboard", "Home");
+        }
+
+        [HttpPostAttribute]
+        [ValidateAntiForgeryTokenAttribute]
+        public ActionResult PostAcceptInvitationMessage(FormCollection collection)
+        {
+            String message = collection.GetValue("Message.Text").AttemptedValue;
+            String invitationId = collection.GetValue("ProjectInvitationRequest.Id").AttemptedValue;
+
+            ProjectInvitationMessageModel model = CreateInvitationModel(Convert.ToInt32(invitationId));
+
+            model.Message.Text = message;
+
+            TeamCollectionsClient.CreateInvitationMessage(model);
+
+            return RedirectToAction("Dashboard", "Home");
+        }
+        
 
         [HttpPostAttribute]
         [ValidateAntiForgeryTokenAttribute]
@@ -187,6 +252,25 @@ namespace SoftwareForge.Mvc.Controllers
             
             return RedirectToAction("Dashboard", "Home");
         }
+        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="invitationId"></param>
+        /// <returns></returns>
+        private ProjectInvitationMessageModel CreateInvitationModel(int invitationId)
+        {
+            ProjectInvitationRequest request = TeamCollectionsClient.GetInvitationRequestById(invitationId);
+            ProjectInvitationMessageModel model = new ProjectInvitationMessageModel();
+            model.ProjectInvitationRequest = request;
+            model.Message = new Message();
+            model.Message.FromUserId = TeamCollectionsClient.GetUserByName(User.Identity.Name).Id;
+            model.Message.ToUserId = request.UserId;
+            return model;
+        }
+
+
         /// <summary>
         /// Creates the message model for a request
         /// </summary>
@@ -202,6 +286,7 @@ namespace SoftwareForge.Mvc.Controllers
             model.Message.ToUserId = request.UserId;
             return model;
         }
+
         
     }
 }

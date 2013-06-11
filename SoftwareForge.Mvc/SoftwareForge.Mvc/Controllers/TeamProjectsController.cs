@@ -116,6 +116,27 @@ namespace SoftwareForge.Mvc.Controllers
             return View("CreateProjectJoinRequest", new ProjectJoinRequest { ProjectGuid = guid});
         }
 
+        public ActionResult CreateProjectOwnerDeclaration(Guid guid)
+        {
+            {
+                ViewData["UserRoles"] = new List<SelectListItem>
+                    {
+                        new SelectListItem
+                            {
+                                Text = UserRole.Contributor.ToString(),
+                                Value = ((int) UserRole.Contributor).ToString()
+                            },
+                        new SelectListItem
+                            {
+                                Text = UserRole.ProjectOwner.ToString(),
+                                Value = ((int) UserRole.ProjectOwner).ToString()
+                            },
+
+                    };
+                return View("CreateProjectInvitation", new ProjectInvitationRequest());
+            }
+        }
+
         /// <summary>
         /// Called after project joining
         /// </summary>

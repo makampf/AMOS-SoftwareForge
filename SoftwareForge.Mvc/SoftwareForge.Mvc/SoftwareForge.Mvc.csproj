@@ -285,6 +285,10 @@
     <Content Include="Views\Home\DashboardMyMessages.cshtml" />
     <Content Include="Views\Home\DeclineRequest.cshtml" />
     <Content Include="Views\Home\AcceptRequest.cshtml" />
+    <Content Include="Views\Home\DashboardMyInvitationsPartial.cshtml" />
+    <Content Include="Views\Home\AcceptInvitation.cshtml" />
+    <Content Include="Views\Home\DeclineInvitation.cshtml" />
+    <Content Include="Views\TeamProjects\CreateProjectInvitationRequest.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
