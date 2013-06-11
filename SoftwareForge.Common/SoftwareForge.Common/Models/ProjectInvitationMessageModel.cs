@@ -33,7 +33,7 @@ namespace SoftwareForge.Common.Models
 
 
         /// <summary>
-        /// The projectJoinRequest model.
+        /// The projectInvitationRequest model.
         /// </summary>
         public ProjectInvitationRequest ProjectInvitationRequest { get; set; }
     }
