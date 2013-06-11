@@ -144,17 +144,19 @@ namespace SoftwareForge.Mvc.WebApiClient
         /// <summary>
         /// Creates request for prject invitation
         /// </summary>
-        /// <param name="projectInvitationRequest"></param>
+        /// <param name="projectInvitationRequest">the Request</param>
         /// <returns></returns>
         public static bool CreateProjectInvitationRequest(ProjectInvitationRequest projectInvitationRequest)
         {
             return CreatePost<bool, ProjectInvitationRequest>("api/ProjectInvitationRequest", projectInvitationRequest);
+            return true;
+            //return CreatePost<bool, ProjectInvitationRequest>("api/ProjectMembershipRequest", projectInvitationRequest);
         }
 
         /// <summary>
         /// Lists all Project Join Request from a User
         /// </summary>
-        /// <param name="username"></param>
+        /// <param name="username">User who will be shown all his request</param>
         /// <returns>A list with all Requests</returns>
         public static List<ProjectJoinRequest> GetProjectJoinRequests(String username)
         {
@@ -163,20 +165,32 @@ namespace SoftwareForge.Mvc.WebApiClient
 
         
         /// <summary>
-        /// 
+        /// Gets the ProjectJoiunRequesty by Id
         /// </summary>
-        /// <param name="requestId"></param>
-        /// <returns></returns>
+        /// <param name="requestId">RequestId</param>
+        /// <returns>the Requests</returns>
         public static ProjectJoinRequest GetProjectJoinRequestById(int requestId)
         {
             return CreateGet<ProjectJoinRequest>("api/ProjectMembershipRequest/?requestId=" + requestId);
         }
 
+        /// <summary>
+        /// Gets the InvitationRequests by Id
+        /// </summary>
+        /// <param name="invitationId"></param>
+        /// <returns>the Invitationrequests</returns>
         public static ProjectInvitationRequest GetInvitationRequestById(int invitationId)
         {
             return CreateGet<ProjectInvitationRequest>("api/ProjectInvitationRequest/?invitationId=" + invitationId);
         }
 
+        /// <summary>
+        /// Leave a project
+        /// </summary>
+        /// <param name="projectGuid">Guid of the project</param>
+        /// <param name="username">Username of the project leaver</param>
+        /// <param name="role">Role of the project leaver</param>
+        /// <returns></returns>
         public static bool LeaveProject(Guid projectGuid, string username, UserRole role)
         {
             ProjectMembershipRequestModel leaveProjectRequestModel = new ProjectMembershipRequestModel
@@ -190,44 +204,73 @@ namespace SoftwareForge.Mvc.WebApiClient
             return CreateDelete<bool, ProjectMembershipRequestModel>("api/ProjectMembership", leaveProjectRequestModel);
         }
 
-
+        /// <summary>
+        /// Creates the projectjoinmessage
+        /// </summary>
+        /// <param name="model">Message model</param>
+        /// <returns>the model with the message</returns>
         public static bool CreateMessage(ProjectJoinMessageModel model)
         {
             return CreatePost<bool, ProjectJoinMessageModel>("api/Message", model);
         }
 
-
+        /// <summary>
+        /// Deletes the message 
+        /// </summary>
+        /// <param name="model">ProjectJoinModel</param>
+        /// <returns>the model without the message</returns>
         public static bool DeleteMessage(ProjectJoinMessageModel model)
         {
             return CreateDelete<bool, ProjectJoinMessageModel>("api/Message", model);
         }
 
-
-        public static User GetUserByName(string userName)
+        /// <summary>
+        /// Check if exists a user, if not create the user
+        /// </summary>
+        /// <param name="userName">Username</param>
+        /// <returns>return the user</returns>
+        public static User GetOrCreateUserByName(string userName)
         {
             return CreateGet<User>("api/User/?userName=" + userName);
         }
 
+        /// <summary>
+        /// Check if there exists a user
+        /// </summary>
+        /// <param name="userName">Username</param>
+        /// <returns>the User or null if no user exists with this username</returns>
+        public static User GetUserByName(string userName)
+        {
+            //ToDo
+            return null;
+            //return CreateGet<User>("api/User/?userName=" + userName);
+        }
 
+        /// <summary>
+        /// Lists all messages of user
+        /// </summary>
+        /// <param name="userName">Username</param>
+        /// <returns>a list of messages</returns>
         public static List<Message> GetMessages(string userName)
         {
             return CreateGet<List<Message>>("api/Message/?userName=" + userName);
         }
 
+
         /// <summary>
-        /// 
+        /// Lists the InvitationRequests of a user
         /// </summary>
-        /// <param name="userName"></param>
-        /// <returns></returns>
+        /// <param name="userName">Username</param>
+        /// <returns>a list with all invitation requests</returns>
         public static List<ProjectInvitationRequest> GetInvitations(string userName)
         {
             return CreateGet<List<ProjectInvitationRequest>>("api/ProjectInvitationRequest/?userName=" + userName);
         }
 
         /// <summary>
-        /// 
+        /// Deletes the invitation message
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="model">the message model</param>
         /// <returns></returns>
         public static bool DeleteInvitationMessage(ProjectInvitationMessageModel model)
         {
@@ -237,10 +280,10 @@ namespace SoftwareForge.Mvc.WebApiClient
 
 
         /// <summary>
-        /// 
+        /// Creates the Invitation Message 
         /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
+        /// <param name="model"> The message model</param>
+        /// <returns>a CreatePos</returns>
         public static bool CreateInvitationMessage(ProjectInvitationMessageModel model)
         {
             //ToDo

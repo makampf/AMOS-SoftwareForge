@@ -61,18 +61,30 @@ namespace SoftwareForge.Mvc.Controllers
             return View(dashboardModel);
         }
 
+        /// <summary>
+        /// lists all invitationrequests
+        /// </summary>
+        /// <returns>a list of invitation requests</returns>
         private List<ProjectInvitationRequest> GetMyInvitationRequests()
         {
             List<ProjectInvitationRequest> messages = TeamCollectionsClient.GetInvitations(User.Identity.Name);
             return messages;
         }
 
+        /// <summary>
+        /// lists all messages
+        /// </summary>
+        /// <returns>a list off messages</returns>
         private List<Message> GetMyMessages()
         {
             List<Message> messages = TeamCollectionsClient.GetMessages(User.Identity.Name);
             return messages;
         }
 
+        /// <summary>
+        /// Lists als requests
+        /// </summary>
+        /// <returns>a list of projects</returns>
         private List<ProjectJoinRequest> GetMyRequests()
         {
             List<ProjectJoinRequest> requests = TeamCollectionsClient.GetProjectJoinRequests(User.Identity.Name);
@@ -163,10 +175,10 @@ namespace SoftwareForge.Mvc.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Accepts the invitation
         /// </summary>
         /// <param name="invitationId"></param>
-        /// <returns></returns>
+        /// <returns>the accept invitation view</returns>
         public ActionResult AcceptInvitation(int invitationId)
         {
 
@@ -175,10 +187,10 @@ namespace SoftwareForge.Mvc.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Declines the activation
         /// </summary>
-        /// <param name="invitationId"></param>
-        /// <returns></returns>
+        /// <param name="invitationId">Id of the invitation</param>
+        /// <returns>the decline invitation view</returns>
         public ActionResult DeclineInvitation(int invitationId)
         {
             ProjectInvitationMessageModel model = CreateInvitationModel(invitationId);
@@ -186,7 +198,11 @@ namespace SoftwareForge.Mvc.Controllers
         }
 
 
-
+        /// <summary>
+        /// posts the decline message 
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <returns>redirection to dashboard</returns>
         [HttpPostAttribute]
         [ValidateAntiForgeryTokenAttribute]
         public ActionResult PostDeclineInvitationMessage(FormCollection collection)
@@ -203,6 +219,12 @@ namespace SoftwareForge.Mvc.Controllers
             return RedirectToAction("Dashboard", "Home");
         }
 
+
+        /// <summary>
+        /// posts the invitation accept message
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <returns>redirection to dashboard</returns>
         [HttpPostAttribute]
         [ValidateAntiForgeryTokenAttribute]
         public ActionResult PostAcceptInvitationMessage(FormCollection collection)
@@ -220,6 +242,11 @@ namespace SoftwareForge.Mvc.Controllers
         }
         
 
+        /// <summary>
+        /// posts the decline message
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <returns>redirection to dashboard</returns>
         [HttpPostAttribute]
         [ValidateAntiForgeryTokenAttribute]
         public ActionResult PostDeclineMessage(FormCollection collection)
@@ -237,6 +264,11 @@ namespace SoftwareForge.Mvc.Controllers
         }
        
 
+        /// <summary>
+        /// Posts the accepts message
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <returns>redirection to dashboard</returns>
         [HttpPostAttribute]
         [ValidateAntiForgeryTokenAttribute]
         public ActionResult PostAcceptMessage(FormCollection collection)
@@ -255,17 +287,17 @@ namespace SoftwareForge.Mvc.Controllers
         
 
         /// <summary>
-        /// 
+        /// Creates invitation model
         /// </summary>
-        /// <param name="invitationId"></param>
-        /// <returns></returns>
+        /// <param name="invitationId">Id of the invitation</param>
+        /// <returns>the invitation model</returns>
         private ProjectInvitationMessageModel CreateInvitationModel(int invitationId)
         {
             ProjectInvitationRequest request = TeamCollectionsClient.GetInvitationRequestById(invitationId);
             ProjectInvitationMessageModel model = new ProjectInvitationMessageModel();
             model.ProjectInvitationRequest = request;
             model.Message = new Message();
-            model.Message.FromUserId = TeamCollectionsClient.GetUserByName(User.Identity.Name).Id;
+            model.Message.FromUserId = TeamCollectionsClient.GetOrCreateUserByName(User.Identity.Name).Id;
             model.Message.ToUserId = request.UserId;
             return model;
         }
@@ -282,7 +314,7 @@ namespace SoftwareForge.Mvc.Controllers
             ProjectJoinMessageModel model = new ProjectJoinMessageModel();
             model.ProjectJoinRequest = request;
             model.Message = new Message();
-            model.Message.FromUserId = TeamCollectionsClient.GetUserByName(User.Identity.Name).Id;
+            model.Message.FromUserId = TeamCollectionsClient.GetOrCreateUserByName(User.Identity.Name).Id;
             model.Message.ToUserId = request.UserId;
             return model;
         }
