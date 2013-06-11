@@ -41,6 +41,24 @@ namespace SoftwareForge.DbService
             return projects;
         }
 
+
+        public static void AddProjectInvitationRequest(ProjectInvitationRequest model)
+        {
+            Project project = SoftwareForgeDbContext.Projects.Single(t => t.Guid == model.ProjectGuid);
+            if (project == null)
+                throw new Exception("AddProjectInvitationRequest: Could not found the project with GUID: " + model.ProjectGuid);
+
+            User user = SoftwareForgeDbContext.Users.SingleOrDefault(t => t.Username == model.User.Username);
+            if (user == null)
+                throw new Exception("Can't find username: " + model.User.Username);
+
+
+
+            SoftwareForgeDbContext.Invitations.Add(model);
+            SoftwareForgeDbContext.SaveChanges();
+        }
+
+
         public static void ProcessProjectJoinRequest(ProjectJoinRequest model)
         {
             Project project = SoftwareForgeDbContext.Projects.Single(t => t.Guid == model.ProjectGuid);
@@ -131,5 +149,21 @@ namespace SoftwareForge.DbService
                 SoftwareForgeDbContext.SaveChanges();
             }
         }
+
+        public static ProjectInvitationRequest GetProjectInvitationRequestById(int requestId)
+        {
+            ProjectInvitationRequest request = SoftwareForgeDbContext.Invitations.SingleOrDefault(r => (r.Id == requestId));
+            if (request == null)
+                throw new Exception("GetProjectInvitationRequestById: Could not find ProjectInvitationRequest with id: " + requestId);
+            return request;
+        }
+
+        public static List<ProjectInvitationRequest> GetProjectInvitationsOfUser(string username)
+        {
+            User user = GetUser(username);
+            return SoftwareForgeDbContext.Invitations.Where(i => i.UserId == user.Id).ToList();
+        }
+
+        
     }
 }

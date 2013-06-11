@@ -18,53 +18,38 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Web.Http;
 using SoftwareForge.Common.Models;
-using SoftwareForge.Common.Models.Requests;
 using SoftwareForge.DbService;
 
 namespace SoftwareForge.WebApi.Controllers
 {
-    public class MessageController : ApiController
+    public class ProjectInvitationRequestController : ApiController
     {
 
-         #region GET
+        #region GET
         [HttpGet]
-        public List<Message> Get(string userName)
+        public ProjectInvitationRequest Get(int requestId)
         {
-            return MessageDao.GetMessagesOfUser(ProjectMembershipDao.GetUser(userName));
+            return ProjectMembershipDao.GetProjectInvitationRequestById(requestId);
+        }
+
+        [HttpGet]
+        public List<ProjectInvitationRequest> Get(String username)
+        {
+            return ProjectMembershipDao.GetProjectInvitationsOfUser(username);
         }
         #endregion
+
+
 
         #region POST
         [HttpPost]
-        public bool Post([FromBody] ProjectJoinMessageModel model)
+        public bool Post([FromBody] ProjectInvitationRequest model)
         {
-            MessageDao.AddMessage(model.Message);
-            ProjectMembershipRequestModel requestModel = new ProjectMembershipRequestModel
-                {
-                    Username = model.ProjectJoinRequest.User.Username,
-                    UserRole = model.ProjectJoinRequest.UserRole,
-                    ProjectGuid = model.ProjectJoinRequest.ProjectGuid
-                };
-
-            ProjectsDao.JoinProject(requestModel);
-
-            ProjectMembershipDao.RemoveProjectJoinRequest(model.ProjectJoinRequest);
-
-            return true;
-        }
-        #endregion
-
-
-        #region POST
-        [HttpDelete]
-        public bool Delete([FromBody] ProjectJoinMessageModel model)
-        {
-            MessageDao.AddMessage(model.Message);
-            ProjectMembershipDao.RemoveProjectJoinRequest(model.ProjectJoinRequest);
-
+            ProjectMembershipDao.AddProjectInvitationRequest(model);
             return true;
         }
         #endregion

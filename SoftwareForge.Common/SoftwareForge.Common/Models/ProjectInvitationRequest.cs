@@ -41,7 +41,7 @@ namespace SoftwareForge.Common.Models
 
 
         /// <summary>
-        /// A user in this project
+        /// The user getting the invitaion
         /// </summary>
         [ForeignKey("User"), Column(Order = 1)]
         public int UserId { get; set; }
@@ -49,7 +49,7 @@ namespace SoftwareForge.Common.Models
 
 
         /// <summary>
-        /// The declarated role of the user for this project
+        /// The declarated role of the user for the project
         /// </summary>
         public int UserRoleValue { get; set; }
         public UserRole UserRole
@@ -58,6 +58,9 @@ namespace SoftwareForge.Common.Models
             set { UserRoleValue = (int)value; }
         }
 
+        /// <summary>
+        /// The invitation message
+        /// </summary>
         [MaxLength(4000)]
         [DataType(DataType.MultilineText)]
         public string Message { get; set; }

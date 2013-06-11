@@ -52,5 +52,10 @@ namespace SoftwareForge.DbService
         /// </summary>
         public DbSet<Message> Messages { get; set; }
 
+        /// <summary>
+        /// The DbSet for invitations
+        /// </summary>
+        public DbSet<ProjectInvitationRequest> Invitations { get; set; }
+
     }
 }
