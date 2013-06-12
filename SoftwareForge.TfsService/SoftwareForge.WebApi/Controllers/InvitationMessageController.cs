@@ -16,10 +16,6 @@ namespace SoftwareForge.WebApi.Controllers
         [HttpPost]
         public bool Post([FromBody] ProjectInvitationMessageModel model)
         {
-            //send message to all project owners
-            MessageDao.AddMessageForAllProjectOwner(model.Message, model.ProjectInvitationRequest.ProjectGuid);
-
-
             ProjectMembershipRequestModel requestModel = new ProjectMembershipRequestModel
             {
                 Username = model.ProjectInvitationRequest.User.Username,
@@ -30,6 +26,9 @@ namespace SoftwareForge.WebApi.Controllers
             ProjectsDao.JoinProject(requestModel);
 
             ProjectMembershipDao.RemoveProjectInvitationRequest(model.ProjectInvitationRequest);
+
+            //send message to all project owners
+            MessageDao.AddMessageForAllProjectOwner(model.Message, model.ProjectInvitationRequest.ProjectGuid);
 
             return true;
         }
