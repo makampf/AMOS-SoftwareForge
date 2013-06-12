@@ -1,0 +1,68 @@
+﻿<!-- 
+    - Copyright (c) 2013 by Denis Bach, Marvin Kampf, Konstantin Tsysin, Taner Tunc, Florian Wittmann
+    -
+    - This file is part of the Software Forge Overlay rating application.
+    -
+    - This program is free software: you can redistribute it and/or modify
+    - it under the terms of the GNU Affero General Public License as
+    - published by the Free Software Foundation, either version 3 of the
+    - License, or (at your option) any later version.
+    -
+    - This program is distributed in the hope that it will be useful, 
+    - but WITHOUT ANY WARRANTY; without even the implied warranty of
+    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    - GNU Affero General Public License for more details.
+    -
+    - You should have received a copy of the GNU Affero General Public
+    - License along with this program. If not, see
+    - <http://www.gnu.org/licenses/>.
+    -->
+
+@model SoftwareForge.Common.Models.ProjectInvitationRequest
+@{
+    ViewBag.Title = "Invite to project";
+}
+
+<h2>Invite somebody to a project</h2>
+
+@using (Html.BeginForm("PostProjectInvitationRequest", "TeamProjects", null))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Your invitation</legend>
+        @Html.HiddenFor(model => model.ProjectGuid)
+        <div class="editor-label">
+            @Html.LabelFor(model => model.UserRole)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.UserRoleValue,((IEnumerable<SelectListItem>)ViewData["UserRoles"]))
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.User.Username)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.User.Username)
+            @Html.ValidationMessageFor(model => model.User.Username)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Message)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Message)
+            @Html.ValidationMessageFor(model => model.Message)
+        </div>
+        <p>
+            <input type="submit" value="Send Invitation" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List","Index","Home")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

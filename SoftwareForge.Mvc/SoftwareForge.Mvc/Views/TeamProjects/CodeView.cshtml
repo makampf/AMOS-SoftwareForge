@@ -18,18 +18,29 @@
  - <http://www.gnu.org/licenses/>.
  -->
 @using SoftwareForge.Common.Models
-@model List<ProjectJoinRequest>
+@model SoftwareForge.Mvc.Models.CodeViewModel
+<p>@Html.ActionLink("[Project Details]", "ProjectDetailsPage", "TeamProjects", new {guid = Model.ProjectGuid}, null) - Code View</p>
 
-Your Requests:
-<ul>             
-    @foreach (ProjectJoinRequest request in Model)
+
+
+@using (Html.BeginForm("BranchChoosen", "TeamProjects", FormMethod.Post)) {
+
+    <fieldset>
+        Branch: 
+        @Html.DropDownList("branch",(IEnumerable<SelectListItem>)ViewBag.BranchList)
+        @Html.Hidden("guid", Model.ProjectGuid)
+        <p>
+            <input type="submit" value="Show Branch" />
+        </p>
+
+    </fieldset>
+    
+    
+    <b>Files:</b><br/>
+    foreach (string file in Model.Files)
     {
-        <li>
-            User @request.User.Username wants to join project @request.Project.Name as an @request.UserRole<br/>
-            Message: @request.Message <br/>
-            @Html.ActionLink("Accept", "AcceptRequest", "Home", new {requestId=request.Id},null) 
-            @Html.ActionLink("Decline", "DeclineRequest", "Home", new {requestId=request.Id},null)
-            <br/>
-        </li>
-    } 
-</ul>   
+        <text>@file</text><br/>
+    }
+
+} 
+

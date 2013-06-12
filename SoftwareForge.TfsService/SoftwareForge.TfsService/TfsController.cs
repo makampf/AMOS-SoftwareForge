@@ -26,6 +26,7 @@ using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Framework.Client;
 using Microsoft.TeamFoundation.Framework.Common;
 using Microsoft.TeamFoundation.Server;
+using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using SoftwareForge.Common.Models;
 using SoftwareForge.DbService;
@@ -123,7 +124,7 @@ namespace SoftwareForge.TfsService
                     teamCollectionsList.Add(teamCol);
                 }
             }
-            
+           
             return teamCollectionsList;
         }
 
@@ -429,6 +430,41 @@ namespace SoftwareForge.TfsService
 
             return result;
         }
+
+        /// <summary>
+        /// GetAllBranches
+        /// </summary>
+        /// <param name="teamProjectGuid">the guid of the project</param>
+        /// <returns>a list of branches</returns>
+        public List<string> GetBranches(Guid teamProjectGuid)
+        {
+            Project project = ProjectsDao.Get(teamProjectGuid);
+
+            String serverPath ="$/" + project.TfsName;
+             VersionControlServer versionControlServer = _tfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid).
+                GetService<VersionControlServer>();
+
+             IEnumerable<BranchObject> branchObjects = versionControlServer.QueryRootBranchObjects(RecursionType.Full).
+                 Where(t => t.Properties.RootItem.Item.StartsWith(serverPath));
+
+            return branchObjects.Select(branch => branch.Properties.RootItem.Item).ToList();
+        }
+
+        /// <summary>
+        /// Get Files of a branch
+        /// </summary>
+        /// <param name="teamProjectGuid">the guid of the project</param>
+        /// <param name="path">the path to query</param>
+        /// <returns>a list of branches</returns>
+        public List<string> GetFiles(Guid teamProjectGuid, string path)
+        {
+            Project project = ProjectsDao.Get(teamProjectGuid);
+            VersionControlServer versionControlServer = _tfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid).
+               GetService<VersionControlServer>();
+            ItemSet itemSet = versionControlServer.GetItems(path, RecursionType.Full);
+            return itemSet.Items.Select(item => item.ServerItem).ToList();
+        }
+
 
     }
 }

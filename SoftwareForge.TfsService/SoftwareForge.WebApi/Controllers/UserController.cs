@@ -30,9 +30,23 @@ namespace SoftwareForge.WebApi.Controllers
 
         #region GET
         [HttpGet]
-        public User Get(String userName)
+        public User GetOrCreate(String userName)
         {
-            return ProjectMembershipDao.GetUser(userName);
+            return ProjectMembershipDao.GetOrCreateUser(userName);
+        }
+
+
+        [HttpGet]
+        public User Get(String user)
+        {
+            return ProjectMembershipDao.GetUser(user);
+        }
+
+
+        [HttpGet]
+        public User Get(int userId)
+        {
+            return ProjectMembershipDao.GetUserById(userId);
         }
         #endregion
 

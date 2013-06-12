@@ -17,35 +17,41 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-using System;
-using System.Linq;
-using SoftwareForge.Common.Models;
-using System.Collections.Generic;
-using System.Web.Mvc;
-using SoftwareForge.Mvc.Models;
-using SoftwareForge.Mvc.WebApiClient;
 
-namespace SoftwareForge.Mvc.Controllers
+using System.Collections.Generic;
+using SoftwareForge.Common.Models;
+
+namespace SoftwareForge.Mvc.Models
 {
     /// <summary>
-    /// Controller for home view.
+    /// The model for the dashboard view
     /// </summary>
-    public class HomeController : Controller
+    public class DashboardModel
     {
         /// <summary>
-        /// GET: /Home.
+        /// A list of random projects, the user is not yet member of.
         /// </summary>
-        /// <returns>Home view with teamcollections.</returns>
-        public ActionResult Index()
-        {
-            IEnumerable<TeamCollection> teamCollections = TeamCollectionsClient.GetTeamCollections();
-            return View(teamCollections);
-        }
+        public List<Project> RandomProjects { get; set; }
 
+        /// <summary>
+        /// A list of all projects, the user is member of.
+        /// </summary>
+        public List<Project> MyProjects { get; set; }
 
+        /// <summary>
+        /// A list of Messages, the user will be informed
+        /// </summary>
+        public List<Message> Messages { get; set; }
 
+        /// <summary>
+        /// A list of Project Join Requests, the user gets
+        /// </summary>
+        public List<ProjectJoinRequest> Requests { get; set; }
 
+        /// <summary>
+        /// A list of Project Invitation Requests of the user
+        /// </summary>
+        public List<ProjectInvitationRequest> InvitationRequests { get; set; } 
 
-        
     }
 }

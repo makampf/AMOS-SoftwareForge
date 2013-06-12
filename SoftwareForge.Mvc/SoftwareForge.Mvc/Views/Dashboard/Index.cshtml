@@ -18,40 +18,24 @@
     - <http://www.gnu.org/licenses/>.
     -->
 
-@model SoftwareForge.Common.Models.ProjectJoinMessageModel
+@model SoftwareForge.Mvc.Models.DashboardModel
+
 @{
-    ViewBag.Title = "Accept Request";
+    ViewBag.Title = "Dashboard";
 }
-
-<h2>AcceptRequest</h2>
-
-@using (Html.BeginForm("PostAcceptMessage", "Home", null, FormMethod.Post))
-{
-    @Html.AntiForgeryToken()
-    @Html.ValidationSummary(true)
-
-    <fieldset>
-        <legend>Message request</legend>
-        @Html.HiddenFor(model => model.ProjectJoinRequest.Id)
-  
-        <div class="editor-label">
-            @Html.LabelFor(model => model.Message.Text)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.Message.Text)
-            @Html.ValidationMessageFor(model => model.Message.Text)
-        </div>
-        <p>
-            <input type="submit" value="Accept and send Message" />
-        </p>
-    </fieldset>
-}
-
 
 <div>
-    @Html.ActionLink("Back to Dashboard","Dashboard","Home")
+    @Html.Partial("Partials/DashboardMyProjectsPartial", Model.MyProjects)
 </div>
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+<div>
+    @Html.Partial("Partials/DashboardRandomProjectsPartial", Model.RandomProjects)
+</div>
+<div>
+    @Html.Partial("Partials/DashboardMyRequestsPartial", Model.Requests)
+</div>
+<div>
+    @Html.Partial("Partials/DashboardMyMessagesPartial", Model.Messages)
+</div>
+<div>
+   @Html.Partial("Partials/DashboardMyInvitationsPartial", Model.InvitationRequests)
+</div>

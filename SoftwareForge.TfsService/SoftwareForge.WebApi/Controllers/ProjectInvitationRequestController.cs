@@ -17,26 +17,41 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Routing;
+using System.Web.Http;
+using SoftwareForge.Common.Models;
+using SoftwareForge.DbService;
 
-namespace SoftwareForge.Mvc
+namespace SoftwareForge.WebApi.Controllers
 {
-    public class RouteConfig
+    public class ProjectInvitationRequestController : ApiController
     {
-        public static void RegisterRoutes(RouteCollection routes)
-        {
-            routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
-            routes.MapRoute(
-                name: "Default",
-                url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Dashboard", action = "Index", id = UrlParameter.Optional }
-            );
+        #region GET
+        [HttpGet]
+        public ProjectInvitationRequest Get(int invitationId)
+        {
+            return ProjectMembershipDao.GetProjectInvitationRequestById(invitationId);
         }
+
+        [HttpGet]
+        public List<ProjectInvitationRequest> Get(String username)
+        {
+            return ProjectMembershipDao.GetProjectInvitationsOfUser(username);
+        }
+        #endregion
+
+
+
+        #region POST
+        [HttpPost]
+        public bool Post([FromBody] ProjectInvitationRequest model)
+        {
+            ProjectMembershipDao.AddProjectInvitationRequest(model);
+            return true;
+        }
+        #endregion
     }
 }

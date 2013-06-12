@@ -42,10 +42,12 @@ namespace SoftwareForge.WebApi.Controllers
         public bool Post([FromBody] ProjectJoinMessageModel model)
         {
             MessageDao.AddMessage(model.Message);
-            ProjectMembershipRequestModel requestModel = new ProjectMembershipRequestModel();
-            requestModel.Username = model.ProjectJoinRequest.User.Username;
-            requestModel.UserRole = model.ProjectJoinRequest.UserRole;
-            requestModel.ProjectGuid = model.ProjectJoinRequest.ProjectGuid;
+            ProjectMembershipRequestModel requestModel = new ProjectMembershipRequestModel
+                {
+                    Username = model.ProjectJoinRequest.User.Username,
+                    UserRole = model.ProjectJoinRequest.UserRole,
+                    ProjectGuid = model.ProjectJoinRequest.ProjectGuid
+                };
 
             ProjectsDao.JoinProject(requestModel);
 
@@ -56,7 +58,7 @@ namespace SoftwareForge.WebApi.Controllers
         #endregion
 
 
-        #region POST
+        #region Delete
         [HttpDelete]
         public bool Delete([FromBody] ProjectJoinMessageModel model)
         {

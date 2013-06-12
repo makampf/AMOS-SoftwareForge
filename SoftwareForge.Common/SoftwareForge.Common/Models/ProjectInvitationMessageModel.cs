@@ -18,34 +18,19 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.Collections.Generic;
-
 namespace SoftwareForge.Common.Models
 {
-    /// <summary>
-    /// The model for the dashboard view
-    /// </summary>
-    public class DashboardModel
+    public class ProjectInvitationMessageModel
     {
         /// <summary>
-        /// A list of random projects, the user is not yet member of.
+        /// The message model.
         /// </summary>
-        public List<Project> RandomProjects { get; set; }
+        public Message Message { get; set; }
+
 
         /// <summary>
-        /// A list of all projects, the user is member of.
+        /// The projectInvitationRequest model.
         /// </summary>
-        public List<Project> MyProjects { get; set; }
-
-        /// <summary>
-        /// A list of Messages, the user will be informed
-        /// </summary>
-        public List<Message> Messages { get; set; }
-
-        /// <summary>
-        /// A list of Project Join Requests, the user gets
-        /// </summary>
-        public List<ProjectJoinRequest> Requests { get; set; }
+        public ProjectInvitationRequest ProjectInvitationRequest { get; set; }
     }
 }

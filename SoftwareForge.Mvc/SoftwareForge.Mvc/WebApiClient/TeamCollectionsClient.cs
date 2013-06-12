@@ -141,28 +141,54 @@ namespace SoftwareForge.Mvc.WebApiClient
         {
             return CreatePost<bool, ProjectJoinRequest>("api/ProjectMembershipRequest", projectJoinRequest);
         }
-
+        /// <summary>
+        /// Creates request for prject invitation
+        /// </summary>
+        /// <param name="projectInvitationRequest">the Request</param>
+        /// <returns></returns>
+        public static bool CreateProjectInvitationRequest(ProjectInvitationRequest projectInvitationRequest)
+        {
+            return CreatePost<bool, ProjectInvitationRequest>("api/ProjectInvitationRequest", projectInvitationRequest);
+        }
 
         /// <summary>
         /// Lists all Project Join Request from a User
         /// </summary>
-        /// <param name="username"></param>
+        /// <param name="username">User who will be shown all his request</param>
         /// <returns>A list with all Requests</returns>
         public static List<ProjectJoinRequest> GetProjectJoinRequests(String username)
         {
             return CreateGet<List<ProjectJoinRequest>>("api/ProjectMembershipRequest/?username=" + username);
         }
 
+        
         /// <summary>
-        /// 
+        /// Gets the ProjectJoiunRequesty by Id
         /// </summary>
-        /// <param name="requestId"></param>
-        /// <returns></returns>
+        /// <param name="requestId">RequestId</param>
+        /// <returns>the Requests</returns>
         public static ProjectJoinRequest GetProjectJoinRequestById(int requestId)
         {
             return CreateGet<ProjectJoinRequest>("api/ProjectMembershipRequest/?requestId=" + requestId);
         }
 
+        /// <summary>
+        /// Gets the InvitationRequests by Id
+        /// </summary>
+        /// <param name="invitationId"></param>
+        /// <returns>the Invitationrequests</returns>
+        public static ProjectInvitationRequest GetInvitationRequestById(int invitationId)
+        {
+            return CreateGet<ProjectInvitationRequest>("api/ProjectInvitationRequest/?invitationId=" + invitationId);
+        }
+
+        /// <summary>
+        /// Leave a project
+        /// </summary>
+        /// <param name="projectGuid">Guid of the project</param>
+        /// <param name="username">Username of the project leaver</param>
+        /// <param name="role">Role of the project leaver</param>
+        /// <returns></returns>
         public static bool LeaveProject(Guid projectGuid, string username, UserRole role)
         {
             ProjectMembershipRequestModel leaveProjectRequestModel = new ProjectMembershipRequestModel
@@ -176,28 +202,107 @@ namespace SoftwareForge.Mvc.WebApiClient
             return CreateDelete<bool, ProjectMembershipRequestModel>("api/ProjectMembership", leaveProjectRequestModel);
         }
 
-
+        /// <summary>
+        /// Creates the projectjoinmessage
+        /// </summary>
+        /// <param name="model">Message model</param>
+        /// <returns>the model with the message</returns>
         public static bool CreateMessage(ProjectJoinMessageModel model)
         {
             return CreatePost<bool, ProjectJoinMessageModel>("api/Message", model);
         }
 
-
+        /// <summary>
+        /// Deletes the message 
+        /// </summary>
+        /// <param name="model">ProjectJoinModel</param>
+        /// <returns>the model without the message</returns>
         public static bool DeleteMessage(ProjectJoinMessageModel model)
         {
             return CreateDelete<bool, ProjectJoinMessageModel>("api/Message", model);
         }
 
-
-        public static User GetUserByName(string userName)
+        /// <summary>
+        /// Check if exists a user, if not create the user
+        /// </summary>
+        /// <param name="userName">Username</param>
+        /// <returns>return the user</returns>
+        public static User GetOrCreateUserByName(string userName)
         {
             return CreateGet<User>("api/User/?userName=" + userName);
         }
 
+        /// <summary>
+        /// Check if there exists a user
+        /// </summary>
+        /// <param name="user">Username</param>
+        /// <returns>the User or null if no user exists with this username</returns>
+        public static User GetUserByName(String user)
+        {
+            return CreateGet<User>("api/User/?user=" + user);
+        }
 
+        /// <summary>
+        /// Lists all messages of user
+        /// </summary>
+        /// <param name="userName">Username</param>
+        /// <returns>a list of messages</returns>
         public static List<Message> GetMessages(string userName)
         {
             return CreateGet<List<Message>>("api/Message/?userName=" + userName);
+        }
+
+
+        /// <summary>
+        /// Lists the InvitationRequests of a user
+        /// </summary>
+        /// <param name="userName">Username</param>
+        /// <returns>a list with all invitation requests</returns>
+        public static List<ProjectInvitationRequest> GetInvitations(string userName)
+        {
+            return CreateGet<List<ProjectInvitationRequest>>("api/ProjectInvitationRequest/?userName=" + userName);
+        }
+
+        /// <summary>
+        /// Deletes the invitation message
+        /// </summary>
+        /// <param name="model">the message model</param>
+        /// <returns></returns>
+        public static bool DeleteInvitationMessage(ProjectInvitationMessageModel model)
+        {
+            return CreateDelete<bool, ProjectInvitationMessageModel>("api/InvitationMessage", model);
+        }
+
+
+        /// <summary>
+        /// Creates the Invitation Message 
+        /// </summary>
+        /// <param name="model"> The message model</param>
+        /// <returns>a CreatePos</returns>
+        public static bool CreateInvitationMessage(ProjectInvitationMessageModel model)
+        {
+            return CreatePost<bool, ProjectInvitationMessageModel>("api/InvitationMessage", model);
+        }
+
+        /// <summary>
+        /// Get all branches of a project
+        /// </summary>
+        /// <param name="guid">the guid of the project</param>
+        /// <returns>a list of branches</returns>
+        public static List<string> GetBranches(Guid guid)
+        {
+            return CreateGet<List<string>>("api/Branches/?projectguid=" + guid);
+        }
+
+        /// <summary>
+        /// Get all files of a path in a project
+        /// </summary>
+        /// <param name="guid">the guid of the project</param>
+        /// <param name="path">the path in the project</param>
+        /// <returns>a list of files</returns>
+        public static List<string> GetFiles(Guid guid, string path)
+        {
+            return CreateGet<List<string>>("api/Files/?projectguid=" + guid + "&path=" + path);
         }
 
         /// <summary>
@@ -356,6 +461,5 @@ namespace SoftwareForge.Mvc.WebApiClient
         }
 
 
-       
     }
 }

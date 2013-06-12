@@ -19,8 +19,11 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Web.Mvc;
 using SoftwareForge.Common.Models;
+using SoftwareForge.Mvc.Models;
 using SoftwareForge.Mvc.WebApiClient;
 
 namespace SoftwareForge.Mvc.Controllers
@@ -98,22 +101,40 @@ namespace SoftwareForge.Mvc.Controllers
         }
 
 
-
-
         /// <summary>
         /// Join a project
         /// </summary>
         /// <param name="guid">The guid of project</param>
-        /// <returns>Redirects to overview page</returns>
+        /// <returns>The JoinRequest to the CreateProjectJoinRequest View.</returns>
         public ActionResult CreateProjectJoinRequest(Guid guid)
         {
             ViewData["UserRoles"] = new List<SelectListItem>{ 
-                new SelectListItem {Text = UserRole.Contributor.ToString(), Value = ((int) UserRole.Contributor).ToString()}, 
-                new SelectListItem {Text = UserRole.ProjectOwner.ToString(), Value = ((int) UserRole.ProjectOwner).ToString()}, 
+                new SelectListItem {Text = UserRole.Contributor.ToString(), Value = ((int) UserRole.Contributor).ToString(CultureInfo.InvariantCulture)}, 
+                new SelectListItem {Text = UserRole.ProjectOwner.ToString(), Value = ((int) UserRole.ProjectOwner).ToString(CultureInfo.InvariantCulture)}, 
    
             };
 
             return View("CreateProjectJoinRequest", new ProjectJoinRequest { ProjectGuid = guid});
+        }
+
+        /// <summary>
+        /// Creates a new InvitationRequest
+        /// </summary>
+        /// <param name="guid"> ProjectGuid</param>
+        /// <returns>The Request to the CreateProjectInvitationRequest View. </returns>
+        public ActionResult CreateInvitationRequest(Guid guid)
+        {
+            {
+                ViewData["UserRoles"] = new List<SelectListItem>
+                    {
+                        new SelectListItem{Text = UserRole.Contributor.ToString(), Value = ((int) UserRole.Contributor).ToString(CultureInfo.InvariantCulture)},
+                        new SelectListItem{Text = UserRole.ProjectOwner.ToString(),Value = ((int) UserRole.ProjectOwner).ToString(CultureInfo.InvariantCulture)},
+
+                    };
+                ProjectInvitationRequest request = new ProjectInvitationRequest {ProjectGuid = guid};
+                //request.Project = TeamCollectionsClient.GetTeamProject(guid);
+                return View("CreateProjectInvitationRequest", request);
+            }
         }
 
         /// <summary>
@@ -149,7 +170,7 @@ namespace SoftwareForge.Mvc.Controllers
         /// Renames the project
         /// </summary>
         /// <param name="project"></param>
-        /// <returns></returns>
+        /// <returns>redirection to projectdetailspage</returns>
         [HttpPostAttribute]
         [ValidateAntiForgeryTokenAttribute]
         public ActionResult RenameProject(Project project)
@@ -161,11 +182,104 @@ namespace SoftwareForge.Mvc.Controllers
             return RedirectToAction("ProjectDetailsPage", new { project.Guid });
         }
 
-
+        /// <summary>
+        /// Leave a project
+        /// </summary>
+        /// <param name="projectGuid">ProjectGuid which is wanted to be leaved</param>
+        /// <param name="username">Username who wants to leave a project</param>
+        /// <param name="role">Which role the user wants to get rid of</param>
+        /// <returns>redirection to projectdetailspage</returns>
         public ActionResult LeaveProject(Guid projectGuid, string username, UserRole role)
         {
             TeamCollectionsClient.LeaveProject(projectGuid, username, role);
             return RedirectToAction("ProjectDetailsPage", new { guid = projectGuid });
+        }
+
+        /// <summary>
+        /// Posts the InvitationRequest
+        /// </summary>
+        /// <param name="invitation"></param>
+        /// <returns>Returns to home view</returns>
+        public ActionResult PostProjectInvitationRequest(ProjectInvitationRequest invitation)
+        {
+            if (ModelState.IsValid)
+            {
+                String userName = invitation.User.Username;
+                User user = TeamCollectionsClient.GetUserByName(userName);
+                if (user == null)
+                    throw new Exception("Can't find user " + userName);
+
+
+                if (invitation.UserRole == UserRole.ProjectOwner)
+                {
+                    Project project = TeamCollectionsClient.GetTeamProject(invitation.ProjectGuid);
+                    IEnumerable<ProjectMember> projectMembers =
+                        project.Users.Where(u => u.UserRole == UserRole.ProjectOwner);
+
+                    //if (projectMembers.Any(projectMember => projectMember.User.Username == userName))
+                    //{
+                    //    throw new Exception("The user " + userName + " is already project owner in project " + project.Name);
+                    //}
+                }
+                else
+                {
+                    Project project = TeamCollectionsClient.GetTeamProject(invitation.ProjectGuid);
+                    IEnumerable<ProjectMember> projectMembers =
+                        project.Users.Where(u => (u.UserRole == UserRole.ProjectOwner) || (u.UserRole == UserRole.Contributor));
+
+                    //if (projectMembers.Any(projectMember => projectMember.User.Username == userName))
+                    //{
+                    //    throw new Exception("The user " + userName + " is already contributor or project owner in project " + project.Name);
+                    //}
+                }
+
+
+                TeamCollectionsClient.CreateProjectInvitationRequest(invitation);
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        /// <summary>
+        /// Show the CodeView for a project
+        /// </summary>
+        /// <param name="guid">the project guid</param>
+        /// <returns>A CodeView view</returns>
+        public ActionResult CodeView(Guid guid, string branch = null)
+        {
+           
+            List<string> branchList = TeamCollectionsClient.GetBranches(guid);
+            List<string> files = new List<string>();
+            if (branch == null && branchList.Count > 0) branch = branchList[0];
+
+
+            if (branch != null)
+            {
+                files = TeamCollectionsClient.GetFiles(guid, branch);
+            }
+
+            List<SelectListItem> branchSelectListItems = new List<SelectListItem>();
+            foreach (string branchElement in branchList)
+            {
+                bool selected = branchElement.Equals(branch);
+                branchSelectListItems.Add(new SelectListItem { Text = branchElement, Value = branch, Selected = selected});
+            }
+
+            CodeViewModel project = new CodeViewModel { ProjectGuid = guid, Files = files };
+            ViewBag.BranchList = branchSelectListItems;
+
+            return View(project);
+        }
+
+        /// <summary>
+        /// Change the choosen Branch
+        /// </summary>
+        /// <param name="branchList"></param>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        public ActionResult BranchChoosen(string branch, string guid)
+        {
+            return RedirectToAction("CodeView", new {guid, branch});
         }
     }
 }

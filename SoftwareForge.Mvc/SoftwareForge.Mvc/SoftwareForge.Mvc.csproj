@@ -153,12 +153,15 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TeamProjectsController.cs" />
     <Compile Include="Controllers\TeamCollectionsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\CodeViewModel.cs" />
+    <Compile Include="Models\DashboardModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -274,21 +277,25 @@
     <Content Include="packages.config" />
     <Content Include="Views\TeamCollections\CreateTeamCollection.cshtml" />
     <Content Include="Views\TeamProjects\CreateProject.cshtml" />
-    <Content Include="Views\Home\Dashboard.cshtml" />
-    <Content Include="Views\Home\DashboardRandomProjectsPartial.cshtml" />
-    <Content Include="Views\Home\DashboardMyProjectsPartial.cshtml" />
+    <Content Include="Views\Dashboard\Index.cshtml" />
+    <Content Include="Views\Dashboard\Partials\DashboardRandomProjectsPartial.cshtml" />
+    <Content Include="Views\Dashboard\Partials\DashboardMyProjectsPartial.cshtml" />
     <Content Include="Views\Shared\ProjectPreviewPartial.cshtml" />
     <Content Include="Views\TeamProjects\ProjectDetailsPage.cshtml" />
     <Content Include="Views\TeamProjects\RenameProjectPage.cshtml" />
     <Content Include="Views\TeamProjects\CreateProjectJoinRequest.cshtml" />
-    <Content Include="Views\Home\DashboardMyRequestsPartial.cshtml" />
-    <Content Include="Views\Home\DashboardMyMessages.cshtml" />
-    <Content Include="Views\Home\DeclineRequest.cshtml" />
-    <Content Include="Views\Home\AcceptRequest.cshtml" />
+    <Content Include="Views\Dashboard\Partials\DashboardMyRequestsPartial.cshtml" />
+    <Content Include="Views\Dashboard\Partials\DashboardMyMessagesPartial.cshtml" />
+    <Content Include="Views\Dashboard\DeclineRequest.cshtml" />
+    <Content Include="Views\Dashboard\AcceptRequest.cshtml" />
+    <Content Include="Views\Dashboard\Partials\DashboardMyInvitationsPartial.cshtml" />
+    <Content Include="Views\Dashboard\AcceptInvitation.cshtml" />
+    <Content Include="Views\Dashboard\DeclineInvitation.cshtml" />
+    <Content Include="Views\TeamProjects\CreateProjectInvitationRequest.cshtml" />
+    <Content Include="Views\TeamProjects\CodeView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\SoftwareForge.Common\SoftwareForge.Common\SoftwareForge.Common.csproj">

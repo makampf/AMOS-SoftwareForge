@@ -36,12 +36,14 @@ namespace SoftwareForge.WebApi.Controllers
             return ProjectMembershipDao.GetProjectRequestById(requestId);
         }
 
+
         [HttpGet]
         public List<ProjectJoinRequest> Get(String username)
         {
             return ProjectMembershipDao.GetProjectRequestsOfUser(username);
         }
         #endregion
+
 
         #region POST
         [HttpPost]
@@ -50,7 +52,6 @@ namespace SoftwareForge.WebApi.Controllers
             ProjectMembershipDao.ProcessProjectJoinRequest(model);
             return true;
         }
-
         #endregion
 
 
