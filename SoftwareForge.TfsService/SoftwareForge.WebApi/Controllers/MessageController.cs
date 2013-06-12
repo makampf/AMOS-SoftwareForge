@@ -58,7 +58,7 @@ namespace SoftwareForge.WebApi.Controllers
         #endregion
 
 
-        #region POST
+        #region Delete
         [HttpDelete]
         public bool Delete([FromBody] ProjectJoinMessageModel model)
         {

@@ -18,6 +18,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using SoftwareForge.Common.Models;
 using System.Linq;
@@ -41,6 +42,17 @@ namespace SoftwareForge.DbService
         public static List<Message> GetMessagesOfUser(User user)
         {
             return SoftwareForgeDbContext.Messages.Where(m => m.ToUserId == user.Id).ToList();
+        }
+
+        public static void AddMessageForAllProjectOwner(Message message, Guid projectGuid)
+        {
+            var userList = ProjectsDao.GetUsers(projectGuid).Where(m => m.UserRole == UserRole.ProjectOwner);
+            foreach (var projectMember in userList)
+            {
+                Message m = new Message {FromUserId = message.Id, Text = message.Text, ToUserId = projectMember.User.Id};
+                SoftwareForgeDbContext.Messages.Add(m);
+            }
+            SoftwareForgeDbContext.SaveChanges();
         }
     }
 }

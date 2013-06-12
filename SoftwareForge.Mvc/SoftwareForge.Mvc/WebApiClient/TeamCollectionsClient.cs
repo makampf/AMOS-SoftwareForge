@@ -149,8 +149,6 @@ namespace SoftwareForge.Mvc.WebApiClient
         public static bool CreateProjectInvitationRequest(ProjectInvitationRequest projectInvitationRequest)
         {
             return CreatePost<bool, ProjectInvitationRequest>("api/ProjectInvitationRequest", projectInvitationRequest);
-            return true;
-            //return CreatePost<bool, ProjectInvitationRequest>("api/ProjectMembershipRequest", projectInvitationRequest);
         }
 
         /// <summary>
@@ -237,13 +235,11 @@ namespace SoftwareForge.Mvc.WebApiClient
         /// <summary>
         /// Check if there exists a user
         /// </summary>
-        /// <param name="userName">Username</param>
+        /// <param name="user">Username</param>
         /// <returns>the User or null if no user exists with this username</returns>
-        public static User GetUserByName(string userName)
+        public static User GetUserByName(String user)
         {
-            //ToDo
-            return null;
-            //return CreateGet<User>("api/User/?userName=" + userName);
+            return CreateGet<User>("api/User/?user=" + user);
         }
 
         /// <summary>
@@ -274,8 +270,7 @@ namespace SoftwareForge.Mvc.WebApiClient
         /// <returns></returns>
         public static bool DeleteInvitationMessage(ProjectInvitationMessageModel model)
         {
-            //ToDo
-            return CreateDelete<bool, ProjectInvitationMessageModel>("api/", model);
+            return CreateDelete<bool, ProjectInvitationMessageModel>("api/InvitationMessage", model);
         }
 
 
@@ -286,7 +281,6 @@ namespace SoftwareForge.Mvc.WebApiClient
         /// <returns>a CreatePos</returns>
         public static bool CreateInvitationMessage(ProjectInvitationMessageModel model)
         {
-            //ToDo
             return CreatePost<bool, ProjectInvitationMessageModel>("api/", model);
         }
 

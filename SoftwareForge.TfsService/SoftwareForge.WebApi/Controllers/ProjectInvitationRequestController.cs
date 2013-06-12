@@ -31,9 +31,9 @@ namespace SoftwareForge.WebApi.Controllers
 
         #region GET
         [HttpGet]
-        public ProjectInvitationRequest Get(int requestId)
+        public ProjectInvitationRequest Get(int invitationId)
         {
-            return ProjectMembershipDao.GetProjectInvitationRequestById(requestId);
+            return ProjectMembershipDao.GetProjectInvitationRequestById(invitationId);
         }
 
         [HttpGet]

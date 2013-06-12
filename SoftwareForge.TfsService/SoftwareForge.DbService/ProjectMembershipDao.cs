@@ -52,6 +52,7 @@ namespace SoftwareForge.DbService
             if (user == null)
                 throw new Exception("Can't find username: " + model.User.Username);
 
+            model.User = user;
 
 
             SoftwareForgeDbContext.Invitations.Add(model);
@@ -100,20 +101,28 @@ namespace SoftwareForge.DbService
         }
 
 
-        
-
-        public static User GetUser(String username)
+        public static User GetOrCreateUser(string userName)
         {
-            User user = SoftwareForgeDbContext.Users.SingleOrDefault(a => a.Username == username);
+            User user = GetUser(userName);
             if (user == null)
             {
-                user = new User { Username = username };
+                user = new User { Username = userName };
                 SoftwareForgeDbContext.Users.Add(user);
                 SoftwareForgeDbContext.SaveChanges();
 
-                user = SoftwareForgeDbContext.Users.Single(a => a.Username == username);
+                user = SoftwareForgeDbContext.Users.Single(a => a.Username == userName);
             }
             return user;
+        }
+
+        public static User GetUser(String username)
+        {
+            return SoftwareForgeDbContext.Users.SingleOrDefault(a => a.Username == username);
+        }
+
+        public static User GetUserById(int userId)
+        {
+            return SoftwareForgeDbContext.Users.SingleOrDefault(a => a.Id == userId);
         }
 
         public static List<ProjectJoinRequest> GetProjectRequestsOfUser(String username)
@@ -150,6 +159,16 @@ namespace SoftwareForge.DbService
             }
         }
 
+        public static void RemoveProjectInvitationRequest(ProjectInvitationRequest projectJoinRequest)
+        {
+            ProjectInvitationRequest req = SoftwareForgeDbContext.Invitations.SingleOrDefault(r => r.Id == projectJoinRequest.Id);
+            if (req != null)
+            {
+                SoftwareForgeDbContext.Invitations.Remove(req);
+                SoftwareForgeDbContext.SaveChanges();
+            }
+        }
+
         public static ProjectInvitationRequest GetProjectInvitationRequestById(int requestId)
         {
             ProjectInvitationRequest request = SoftwareForgeDbContext.Invitations.SingleOrDefault(r => (r.Id == requestId));
@@ -163,6 +182,7 @@ namespace SoftwareForge.DbService
             User user = GetUser(username);
             return SoftwareForgeDbContext.Invitations.Where(i => i.UserId == user.Id).ToList();
         }
+
 
         
     }

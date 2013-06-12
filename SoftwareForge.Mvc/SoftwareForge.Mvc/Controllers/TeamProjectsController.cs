@@ -19,6 +19,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
 using SoftwareForge.Common.Models;
@@ -107,8 +108,8 @@ namespace SoftwareForge.Mvc.Controllers
         public ActionResult CreateProjectJoinRequest(Guid guid)
         {
             ViewData["UserRoles"] = new List<SelectListItem>{ 
-                new SelectListItem {Text = UserRole.Contributor.ToString(), Value = ((int) UserRole.Contributor).ToString()}, 
-                new SelectListItem {Text = UserRole.ProjectOwner.ToString(), Value = ((int) UserRole.ProjectOwner).ToString()}, 
+                new SelectListItem {Text = UserRole.Contributor.ToString(), Value = ((int) UserRole.Contributor).ToString(CultureInfo.InvariantCulture)}, 
+                new SelectListItem {Text = UserRole.ProjectOwner.ToString(), Value = ((int) UserRole.ProjectOwner).ToString(CultureInfo.InvariantCulture)}, 
    
             };
 
@@ -125,8 +126,8 @@ namespace SoftwareForge.Mvc.Controllers
             {
                 ViewData["UserRoles"] = new List<SelectListItem>
                     {
-                        new SelectListItem{Text = UserRole.Contributor.ToString(), Value = ((int) UserRole.Contributor).ToString()},
-                        new SelectListItem{Text = UserRole.ProjectOwner.ToString(),Value = ((int) UserRole.ProjectOwner).ToString()},
+                        new SelectListItem{Text = UserRole.Contributor.ToString(), Value = ((int) UserRole.Contributor).ToString(CultureInfo.InvariantCulture)},
+                        new SelectListItem{Text = UserRole.ProjectOwner.ToString(),Value = ((int) UserRole.ProjectOwner).ToString(CultureInfo.InvariantCulture)},
 
                     };
                 ProjectInvitationRequest request = new ProjectInvitationRequest {ProjectGuid = guid};
@@ -197,7 +198,7 @@ namespace SoftwareForge.Mvc.Controllers
         /// Posts the InvitationRequest
         /// </summary>
         /// <param name="invitation"></param>
-        /// <returns></returns>
+        /// <returns>Returns to home view</returns>
         public ActionResult PostProjectInvitationRequest(ProjectInvitationRequest invitation)
         {
             if (ModelState.IsValid)
@@ -214,10 +215,10 @@ namespace SoftwareForge.Mvc.Controllers
                     IEnumerable<ProjectMember> projectMembers =
                         project.Users.Where(u => u.UserRole == UserRole.ProjectOwner);
 
-                    if (projectMembers.Any(projectMember => projectMember.User.Username == userName))
-                    {
-                        throw new Exception("The user " + userName + " is already project owner in project " + project.Name);
-                    }
+                    //if (projectMembers.Any(projectMember => projectMember.User.Username == userName))
+                    //{
+                    //    throw new Exception("The user " + userName + " is already project owner in project " + project.Name);
+                    //}
                 }
                 else
                 {
@@ -225,10 +226,10 @@ namespace SoftwareForge.Mvc.Controllers
                     IEnumerable<ProjectMember> projectMembers =
                         project.Users.Where(u => (u.UserRole == UserRole.ProjectOwner) || (u.UserRole == UserRole.Contributor));
 
-                    if (projectMembers.Any(projectMember => projectMember.User.Username == userName))
-                    {
-                        throw new Exception("The user " + userName + " is already contributor or project owner in project " + project.Name);
-                    }
+                    //if (projectMembers.Any(projectMember => projectMember.User.Username == userName))
+                    //{
+                    //    throw new Exception("The user " + userName + " is already contributor or project owner in project " + project.Name);
+                    //}
                 }
 
 
