@@ -285,6 +285,27 @@ namespace SoftwareForge.Mvc.WebApiClient
         }
 
         /// <summary>
+        /// Get all branches of a project
+        /// </summary>
+        /// <param name="guid">the guid of the project</param>
+        /// <returns>a list of branches</returns>
+        public static List<string> GetBranches(Guid guid)
+        {
+            return CreateGet<List<string>>("api/Branches/?projectguid=" + guid);
+        }
+
+        /// <summary>
+        /// Get all files of a path in a project
+        /// </summary>
+        /// <param name="guid">the guid of the project</param>
+        /// <param name="path">the path in the project</param>
+        /// <returns>a list of files</returns>
+        public static List<string> GetFiles(Guid guid, string path)
+        {
+            return CreateGet<List<string>>("api/Files/?projectguid=" + guid + "&path=" + path);
+        }
+
+        /// <summary>
         /// Create a Get webRequest
         /// </summary>
         /// <typeparam name="T">the expected type of the answer</typeparam>
@@ -439,9 +460,6 @@ namespace SoftwareForge.Mvc.WebApiClient
             return default(T);
         }
 
-        public static List<string> GetBranches(Guid guid)
-        {
-            return CreateGet<List<string>>("api/Branches/?projectguid=" + guid);
-        }
+
     }
 }

@@ -23,17 +23,24 @@
 
 
 
-@using (Html.BeginForm("BranchChoosen", "TeamProjects", FormMethod.Get)) {
+@using (Html.BeginForm("BranchChoosen", "TeamProjects", FormMethod.Post)) {
 
     <fieldset>
-            Branch: 
-            @Html.DropDownList("BranchList")
-            @Html.Hidden("guid", Model.ProjectGuid)
+        Branch: 
+        @Html.DropDownList("branch",(IEnumerable<SelectListItem>)ViewBag.BranchList)
+        @Html.Hidden("guid", Model.ProjectGuid)
         <p>
             <input type="submit" value="Show Branch" />
         </p>
 
     </fieldset>
+    
+    
+    <b>Files:</b><br/>
+    foreach (string file in Model.Files)
+    {
+        <text>@file</text><br/>
+    }
 
 } 
 

@@ -249,7 +249,14 @@ namespace SoftwareForge.Mvc.Controllers
         {
            
             List<string> branchList = TeamCollectionsClient.GetBranches(guid);
+            List<string> files = new List<string>();
             if (branch == null && branchList.Count > 0) branch = branchList[0];
+
+
+            if (branch != null)
+            {
+                files = TeamCollectionsClient.GetFiles(guid, branch);
+            }
 
             List<SelectListItem> branchSelectListItems = new List<SelectListItem>();
             foreach (string branchElement in branchList)
@@ -258,7 +265,7 @@ namespace SoftwareForge.Mvc.Controllers
                 branchSelectListItems.Add(new SelectListItem { Text = branchElement, Value = branch, Selected = selected});
             }
 
-            CodeViewModel project = new CodeViewModel { ProjectGuid = guid };
+            CodeViewModel project = new CodeViewModel { ProjectGuid = guid, Files = files };
             ViewBag.BranchList = branchSelectListItems;
 
             return View(project);
@@ -270,9 +277,9 @@ namespace SoftwareForge.Mvc.Controllers
         /// <param name="branchList"></param>
         /// <param name="guid"></param>
         /// <returns></returns>
-        public ActionResult BranchChoosen(string BranchList, string guid)
+        public ActionResult BranchChoosen(string branch, string guid)
         {
-            return RedirectToAction("CodeView", new {guid=guid, branch = BranchList});
+            return RedirectToAction("CodeView", new {guid, branch});
         }
     }
 }

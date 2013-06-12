@@ -35,5 +35,7 @@ namespace SoftwareForge.Mvc.Models
         /// The guid of the choosen project
         /// </summary>
         public Guid ProjectGuid {get; set; }
+
+        public List<string> Files { get; set; }
     }
 }
