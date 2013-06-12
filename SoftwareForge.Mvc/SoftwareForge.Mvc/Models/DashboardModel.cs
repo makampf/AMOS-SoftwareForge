@@ -19,8 +19,9 @@
  */
 
 using System.Collections.Generic;
+using SoftwareForge.Common.Models;
 
-namespace SoftwareForge.Common.Models
+namespace SoftwareForge.Mvc.Models
 {
     /// <summary>
     /// The model for the dashboard view

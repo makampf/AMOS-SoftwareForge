@@ -18,18 +18,18 @@
  - <http://www.gnu.org/licenses/>.
  -->
 @using SoftwareForge.Common.Models
-@model List<ProjectJoinRequest>
+@model List<ProjectInvitationRequest>
 
-Your Requests:
+Your Invitations:
 <ul>             
-    @foreach (ProjectJoinRequest request in Model)
+    @foreach (ProjectInvitationRequest invitation in Model)
     {
         <li>
-            User @request.User.Username wants to join project @request.Project.Name as an @request.UserRole<br/>
-            Message: @request.Message <br/>
-            @Html.ActionLink("Accept", "AcceptRequest", "Home", new {requestId=request.Id},null) 
-            @Html.ActionLink("Decline", "DeclineRequest", "Home", new {requestId=request.Id},null)
+            User @invitation.User.Username wants you to join project @invitation.Project.Name as an @invitation.UserRole<br/>
+            Message: @invitation.Message <br/>
+            @Html.ActionLink("Accept", "AcceptInvitation", "Dashboard", new {invitationId=invitation.Id},null) 
+            @Html.ActionLink("Decline", "DeclineInvitation", "Dashboard", new {invitationId=invitation.Id},null)
             <br/>
         </li>
     } 
-</ul>   
+</ul> 

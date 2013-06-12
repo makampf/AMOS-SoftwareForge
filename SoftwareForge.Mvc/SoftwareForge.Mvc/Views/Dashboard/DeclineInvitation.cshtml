@@ -18,21 +18,21 @@
     - <http://www.gnu.org/licenses/>.
     -->
 
-@model SoftwareForge.Common.Models.ProjectJoinMessageModel
+@model SoftwareForge.Common.Models.ProjectInvitationMessageModel
 
 @{
-    ViewBag.Title = "DeclineRequest";
+    ViewBag.Title = "DeclineInvitation";
 }
 
 <h2>DeclineRequest</h2>
 
-@using (Html.BeginForm("PostDeclineMessage","Home", null)) {
+@using (Html.BeginForm("PostDeclineInvitationMessage","Home", null)) {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
     <fieldset>
         <legend>Message request</legend>
-        @Html.HiddenFor(model => model.ProjectJoinRequest.Id)
+        @Html.HiddenFor(model => model.ProjectInvitationRequest.Id)
   
         <div class="editor-label">
             @Html.LabelFor(model => model.Message.Text)
@@ -49,7 +49,7 @@
 
 
 <div>
-    @Html.ActionLink("Back to Dashboard","Dashboard","Home")
+    @Html.ActionLink("Back to Dashboard","Index","Dashboard")
 </div>
 
 @section Scripts {
