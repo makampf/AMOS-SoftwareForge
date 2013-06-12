@@ -237,5 +237,16 @@ namespace SoftwareForge.Mvc.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+
+        /// <summary>
+        /// Show the CodeView for a project
+        /// </summary>
+        /// <param name="guid">the project guid</param>
+        /// <returns>A CodeView view</returns>
+        public ActionResult CodeView(Guid guid)
+        {
+            Project project = TeamCollectionsClient.GetTeamProject(guid);
+            return View(project);
+        }
     }
 }

@@ -20,6 +20,7 @@
 
 @using SoftwareForge.Common.Models
 @model Project
+<p>Project Details - @Html.ActionLink("[Code View]", "CodeView", "TeamProjects", new {guid = Model.Guid}, null)</p>
 <p>
     <b>@Model.Name</b> @Html.ActionLink("[Rename]", "RenameProjectPage", "TeamProjects",new {guid=Model.Guid},null)<br/>
     TFS-Project: @Model.TfsName
