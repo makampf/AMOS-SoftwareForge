@@ -23,6 +23,7 @@ using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
 using SoftwareForge.Common.Models;
+using SoftwareForge.Mvc.Models;
 using SoftwareForge.Mvc.WebApiClient;
 
 namespace SoftwareForge.Mvc.Controllers
@@ -244,10 +245,34 @@ namespace SoftwareForge.Mvc.Controllers
         /// </summary>
         /// <param name="guid">the project guid</param>
         /// <returns>A CodeView view</returns>
-        public ActionResult CodeView(Guid guid)
+        public ActionResult CodeView(Guid guid, string branch = null)
         {
-            Project project = TeamCollectionsClient.GetTeamProject(guid);
+           
+            List<string> branchList = TeamCollectionsClient.GetBranches(guid);
+            if (branch == null && branchList.Count > 0) branch = branchList[0];
+
+            List<SelectListItem> branchSelectListItems = new List<SelectListItem>();
+            foreach (string branchElement in branchList)
+            {
+                bool selected = branchElement.Equals(branch);
+                branchSelectListItems.Add(new SelectListItem { Text = branchElement, Value = branch, Selected = selected});
+            }
+
+            CodeViewModel project = new CodeViewModel { ProjectGuid = guid };
+            ViewBag.BranchList = branchSelectListItems;
+
             return View(project);
+        }
+
+        /// <summary>
+        /// Change the choosen Branch
+        /// </summary>
+        /// <param name="branchList"></param>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        public ActionResult BranchChoosen(string BranchList, string guid)
+        {
+            return RedirectToAction("CodeView", new {guid=guid, branch = BranchList});
         }
     }
 }

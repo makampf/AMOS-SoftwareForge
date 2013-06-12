@@ -26,6 +26,7 @@ using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Framework.Client;
 using Microsoft.TeamFoundation.Framework.Common;
 using Microsoft.TeamFoundation.Server;
+using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using SoftwareForge.Common.Models;
 using SoftwareForge.DbService;
@@ -123,7 +124,7 @@ namespace SoftwareForge.TfsService
                     teamCollectionsList.Add(teamCol);
                 }
             }
-            
+           
             return teamCollectionsList;
         }
 
@@ -428,6 +429,20 @@ namespace SoftwareForge.TfsService
             }
 
             return result;
+        }
+
+        public List<string> GetBranches(Guid teamProjectGuid)
+        {
+            Project project = ProjectsDao.Get(teamProjectGuid);
+
+            String serverPath ="$/" + project.TfsName;
+             VersionControlServer versionControlServer = _tfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid).
+                GetService<VersionControlServer>();
+
+             IEnumerable<BranchObject> branchObjects = versionControlServer.QueryRootBranchObjects(RecursionType.Full).
+                 Where(t => t.Properties.RootItem.Item.StartsWith(serverPath));
+
+            return branchObjects.Select(branch => branch.Properties.RootItem.Item).ToList();
         }
 
     }

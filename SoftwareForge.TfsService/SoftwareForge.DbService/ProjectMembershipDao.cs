@@ -179,8 +179,16 @@ namespace SoftwareForge.DbService
 
         public static List<ProjectInvitationRequest> GetProjectInvitationsOfUser(string username)
         {
-            User user = GetUser(username);
-            return SoftwareForgeDbContext.Invitations.Where(i => i.UserId == user.Id).ToList();
+            try
+            {
+                User user = GetUser(username);
+                return SoftwareForgeDbContext.Invitations.Where(i => i.UserId == user.Id).ToList();
+            }
+            catch
+            {
+                return new List<ProjectInvitationRequest>();
+            }
+         
         }
 
 

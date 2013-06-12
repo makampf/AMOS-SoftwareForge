@@ -18,12 +18,22 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
+using System.Web.Mvc;
 
 namespace SoftwareForge.Mvc.Models
 {
-    class CodeViewModel
+    public class CodeViewModel
     {
-        List<string> BranchLists { get; set; }
+        /// <summary>
+        /// All branches of the choosen project
+        /// </summary>
+        public IEnumerable<SelectListItem> BranchList { get; set; }
+
+        /// <summary>
+        /// The guid of the choosen project
+        /// </summary>
+        public Guid ProjectGuid {get; set; }
     }
 }

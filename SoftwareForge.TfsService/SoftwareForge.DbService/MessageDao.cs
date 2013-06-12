@@ -41,7 +41,15 @@ namespace SoftwareForge.DbService
 
         public static List<Message> GetMessagesOfUser(User user)
         {
-            return SoftwareForgeDbContext.Messages.Where(m => m.ToUserId == user.Id).ToList();
+            try
+            {
+                return SoftwareForgeDbContext.Messages.Where(m => m.ToUserId == user.Id).ToList();
+
+            }
+            catch
+            {
+                return new List<Message>();
+            }
         }
 
         public static void AddMessageForAllProjectOwner(Message message, Guid projectGuid)

@@ -18,10 +18,22 @@
  - <http://www.gnu.org/licenses/>.
  -->
 @using SoftwareForge.Common.Models
-@model Project
-<p>@Html.ActionLink("[Project Details]", "ProjectDetailsPage", "TeamProjects", new {guid = Model.Guid}, null) - Code View</p>
+@model SoftwareForge.Mvc.Models.CodeViewModel
+<p>@Html.ActionLink("[Project Details]", "ProjectDetailsPage", "TeamProjects", new {guid = Model.ProjectGuid}, null) - Code View</p>
 
-<p>
-    <b>@Model.Name</b><br/>
-    TFS-Project: @Model.TfsName
-</p>
+
+
+@using (Html.BeginForm("BranchChoosen", "TeamProjects", FormMethod.Get)) {
+
+    <fieldset>
+            Branch: 
+            @Html.DropDownList("BranchList")
+            @Html.Hidden("guid", Model.ProjectGuid)
+        <p>
+            <input type="submit" value="Show Branch" />
+        </p>
+
+    </fieldset>
+
+} 
+

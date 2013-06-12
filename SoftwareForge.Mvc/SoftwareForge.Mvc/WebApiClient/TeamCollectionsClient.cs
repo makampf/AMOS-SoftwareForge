@@ -439,5 +439,9 @@ namespace SoftwareForge.Mvc.WebApiClient
             return default(T);
         }
 
+        public static List<string> GetBranches(Guid guid)
+        {
+            return CreateGet<List<string>>("api/Branches/?projectguid=" + guid);
+        }
     }
 }
