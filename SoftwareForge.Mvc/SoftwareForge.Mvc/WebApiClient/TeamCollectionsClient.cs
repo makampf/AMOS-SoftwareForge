@@ -281,7 +281,7 @@ namespace SoftwareForge.Mvc.WebApiClient
         /// <returns>a CreatePos</returns>
         public static bool CreateInvitationMessage(ProjectInvitationMessageModel model)
         {
-            return CreatePost<bool, ProjectInvitationMessageModel>("api/", model);
+            return CreatePost<bool, ProjectInvitationMessageModel>("api/InvitationMessage", model);
         }
 
         /// <summary>
