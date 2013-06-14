@@ -69,7 +69,7 @@ namespace SoftwareForge.DbService
         /// <param name="projectGuid">The GUID of the project</param>
         /// <param name="newName">The new name of the project</param>
         /// <returns>True if succesful, otherwise false</returns>
-        public static bool RenameProject(Guid projectGuid, String newName)
+        public static void RenameProject(Guid projectGuid, String newName)
         {
             Project project = SoftwareForgeDbContext.Projects.SingleOrDefault(t => t.Guid == projectGuid);
             if (project == null)
@@ -77,8 +77,6 @@ namespace SoftwareForge.DbService
 
             project.Name = newName;
             SoftwareForgeDbContext.SaveChanges();
-
-            return true;
         }
 
         /// <summary>

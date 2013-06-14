@@ -168,7 +168,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="WebApiClient\TeamCollectionsClient.cs" />
+    <Compile Include="Facade\SoftwareForgeFacade.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
@@ -301,6 +301,14 @@
     <ProjectReference Include="..\..\SoftwareForge.Common\SoftwareForge.Common\SoftwareForge.Common.csproj">
       <Project>{A73AD4D8-B74B-4E4F-97D3-C8E5078FED36}</Project>
       <Name>SoftwareForge.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SoftwareForge.TfsService\SoftwareForge.DbService\SoftwareForge.DbService.csproj">
+      <Project>{7F856256-365F-489C-8FB6-2ADB46D21E41}</Project>
+      <Name>SoftwareForge.DbService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SoftwareForge.TfsService\SoftwareForge.TfsService\SoftwareForge.TfsService.csproj">
+      <Project>{AE9C9B2F-EAE8-4DE4-88AF-73E164157158}</Project>
+      <Name>SoftwareForge.TfsService</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

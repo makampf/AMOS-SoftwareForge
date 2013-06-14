@@ -25,10 +25,19 @@ namespace SoftwareForge.Mvc.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:50866/")]
-        public string WebApiUri {
+        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:8080/tfs")]
+        public string TfsServerUri {
             get {
-                return ((string)(this["WebApiUri"]));
+                return ((string)(this["TfsServerUri"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=.\\SQLEXPRESS;Integrated Security=True;MultipleActiveResultSets=true")]
+        public string DbConnectionString {
+            get {
+                return ((string)(this["DbConnectionString"]));
             }
         }
     }

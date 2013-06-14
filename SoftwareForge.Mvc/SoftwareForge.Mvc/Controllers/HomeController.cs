@@ -22,8 +22,8 @@ using System.Linq;
 using SoftwareForge.Common.Models;
 using System.Collections.Generic;
 using System.Web.Mvc;
+using SoftwareForge.Mvc.Facade;
 using SoftwareForge.Mvc.Models;
-using SoftwareForge.Mvc.WebApiClient;
 
 namespace SoftwareForge.Mvc.Controllers
 {
@@ -38,7 +38,7 @@ namespace SoftwareForge.Mvc.Controllers
         /// <returns>Home view with teamcollections.</returns>
         public ActionResult Index()
         {
-            IEnumerable<TeamCollection> teamCollections = TeamCollectionsClient.GetTeamCollections();
+            IEnumerable<TeamCollection> teamCollections = SoftwareForgeFacade.Client.GetTeamCollections();
             return View(teamCollections);
         }
 
