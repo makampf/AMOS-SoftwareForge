@@ -38,15 +38,15 @@ namespace SoftwareForge.Mvc.Facade
         {
             get
             {
-                if (_teamcolclient == null)
+                if (_facade == null)
                 {
-                    _teamcolclient = new SoftwareForgeFacade();
+                    _facade = new SoftwareForgeFacade();
                     
                 }
-                return _teamcolclient;
+                return _facade;
             }
         }
-        private static SoftwareForgeFacade _teamcolclient;
+        private static SoftwareForgeFacade _facade;
 
 
         private readonly TfsController _tfsController;
@@ -119,6 +119,7 @@ namespace SoftwareForge.Mvc.Facade
         /// </summary>
         /// <param name="guid">The projectGuid to rename</param>
         /// <param name="newName">The new name of the project</param>
+        /// <param name="username">The username of the project owner in the project</param>
         /// <returns>True if successful, false in error case</returns>
         public void RenameProject(Guid guid, string newName, string username)
         {

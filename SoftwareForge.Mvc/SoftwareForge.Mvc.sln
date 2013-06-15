@@ -5,19 +5,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftwareForge.Mvc", "Softwa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftwareForge.Mvc.Tests", "SoftwareForge.Mvc.Tests\SoftwareForge.Mvc.Tests.csproj", "{CC690D4F-80A9-4DB6-B50D-D295365530F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftwareForge.Common", "..\SoftwareForge.Common\SoftwareForge.Common\SoftwareForge.Common.csproj", "{A73AD4D8-B74B-4E4F-97D3-C8E5078FED36}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{11614EF4-5F55-4BBE-A667-8F0E6F9C9A4A}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftwareForge.TfsService", "..\SoftwareForge.TfsService\SoftwareForge.TfsService\SoftwareForge.TfsService.csproj", "{AE9C9B2F-EAE8-4DE4-88AF-73E164157158}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftwareForge.TfsService", "SoftwareForge.TfsService\SoftwareForge.TfsService.csproj", "{AE9C9B2F-EAE8-4DE4-88AF-73E164157158}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftwareForge.DbService", "..\SoftwareForge.TfsService\SoftwareForge.DbService\SoftwareForge.DbService.csproj", "{7F856256-365F-489C-8FB6-2ADB46D21E41}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftwareForge.TfsService.UnitTests", "SoftwareForge.TfsService.UnitTests\SoftwareForge.TfsService.UnitTests.csproj", "{3AE0FC0E-0F26-422D-85FF-6BFC26ED9D34}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftwareForge.TfsService.UnitTests", "..\SoftwareForge.TfsService\SoftwareForge.TfsService.UnitTests\SoftwareForge.TfsService.UnitTests.csproj", "{3AE0FC0E-0F26-422D-85FF-6BFC26ED9D34}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftwareForge.DbService", "SoftwareForge.DbService\SoftwareForge.DbService.csproj", "{7F856256-365F-489C-8FB6-2ADB46D21E41}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftwareForge.Common", "SoftwareForge.Common\SoftwareForge.Common.csproj", "{A73AD4D8-B74B-4E4F-97D3-C8E5078FED36}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,22 +33,22 @@ Global
 		{CC690D4F-80A9-4DB6-B50D-D295365530F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC690D4F-80A9-4DB6-B50D-D295365530F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC690D4F-80A9-4DB6-B50D-D295365530F3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A73AD4D8-B74B-4E4F-97D3-C8E5078FED36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A73AD4D8-B74B-4E4F-97D3-C8E5078FED36}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A73AD4D8-B74B-4E4F-97D3-C8E5078FED36}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A73AD4D8-B74B-4E4F-97D3-C8E5078FED36}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AE9C9B2F-EAE8-4DE4-88AF-73E164157158}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AE9C9B2F-EAE8-4DE4-88AF-73E164157158}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE9C9B2F-EAE8-4DE4-88AF-73E164157158}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE9C9B2F-EAE8-4DE4-88AF-73E164157158}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7F856256-365F-489C-8FB6-2ADB46D21E41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7F856256-365F-489C-8FB6-2ADB46D21E41}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7F856256-365F-489C-8FB6-2ADB46D21E41}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7F856256-365F-489C-8FB6-2ADB46D21E41}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3AE0FC0E-0F26-422D-85FF-6BFC26ED9D34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3AE0FC0E-0F26-422D-85FF-6BFC26ED9D34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3AE0FC0E-0F26-422D-85FF-6BFC26ED9D34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3AE0FC0E-0F26-422D-85FF-6BFC26ED9D34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F856256-365F-489C-8FB6-2ADB46D21E41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F856256-365F-489C-8FB6-2ADB46D21E41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F856256-365F-489C-8FB6-2ADB46D21E41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F856256-365F-489C-8FB6-2ADB46D21E41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A73AD4D8-B74B-4E4F-97D3-C8E5078FED36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A73AD4D8-B74B-4E4F-97D3-C8E5078FED36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A73AD4D8-B74B-4E4F-97D3-C8E5078FED36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A73AD4D8-B74B-4E4F-97D3-C8E5078FED36}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

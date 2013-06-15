@@ -60,17 +60,17 @@
     <Reference Include="System.Data.Entity" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\SoftwareForge.Common\SoftwareForge.Common\SoftwareForge.Common.csproj">
-      <Project>{a73ad4d8-b74b-4e4f-97d3-c8e5078fed36}</Project>
-      <Name>SoftwareForge.Common</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SoftwareForge.Common\SoftwareForge.Common.csproj">
+      <Project>{a73ad4d8-b74b-4e4f-97d3-c8e5078fed36}</Project>
+      <Name>SoftwareForge.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

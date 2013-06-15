@@ -64,8 +64,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\SoftwareForge.Common\SoftwareForge.Common\SoftwareForge.Common.csproj">
-      <Project>{A73AD4D8-B74B-4E4F-97D3-C8E5078FED36}</Project>
+    <ProjectReference Include="..\SoftwareForge.Common\SoftwareForge.Common.csproj">
+      <Project>{a73ad4d8-b74b-4e4f-97d3-c8e5078fed36}</Project>
       <Name>SoftwareForge.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoftwareForge.TfsService\SoftwareForge.TfsService.csproj">

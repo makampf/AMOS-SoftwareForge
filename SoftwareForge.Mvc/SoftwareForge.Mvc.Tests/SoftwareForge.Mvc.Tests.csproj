@@ -130,6 +130,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SoftwareForge.Common\SoftwareForge.Common.csproj">
+      <Project>{a73ad4d8-b74b-4e4f-97d3-c8e5078fed36}</Project>
+      <Name>SoftwareForge.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoftwareForge.Mvc\SoftwareForge.Mvc.csproj">
       <Project>{013F4232-3B85-42C1-98CB-F57F4BBBF2C5}</Project>
       <Name>SoftwareForge.Mvc</Name>
