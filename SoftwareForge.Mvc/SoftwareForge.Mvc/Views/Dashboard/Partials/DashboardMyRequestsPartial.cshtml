@@ -18,18 +18,22 @@
  - <http://www.gnu.org/licenses/>.
  -->
 @using SoftwareForge.Common.Models
+@using SoftwareForge.Mvc.Facade
 @model List<ProjectJoinRequest>
 
 Your Requests:
 <ul>             
     @foreach (ProjectJoinRequest request in Model)
     {
-        <li>
-            User @request.User.Username wants to join project @request.Project.Name as an @request.UserRole<br/>
-            Message: @request.Message <br/>
-            @Html.ActionLink("Accept", "AcceptRequest", "Dashboard", new {requestId=request.Id},null) 
-            @Html.ActionLink("Decline", "DeclineRequest", "Dashboard", new {requestId=request.Id},null)
-            <br/>
-        </li>
+        if (SoftwareForgeFacade.Client.GetUserRoleinProject(request.ProjectGuid, User.Identity.Name) == UserRole.ProjectOwner)
+        {
+            <li>
+                User @request.User.Username wants to join project @request.Project.Name as an @request.UserRole<br/>
+                Message: @request.Message <br/>
+                @Html.ActionLink("Accept", "AcceptRequest", "Dashboard", new {requestId = request.Id}, null) 
+                @Html.ActionLink("Decline", "DeclineRequest", "Dashboard", new {requestId = request.Id}, null)
+                <br/>
+            </li>
+        }
     } 
 </ul>   

@@ -275,6 +275,18 @@ namespace SoftwareForge.Mvc.Facade
             return ProjectMembershipDao.GetUser(user);
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="username">Username</param>
+        /// /// <param name="guid">Projectguid</param>
+        /// <returns></returns>
+        public UserRole GetUserRoleinProject(Guid guid, string username)
+        {
+            return ProjectsDao.GetMembershipRoleOfUserInProject(guid, username);
+        }
+
         /// <summary>
         /// Lists all messages of user
         /// </summary>

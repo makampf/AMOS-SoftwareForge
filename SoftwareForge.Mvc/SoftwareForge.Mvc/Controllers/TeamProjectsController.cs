@@ -221,10 +221,10 @@ namespace SoftwareForge.Mvc.Controllers
                     IEnumerable<ProjectMember> projectMembers =
                         project.Users.Where(u => u.UserRole == UserRole.ProjectOwner);
 
-                    //if (projectMembers.Any(projectMember => projectMember.User.Username == userName))
-                    //{
-                    //    throw new Exception("The user " + userName + " is already project owner in project " + project.Name);
-                    //}
+                    if (projectMembers.Any(projectMember => projectMember.User.Username == userName))
+                    {
+                        throw new Exception("The user " + userName + " is already project owner in project " + project.Name);
+                    }
                 }
                 else
                 {
@@ -232,10 +232,10 @@ namespace SoftwareForge.Mvc.Controllers
                     IEnumerable<ProjectMember> projectMembers =
                         project.Users.Where(u => (u.UserRole == UserRole.ProjectOwner) || (u.UserRole == UserRole.Contributor));
 
-                    //if (projectMembers.Any(projectMember => projectMember.User.Username == userName))
-                    //{
-                    //    throw new Exception("The user " + userName + " is already contributor or project owner in project " + project.Name);
-                    //}
+                    if (projectMembers.Any(projectMember => projectMember.User.Username == userName))
+                    {
+                        throw new Exception("The user " + userName + " is already contributor or project owner in project " + project.Name);
+                    }
                 }
 
 
