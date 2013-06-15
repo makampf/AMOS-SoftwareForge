@@ -17,9 +17,7 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-using System;
-using System.Collections.Generic;
-using System.Linq;
+
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
@@ -30,8 +28,8 @@ namespace SoftwareForge.Mvc
 {
     // Hinweis: Anweisungen zum Aktivieren des klassischen Modus von IIS6 oder IIS7 
     // finden Sie unter "http://go.microsoft.com/?LinkId=9394801".
-
-    public class MvcApplication : System.Web.HttpApplication
+    
+    public class MvcApplication : HttpApplication
     {
         protected void Application_Start()
         {

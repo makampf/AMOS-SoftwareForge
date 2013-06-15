@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Security.Principal;
 using System.Web.Mvc;
 using SoftwareForge.Common.Models;
 using SoftwareForge.Mvc.Facade;
@@ -31,10 +30,6 @@ namespace SoftwareForge.Mvc.Controllers
 {
     public class TeamProjectsController : Controller
     {
-
-
-
-
         /// <summary>
         /// Create a new project view
         /// </summary>

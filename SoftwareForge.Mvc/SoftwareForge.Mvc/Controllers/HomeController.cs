@@ -17,13 +17,11 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-using System;
-using System.Linq;
+
 using SoftwareForge.Common.Models;
 using System.Collections.Generic;
 using System.Web.Mvc;
 using SoftwareForge.Mvc.Facade;
-using SoftwareForge.Mvc.Models;
 
 namespace SoftwareForge.Mvc.Controllers
 {
