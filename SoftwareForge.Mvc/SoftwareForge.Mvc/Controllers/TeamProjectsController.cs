@@ -76,7 +76,7 @@ namespace SoftwareForge.Mvc.Controllers
         /// <returns>The details page view</returns>
         public ActionResult ProjectDetailsPage(Guid guid)
         {
-            Project project = SoftwareForgeFacade.GetTeamProject(guid);
+            Project project = SoftwareForgeFacade.Client.GetTeamProject(guid);
             return View(project);
         }
 
@@ -167,7 +167,7 @@ namespace SoftwareForge.Mvc.Controllers
         /// <returns>The rename page view</returns>
         public ActionResult RenameProjectPage(Guid guid)
         {
-            Project project = SoftwareForgeFacade.GetTeamProject(guid);
+            Project project = SoftwareForgeFacade.Client.GetTeamProject(guid);
             return View(project);
         }
 
@@ -217,7 +217,7 @@ namespace SoftwareForge.Mvc.Controllers
 
                 if (invitation.UserRole == UserRole.ProjectOwner)
                 {
-                    Project project = SoftwareForgeFacade.GetTeamProject(invitation.ProjectGuid);
+                    Project project = SoftwareForgeFacade.Client.GetTeamProject(invitation.ProjectGuid);
                     IEnumerable<ProjectMember> projectMembers =
                         project.Users.Where(u => u.UserRole == UserRole.ProjectOwner);
 
@@ -228,7 +228,7 @@ namespace SoftwareForge.Mvc.Controllers
                 }
                 else
                 {
-                    Project project = SoftwareForgeFacade.GetTeamProject(invitation.ProjectGuid);
+                    Project project = SoftwareForgeFacade.Client.GetTeamProject(invitation.ProjectGuid);
                     IEnumerable<ProjectMember> projectMembers =
                         project.Users.Where(u => (u.UserRole == UserRole.ProjectOwner) || (u.UserRole == UserRole.Contributor));
 

@@ -98,7 +98,7 @@ namespace SoftwareForge.Mvc.Facade
             ProjectsDao.ProcessMembershipRequest(joinProjectRequestModel);
         }
 
-        public static Project GetTeamProject(Guid teamProjectGuid)
+        public Project GetTeamProject(Guid teamProjectGuid)
         {
             return ProjectsDao.Get(teamProjectGuid);
         }
