@@ -22,7 +22,11 @@
 @model Project
 <p>Project Details - @Html.ActionLink("[Code View]", "CodeView", "TeamProjects", new {guid = Model.Guid}, null)</p>
 <p>
-    <b>@Model.Name</b> @Html.ActionLink("[Rename]", "RenameProjectPage", "TeamProjects",new {guid=Model.Guid},null)<br/>
+    <b>@Model.Name</b>
+    @if (@Model.Users.Any(t => (t.User.Username.Equals(User.Identity.Name)) && (t.UserRole == UserRole.ProjectOwner))){
+     
+        @Html.ActionLink("[Rename]", "RenameProjectPage", "TeamProjects",new {guid=Model.Guid},null)<br/>
+    }
     TFS-Project: @Model.TfsName
 
     <br/>
@@ -58,10 +62,10 @@
 
     @{
         ProjectMember user = Model.Users.SingleOrDefault(u => u.User.Username == User.Identity.Name);
-        //if ((user == null) || user.UserRole != UserRole.ProjectOwner)
-        //{
+        if ((user == null) || user.UserRole != UserRole.ProjectOwner)
+        {
             @Html.ActionLink("[Create join request]", "CreateProjectJoinRequest", "TeamProjects", new {guid = Model.Guid}, null)
-        //}
+        }
     }
     @{
         if ((user != null) && (user.UserRole == UserRole.ProjectOwner))
