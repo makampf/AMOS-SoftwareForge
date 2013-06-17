@@ -23,11 +23,10 @@
     ViewBag.Title = "Error";
 }
 
-<hgroup class="title">
     <h2>Exception details</h2>
 <p>
     Controller: @Model.ControllerName <br>
     Action: @Model.ActionName <br>
-    Exception: @Model.Exception <br>
+    @Model.Exception.Message
+    
 </p>
-</hgroup>
