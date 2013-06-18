@@ -17,16 +17,26 @@
  - License along with this program. If not, see
  - <http://www.gnu.org/licenses/>.
  -->
+@using SoftwareForge.Common.Models
 @model SoftwareForge.Mvc.Models.CodeViewModel
-<p>@Html.ActionLink("[Project Details]", "ProjectDetailsPage", "TeamProjects", new {guid = Model.ProjectGuid}, null) - Code View</p>
+
+
+@section scripts
+{
+    <script type="text/javascript" src="@Url.Content("/Scripts/jquery.treeview.js")"></script>
+    <script type="text/javascript" src="@Url.Content("/Scripts/treeview.js")"></script>
+}
+
+
+<p>@Html.ActionLink("[Project Details]", "ProjectDetailsPage", "TeamProjects", new { guid = Model.ProjectGuid }, null) - Code View</p>
 
 
 
-@using (Html.BeginForm("BranchChoosen", "TeamProjects", FormMethod.Post)) {
-
+@using (Html.BeginForm("BranchChoosen", "TeamProjects", FormMethod.Post))
+{
     <fieldset>
-        Branch: 
-        @Html.DropDownList("branch",(IEnumerable<SelectListItem>)ViewBag.BranchList)
+        <legend>Branch:</legend>
+        @Html.DropDownList("branch", (IEnumerable<SelectListItem>)ViewBag.BranchList)
         @Html.Hidden("guid", Model.ProjectGuid)
         <p>
             <input type="submit" value="Show Branch" />
@@ -36,10 +46,48 @@
     
     
     <b>Files:</b><br/>
-    foreach (string file in Model.Files)
+    <ul id="browser" class="filetree">
+    @foreach (CompositeItem item in Model.Files)
     {
-        <text>@file</text><br/>
-    }
+        if (item is FileItem)
+        {
+                        <li><span class="file" hidden="@item.GetPath()">@item.GetName()</span></li>
+        }
 
-} 
+        else if (item is FolderItem)
+        {
+             <li class="closed"><span class="folder">@item.GetName()</span>
+                  @foreach (CompositeItem subItem in item.GetSubItems())
+                  {
+                       <ul>
+                            @Parse(subItem)
+                       </ul>
+                  }
+              </li>
+        }
+    }
+    </ul>
+}
+
+
+@helper Parse(CompositeItem item)
+{
+    if (item is FileItem)
+    {
+                    <li><span class="file" hidden="@item.GetPath()">@item.GetName()</span></li>
+    }
+    else if (item is FolderItem)
+    {
+                    <li class="closed"><span class="folder">@item.GetName()</span>
+                        @foreach (CompositeItem subItem in item.GetSubItems())
+                        {
+                            <ul>
+                                @Parse(subItem)
+                            </ul>
+                        }
+                    </li>
+    }
+}
+
+
 

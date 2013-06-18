@@ -244,18 +244,23 @@ namespace SoftwareForge.Mvc.Controllers
         /// Show the CodeView for a project
         /// </summary>
         /// <param name="guid">the project guid</param>
+        /// <param name="branch"></param>
         /// <returns>A CodeView view</returns>
         public ActionResult CodeView(Guid guid, string branch = null)
         {
-
             List<string> branchList = SoftwareForgeFacade.Client.GetBranches(guid);
-            List<string> files = new List<string>();
-            if (branch == null && branchList.Count > 0) branch = branchList[0];
+            List<CompositeItem> files = new List<CompositeItem>();
 
+            if (branch == null && branchList.Count > 0) branch = branchList[0];
 
             if (branch != null)
             {
                 files = SoftwareForgeFacade.Client.GetFiles(guid, branch);
+            }
+            else
+            {
+                String tfsProjectName = SoftwareForgeFacade.Client.GetTeamProject(guid).TfsName;
+                files = SoftwareForgeFacade.Client.GetFiles(guid, "$/" + tfsProjectName);
             }
 
             List<SelectListItem> branchSelectListItems = new List<SelectListItem>();
@@ -274,7 +279,7 @@ namespace SoftwareForge.Mvc.Controllers
         /// <summary>
         /// Change the choosen Branch
         /// </summary>
-        /// <param name="branchList"></param>
+        /// <param name="branch"></param>
         /// <param name="guid"></param>
         /// <returns></returns>
         public ActionResult BranchChoosen(string branch, string guid)

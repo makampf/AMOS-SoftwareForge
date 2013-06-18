@@ -451,20 +451,48 @@ namespace SoftwareForge.TfsService
         }
 
         /// <summary>
-        /// Get Files of a branch
+        /// Get Files of a path
         /// </summary>
         /// <param name="teamProjectGuid">the guid of the project</param>
         /// <param name="path">the path to query</param>
         /// <returns>a list of branches</returns>
-        public List<string> GetFiles(Guid teamProjectGuid, string path)
+        public List<CompositeItem> GetFiles(Guid teamProjectGuid, string path)
         {
             Project project = ProjectsDao.Get(teamProjectGuid);
             VersionControlServer versionControlServer = _tfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid).
                GetService<VersionControlServer>();
-            ItemSet itemSet = versionControlServer.GetItems(path, RecursionType.Full);
-            return itemSet.Items.Select(item => item.ServerItem).ToList();
+
+            return GetFilesRecursive(versionControlServer, path);
         }
 
+        private List<CompositeItem> GetFilesRecursive(VersionControlServer versionControlServer, string path)
+        {
+            List<CompositeItem> result = new List<CompositeItem>();
+
+            ItemSet itemSet = versionControlServer.GetItems(path, RecursionType.OneLevel);
+            foreach (Item item in itemSet.Items)
+            {
+                if (item.ServerItem == path)
+                    continue;
+
+                if (item.ItemType == ItemType.File)
+                {
+                    FileItem fileItem = new FileItem(item.ServerItem);
+                    result.Add(fileItem);
+                }
+                else if (item.ItemType == ItemType.Folder)
+                {
+                    FolderItem folderItem = new FolderItem(item.ServerItem);
+                    var subItems = GetFilesRecursive(versionControlServer, item.ServerItem);
+                    foreach (var compositeItem in subItems)
+                    {
+                        folderItem.Add(compositeItem);
+                    }
+                    result.Add(folderItem);
+                }
+            }
+            return result;
+        }
 
     }
 }

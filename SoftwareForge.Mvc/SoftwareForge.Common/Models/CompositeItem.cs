@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 by Denis Bach, Marvin Kampf, Konstantin Tsysin, Taner Tunc, Florian Wittmann
+ * Copyright (c) 2013 by Denis Bach, Konstantin Tsysin, Taner Tunc, Marvin Kampf, Florian Wittmann
  *
  * This file is part of the Software Forge Overlay rating application.
  *
@@ -18,33 +18,40 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-using System.Web.Mvc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SoftwareForge.Mvc.Controllers;
+using System.Collections.Generic;
 
-namespace SoftwareForge.Mvc.Tests.Controllers
+namespace SoftwareForge.Common.Models
 {
-    [TestClass]
-    public class HomeControllerTest
+    public abstract class CompositeItem
     {
+        protected string Path;
+        protected List<CompositeItem> SubItems = new List<CompositeItem>();
 
-        private HomeController _controller;
-
-        /// <summary>
-        /// Init the HomeController.
-        /// </summary>
-        [TestInitialize]
-        public void TestInit()
+        // Constructor
+        protected CompositeItem(string path)
         {
-            _controller = new HomeController();
+            Path = path;
         }
 
+       
 
-        [TestMethod]
-        public void Index()
+        public abstract void Add(CompositeItem c);
+
+        public abstract void Remove(CompositeItem c);
+
+        public string GetPath()
         {
-            ViewResult result = _controller.Index() as ViewResult;
-            Assert.IsNotNull(result);
+            return Path;
+        }
+
+        public string GetName()
+        {
+            return Path.Remove(0, Path.LastIndexOf('/') + 1);
+        }
+
+        public List<CompositeItem> GetSubItems()
+        {
+            return SubItems;
         }
     }
 }

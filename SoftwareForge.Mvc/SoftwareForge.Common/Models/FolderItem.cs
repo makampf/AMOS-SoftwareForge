@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 by Denis Bach, Marvin Kampf, Konstantin Tsysin, Taner Tunc, Florian Wittmann
+ * Copyright (c) 2013 by Denis Bach, Konstantin Tsysin, Taner Tunc, Marvin Kampf, Florian Wittmann
  *
  * This file is part of the Software Forge Overlay rating application.
  *
@@ -18,33 +18,20 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-using System.Web.Mvc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SoftwareForge.Mvc.Controllers;
-
-namespace SoftwareForge.Mvc.Tests.Controllers
+namespace SoftwareForge.Common.Models
 {
-    [TestClass]
-    public class HomeControllerTest
+    public class FolderItem: CompositeItem
     {
+        public FolderItem(string path) : base(path) {}
 
-        private HomeController _controller;
-
-        /// <summary>
-        /// Init the HomeController.
-        /// </summary>
-        [TestInitialize]
-        public void TestInit()
+        public override void Add(CompositeItem c)
         {
-            _controller = new HomeController();
+            SubItems.Add(c);
         }
 
-
-        [TestMethod]
-        public void Index()
+        public override void Remove(CompositeItem c)
         {
-            ViewResult result = _controller.Index() as ViewResult;
-            Assert.IsNotNull(result);
+            SubItems.Remove(c);
         }
     }
 }

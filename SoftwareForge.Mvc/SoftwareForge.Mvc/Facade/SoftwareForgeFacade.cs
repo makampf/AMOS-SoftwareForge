@@ -348,22 +348,22 @@ namespace SoftwareForge.Mvc.Facade
         /// <summary>
         /// Get all branches of a project
         /// </summary>
-        /// <param name="guid">the guid of the project</param>
+        /// <param name="teamProjectGuid">the guid of the project</param>
         /// <returns>a list of branches</returns>
-        public List<string> GetBranches(Guid guid)
+        public List<string> GetBranches(Guid teamProjectGuid)
         {
-            return TfsController.GetBranches(guid);
+            return TfsController.GetBranches(teamProjectGuid);
         }
 
         /// <summary>
         /// Get all files of a path in a project
         /// </summary>
-        /// <param name="guid">the guid of the project</param>
+        /// <param name="teamProjectGuid">the guid of the project</param>
         /// <param name="path">the path in the project</param>
         /// <returns>a list of files</returns>
-        public List<string> GetFiles(Guid guid, string path)
+        public List<CompositeItem> GetFiles(Guid teamProjectGuid, string path)
         {
-            return TfsController.GetFiles(guid, path);
+            return TfsController.GetFiles(teamProjectGuid, path);
         }
 
    
