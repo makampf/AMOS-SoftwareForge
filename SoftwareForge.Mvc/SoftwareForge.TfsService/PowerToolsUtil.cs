@@ -20,6 +20,7 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
 
 namespace SoftwareForge.TfsService
 {
@@ -40,6 +41,7 @@ namespace SoftwareForge.TfsService
         public static void CreateTfsProject(String tfsUri ,String teamCollectionName, String projectName, String templateName)
         {
             String path = GetPowerToolsInstallationPath();
+
             if (path == null)
                 throw  new Exception("Could not find TFS-Power-Tools");
 
@@ -48,13 +50,27 @@ namespace SoftwareForge.TfsService
             //sourcecontrol new = new source tree
             //sourcecontrol branch = branch from existing path
             String parameter = String.Format(@"createteamproject /collection:""{0}"" /teamproject:""{1}"" /processtemplate:""{2}"" /sourcecontrol:new /noportal", tfsUri + @"/" + teamCollectionName, projectName, templateName);
-            
 
-            Process p = Process.Start(command, parameter);
-            if (p == null) 
-                throw new Exception("Could not create process");
 
-            p.WaitForExit();
+            var startInfo = new ProcessStartInfo(command, parameter)
+            {
+                WorkingDirectory = (Directory.Exists(path)) ? path : String.Empty,
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                RedirectStandardOutput = false,
+                RedirectStandardInput = false,
+                RedirectStandardError = false
+            };
+
+            using (var p = new Process
+            {
+                EnableRaisingEvents = true,
+                StartInfo = startInfo
+            })
+            {
+                p.Start();
+                p.WaitForExit();
+            }
         }
     }
 }

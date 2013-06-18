@@ -130,6 +130,10 @@ namespace SoftwareForge.DbService
             List<ProjectJoinRequest> requests = new List<ProjectJoinRequest>();
 
             User user = GetUser(username);
+            //if user does not exist in db, he has no requests
+            if (user == null)
+                return requests;
+
             IEnumerable<Project> projects = GetProjectOwnerProjects(user);
             foreach (var project in projects)
             {
