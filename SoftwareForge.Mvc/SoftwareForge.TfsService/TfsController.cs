@@ -521,5 +521,19 @@ namespace SoftwareForge.TfsService
             }
             return result;
         }
+
+
+
+        public string DownloadFile(Guid teamProjectGuid, string serverPath)
+        {
+            string localFileName = "C:\\MVCCache\\Temp.dat";
+            Project project = ProjectsDao.Get(teamProjectGuid);
+            VersionControlServer versionControlServer =
+                _tfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid).
+                                        GetService<VersionControlServer>();
+            versionControlServer.DownloadFile(serverPath, localFileName);
+            return localFileName;
+        }
+
     }
 }
