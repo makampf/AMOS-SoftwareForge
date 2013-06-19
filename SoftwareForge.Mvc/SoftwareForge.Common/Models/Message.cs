@@ -33,6 +33,13 @@ namespace SoftwareForge.Common.Models
         /// <summary>
         /// The text message
         /// </summary>
+        [MaxLength(100)]
+        [DataType(DataType.MultilineText)]
+        public string Title { get; set; }
+
+        /// <summary>
+        /// The text message
+        /// </summary>
         [MaxLength(4000)]
         [DataType(DataType.MultilineText)]
         public string Text { get; set; }

@@ -41,10 +41,10 @@ namespace SoftwareForge.DbService
 
         public static List<Message> GetMessagesOfUser(User user)
         {
+            
             try
             {
                 return SoftwareForgeDbContext.Messages.Where(m => m.ToUserId == user.Id).ToList();
-
             }
             catch
             {

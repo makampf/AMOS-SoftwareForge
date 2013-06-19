@@ -119,6 +119,7 @@ namespace SoftwareForge.Mvc.Controllers
             ProjectInvitationMessageModel model = CreateInvitationModel(Convert.ToInt32(invitationId));
 
             model.Message.Text = message;
+            model.Message.Title = "Declined Invitation";
 
             SoftwareForgeFacade.Client.DeleteInvitationMessage(model);
 
@@ -141,6 +142,7 @@ namespace SoftwareForge.Mvc.Controllers
             ProjectInvitationMessageModel model = CreateInvitationModel(Convert.ToInt32(invitationId));
 
             model.Message.Text = message;
+            model.Message.Title = "Accepted invitation!";
 
             SoftwareForgeFacade.Client.CreateInvitationMessage(model);
 
@@ -163,6 +165,7 @@ namespace SoftwareForge.Mvc.Controllers
             ProjectJoinMessageModel model = CreateMessageModel(Convert.ToInt32(requestId));
 
             model.Message.Text = message;
+            model.Message.Title = "Declined request!";
 
             SoftwareForgeFacade.Client.DeleteMessage(model);
 
@@ -185,6 +188,7 @@ namespace SoftwareForge.Mvc.Controllers
             ProjectJoinMessageModel model = CreateMessageModel(Convert.ToInt32(requestId));
 
             model.Message.Text = message;
+            model.Message.Title = "Accepted Request";
 
             SoftwareForgeFacade.Client.CreateMessage(model);
 
