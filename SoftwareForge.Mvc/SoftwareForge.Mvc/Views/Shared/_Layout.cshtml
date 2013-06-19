@@ -27,9 +27,7 @@
         
         <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
         <meta name="viewport" content="width=device-width" />
-        
-        
-        
+
         
         @Scripts.Render("~/bundles/jquery")
         @RenderSection("scripts", required: false)
@@ -37,9 +35,6 @@
         @Styles.Render("~/Content/css")
         @Scripts.Render("~/bundles/modernizr")
         
-
-        
-
     </head>
     <body>
         <header>
@@ -74,10 +69,44 @@
             </div>
         </footer>
 
-       
+        <!-- Loading overlay. Invisible per default. Show it for long actions! -->
+        <div id="loading">
+            <div id="loadingcontent">
+                <p id="loadingspinner">
+                    Please wait...
+                </p>
+            </div>
+        </div>  
         
+        <script type="text/javascript" 
+        src="@Url.Content("~/Scripts/spin.min.js")"></script>
+        <script type="text/javascript">
+             window.loadingController = {
+
+                showLoadingLayer: function (message) {
+                    $("#loading").fadeIn();
+                    var opts = {
+                        lines: 12, // The number of lines to draw
+                        length: 7, // The length of each line
+                        width: 4, // The line thickness
+                        radius: 10, // The radius of the inner circle
+                        color: '#000', // #rgb or #rrggbb
+                        speed: 1, // Rounds per second
+                        trail: 60, // Afterglow percentage
+                        shadow: false, // Whether to render a shadow
+                        hwaccel: false // Whether to use hardware acceleration
+                    };
+                    var loadingspinner = document.getElementById('loadingspinner');
+                    loadingspinner.innerHTML = message;
+                    var target = document.getElementById('loading');
+                    var spinner = new Spinner(opts).spin(target);
+                },
+
+            };
+
+
+        </script>
         
-        
-        
+
     </body>
 </html>
