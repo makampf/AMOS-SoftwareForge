@@ -271,7 +271,7 @@ namespace SoftwareForge.Mvc.Controllers
             foreach (string branchElement in branchList)
             {
                 bool selected = branchElement.Equals(branch);
-                branchSelectListItems.Add(new SelectListItem { Text = branchElement, Value = branch, Selected = selected});
+                branchSelectListItems.Add(new SelectListItem { Text = branchElement, Value = branchElement, Selected = selected});
             }
 
             CodeViewModel project = new CodeViewModel { ProjectGuid = guid, Files = files };
