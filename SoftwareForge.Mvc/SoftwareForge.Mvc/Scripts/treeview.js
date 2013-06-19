@@ -34,8 +34,20 @@ $(document).ready(function () {
     ul.onclick = function (event) {
         var target = getEventTarget(event);
         var hiddenValue = target.attributes.getNamedItem("hidden");
-        if (hiddenValue != null)
-            alert(hiddenValue.value);
+        if (hiddenValue != null) {
+            var path = hiddenValue.value;
+            
+
+            var link = "/TeamProjects/CodePartial?filePath=-1&guid=-2";
+            link = link.replace("-1", path);
+            link = link.replace("-2", ProjectGuid);
+            $.get(link, function (data) {
+                $('#codePartial').replaceWith(data);
+            });
+            
+           
+        }
+            
     };
 
 });

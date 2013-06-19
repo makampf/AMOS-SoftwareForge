@@ -177,6 +177,10 @@ namespace SoftwareForge.Mvc.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (string.IsNullOrEmpty(project.Name))
+                {
+                    throw new Exception(" The Project Name can't be empty");
+                }
                 SoftwareForgeFacade.Client.RenameProject(project.Guid, project.Name, User.Identity.Name);
             }
             return RedirectToAction("ProjectDetailsPage", new { project.Guid });
@@ -286,5 +290,17 @@ namespace SoftwareForge.Mvc.Controllers
         {
             return RedirectToAction("CodeView", new {guid, branch});
         }
+
+        /// <summary>
+        /// Change the choosen Branch
+        /// </summary>
+        /// <param name="branch"></param>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        public ActionResult CodePartial(string filePath, string guid)
+        {
+            return PartialView(SoftwareForgeFacade.Client.GetFileContent(filePath,new Guid(guid)));
+        }
+
     }
 }

@@ -21,17 +21,21 @@
 @using SoftwareForge.Common.Models
 @model List<Message>
 
-Your Messages:
-<ul>             
-    @foreach (Message message in Model)
-    {
-        <li>
+@if (Model.Count > 0)
+{
+    <h3>Your Messages:</h3>
+    <ul>             
+        @foreach (Message message in Model)
+        {
+            <li>
             @if (message.Title != null)
             {
                 @message.Title
                 <br/>
             }
             @message.Text <br/><br/>
-        </li>
-    } 
-</ul>   
+            </li>
+        } 
+    </ul>   
+
+}

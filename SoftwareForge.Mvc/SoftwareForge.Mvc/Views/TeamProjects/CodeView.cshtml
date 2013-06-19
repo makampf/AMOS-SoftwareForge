@@ -25,6 +25,10 @@
 {
     <script type="text/javascript" src="@Url.Content("/Scripts/jquery.treeview.js")"></script>
     <script type="text/javascript" src="@Url.Content("/Scripts/treeview.js")"></script>
+            
+    <script type="text/javascript">
+        var ProjectGuid = "@Model.ProjectGuid";
+    </script>
 }
 
 
@@ -68,6 +72,9 @@
     }
     </ul>
 }
+<div id="codePartial">
+@Html.Partial("CodePartial",new List<string>{})
+</div>
 
 
 @helper Parse(CompositeItem item)

@@ -27,7 +27,7 @@ namespace SoftwareForge.TfsService.UnitTests
     public class FileTypeReaderUtc
     {
         [TestMethod]
-        public void TestFile1()
+        public void TestGetFilesFromPath()
         {
             FileTypeReader test = new FileTypeReader();
             string path = "C:\\Users\\Administrator\\Desktop\\AMOS-SoftwareForge\\SoftwareForge.Mvc\\SoftwareForge.TfsService.UnitTests\\Files\\test.html";
