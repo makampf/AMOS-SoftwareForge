@@ -48,7 +48,7 @@ namespace SoftwareForge.TfsService
                     ".xaml",
                     ".css"
                 };
-            List<string> blacklist = new List<string> { ".pdf", ".exe", ".zip", ".doc", ".docx", ".dot" };
+            List<string> blacklist = new List<string> { ".pdf", ".exe", ".zip", ".doc", ".docx", ".dot", ".png" };
             string extension = Path.GetExtension(path);
             if (whitelist.Contains(extension))
             {
@@ -58,15 +58,14 @@ namespace SoftwareForge.TfsService
             {
                 return false;
             }
-            //TODO check if binary file wihtout blacklist
-            return false;
+            return true;
         }
 
         /// <summary>
         /// Reads a file line by line 
         /// </summary>
         /// <param name="path">file path</param>
-        /// <returns>a list of strings</returns>
+        /// <returns>a list of strings which each includes a line</returns>
         public List<string> GetFilesFromPath(string path)
         {
             if (File.Exists(path))
@@ -81,6 +80,9 @@ namespace SoftwareForge.TfsService
 
                     while ((line = reader.ReadLine()) != null)
                     {
+                        if (line.Contains("\0\0"))
+                            throw new Exception(path + " seems to be a binary file. Found 2 consecutive \0\0");
+
                         list.Add(line);
                     }
                     open.Close();
@@ -88,7 +90,7 @@ namespace SoftwareForge.TfsService
                     return list;
 
                 }
-                throw new Exception(path + " seems to be a binary file");
+                throw new Exception(path + " seems to be a binary file. Found this file extension on the blacklist");
             }
             throw new Exception(path + " seems to be not existing");
         }
