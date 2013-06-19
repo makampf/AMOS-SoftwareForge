@@ -23,13 +23,6 @@
 @{
     ViewBag.Title = "Dashboard";
 }
-
-<div>
-    @Html.Partial("Partials/DashboardMyProjectsPartial", Model.MyProjects)
-</div>
-<div>
-    @Html.Partial("Partials/DashboardRandomProjectsPartial", Model.RandomProjects)
-</div>
 <div>
     @Html.Partial("Partials/DashboardMyRequestsPartial", Model.Requests)
 </div>
@@ -38,4 +31,10 @@
 </div>
 <div>
    @Html.Partial("Partials/DashboardMyInvitationsPartial", Model.InvitationRequests)
+</div>
+<div>
+    @Html.Partial("Partials/DashboardMyProjectsPartial", Model.MyProjects)
+</div>
+<div>
+    @Html.Partial("Partials/DashboardRandomProjectsPartial", Model.RandomProjects)
 </div>
