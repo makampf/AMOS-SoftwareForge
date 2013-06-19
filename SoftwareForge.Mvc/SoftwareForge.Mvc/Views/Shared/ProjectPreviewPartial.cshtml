@@ -19,8 +19,20 @@
  -->
 @using SoftwareForge.Common.Models
 @model Project
+@{
+    string shortDescription;
+    if (Model.Description.Length > 100)
+    {
+        shortDescription = Model.Description.Substring(0, 100) + " [...]";
+    }
+    else
+    {
+        shortDescription = Model.Description;
+    }
+}
+
 <span class="project">
     <b>@Html.ActionLink(@Model.Name,"ProjectDetailsPage","TeamProjects",new {guid=Model.Guid},null)</b><br/>
-    @Model.Description<br/>
+    @shortDescription<br/>
     <i>@Model.ProjectType</i><br/>
 </span>
