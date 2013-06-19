@@ -832,3 +832,18 @@ tr.pager td {
 .filetree span.folder { background: url(images/folder.gif) 0 0 no-repeat; }
 .filetree li.expandable span.folder { background: url(images/folder-closed.gif) 0 0 no-repeat; }
 .filetree span.file { background: url(images/file.gif) 0 0 no-repeat; }
+
+.project {
+    margin: 10px;
+    padding: 5px;
+    background-color: #ffffff;
+    border: solid 3px  #dddddd;
+	height:auto;
+	width: 180px;
+    display: block;
+    float: left;
+
+}
+h3 {
+    clear: both;
+}

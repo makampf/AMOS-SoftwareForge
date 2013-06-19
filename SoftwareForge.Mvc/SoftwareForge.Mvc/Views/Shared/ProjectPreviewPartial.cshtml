@@ -19,8 +19,8 @@
  -->
 @using SoftwareForge.Common.Models
 @model Project
-<p>
+<span class="project">
     <b>@Html.ActionLink(@Model.Name,"ProjectDetailsPage","TeamProjects",new {guid=Model.Guid},null)</b><br/>
     @Model.Description<br/>
     <i>@Model.ProjectType</i><br/>
-</p>
+</span>

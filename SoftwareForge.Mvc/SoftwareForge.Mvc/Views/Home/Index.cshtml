@@ -42,15 +42,14 @@
     
     <b>@teamCollection.Name</b> 
           
-    <ul>
+  
         @foreach (Project project in teamCollection.Projects)
         {
-            <li>
+  
                 @Html.Partial("ProjectPreviewPartial",project)
 
-            </li>
         }
-    </ul>
+ 
     @Html.ActionLink("Create new Project","CreateProject","TeamProjects", new {teamCollectionGuid = teamCollection.Guid}, null)
     <br/> <br/>
 }
