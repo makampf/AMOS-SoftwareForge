@@ -252,6 +252,7 @@
     <Content Include="Views\Dashboard\DeclineInvitation.cshtml" />
     <Content Include="Views\TeamProjects\CreateProjectInvitationRequest.cshtml" />
     <Content Include="Views\TeamProjects\CodeView.cshtml" />
+    <Content Include="Views\TeamProjects\CodePartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

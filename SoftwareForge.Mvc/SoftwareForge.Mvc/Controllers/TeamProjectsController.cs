@@ -286,5 +286,17 @@ namespace SoftwareForge.Mvc.Controllers
         {
             return RedirectToAction("CodeView", new {guid, branch});
         }
+
+        /// <summary>
+        /// Change the choosen Branch
+        /// </summary>
+        /// <param name="branch"></param>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        public ActionResult CodePartial(string filePath, string guid)
+        {
+            return PartialView(SoftwareForgeFacade.Client.GetFileContent(filePath,new Guid(guid)));
+        }
+
     }
 }

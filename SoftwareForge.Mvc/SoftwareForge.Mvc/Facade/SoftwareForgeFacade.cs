@@ -366,6 +366,27 @@ namespace SoftwareForge.Mvc.Facade
             return TfsController.GetFiles(teamProjectGuid, path);
         }
 
+
+
+        /// <summary>
+        /// Get a file
+        /// </summary>
+        /// <param name="serverPath">the serverPath</param>
+        /// <param name="teamProjectGuid">the guid of the project</param>
+        /// <returns>the content as a list of lines</returns>
+        public List<string> GetFileContent(string serverPath, Guid teamProjectGuid)
+        {
+            string localTempFile = TfsController.DownloadFile(teamProjectGuid, serverPath);
+            try
+            {
+                return new FileTypeReader().GetFilesFromPath(localTempFile);
+
+            }
+            catch
+            {
+                return new List<string>{"Can not show " + serverPath,"It seems to be a binary file!"};
+            }
+        }
    
 
     }

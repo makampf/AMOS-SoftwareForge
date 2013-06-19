@@ -19,6 +19,7 @@
  */
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
@@ -474,7 +475,10 @@ namespace SoftwareForge.TfsService
                                                                                t.Properties.RootItem.Item.StartsWith(
                                                                                    serverPath));
 
-            return branchObjects.Select(branch => branch.Properties.RootItem.Item).ToList();
+            List<string> listBranches = branchObjects.Select(branch => branch.Properties.RootItem.Item).ToList();
+            //Add projectroot
+            listBranches.Add("$/" + project.TfsName);
+            return listBranches;
         }
 
         /// <summary>
@@ -526,7 +530,8 @@ namespace SoftwareForge.TfsService
 
         public string DownloadFile(Guid teamProjectGuid, string serverPath)
         {
-            string localFileName = "C:\\MVCCache\\Temp.dat";
+            string fileName = Path.GetFileName(serverPath);
+            string localFileName = "C:\\MVCCache\\" + fileName;
             Project project = ProjectsDao.Get(teamProjectGuid);
             VersionControlServer versionControlServer =
                 _tfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid).
