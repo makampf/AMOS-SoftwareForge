@@ -19,14 +19,19 @@
     -->
 
 @using SoftwareForge.Common.Models
-@model List<SoftwareForge.Common.Models.Message>
+@model List<Message>
 
 Your Messages:
 <ul>             
     @foreach (Message message in Model)
     {
         <li>
-            @message.Text
+            @if (message.Title != null)
+            {
+                @message.Title
+                <br/>
+            }
+            @message.Text <br/><br/>
         </li>
     } 
 </ul>   
