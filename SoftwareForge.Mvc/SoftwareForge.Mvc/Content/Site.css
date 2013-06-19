@@ -847,3 +847,7 @@ tr.pager td {
 h3 {
     clear: both;
 }
+
+.codeview {
+    white-space: pre-wrap;
+}

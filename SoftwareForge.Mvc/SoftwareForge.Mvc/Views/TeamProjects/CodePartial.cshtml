@@ -1,12 +1,14 @@
 ﻿@model List<string>
 
-@if (Model.Count > 0)
-{
-    <h5>Filecontent:</h5>
-}
-<code style="white-space: pre-wrap;">
-@foreach (string line in Model)
-{
-<text>@line</text>
-}
-</code>
+<div id="codePartial">
+    @if (Model.Count > 0)
+    {
+        <h5>Filecontent:</h5>
+    }
+    <code class="codeview">
+        @foreach (string line in Model)
+        {
+            <text>@line</text>
+        }
+    </code>
+</div>
