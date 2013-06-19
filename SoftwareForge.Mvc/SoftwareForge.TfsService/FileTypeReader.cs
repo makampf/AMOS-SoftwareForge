@@ -41,11 +41,12 @@ namespace SoftwareForge.TfsService
                     ".cshtml",
                     ".php",
                     ".js",
-                    ".cshtml",
                     ".xml",
                     ".csproj",
                     ".htm",
-                    ".rtf"
+                    ".rtf",
+                    ".xaml",
+                    ".css"
                 };
             List<string> blacklist = new List<string> { ".pdf", ".exe", ".zip", ".doc", ".docx", ".dot" };
             string extension = Path.GetExtension(path);
