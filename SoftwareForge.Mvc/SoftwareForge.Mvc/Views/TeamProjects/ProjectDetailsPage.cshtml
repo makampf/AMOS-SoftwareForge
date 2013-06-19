@@ -20,9 +20,18 @@
 
 @using SoftwareForge.Common.Models
 @model Project
+@{
+    IEnumerable<ProjectMember> projectOwners = Model.Users.Where(t => t.UserRole == UserRole.ProjectOwner);
+    IEnumerable<ProjectMember> contributors = Model.Users.Where(t => t.UserRole == UserRole.Contributor);
+   
+    }
 <p>Project Details - @Html.ActionLink("[Code View]", "CodeView", "TeamProjects", new {guid = Model.Guid}, null)</p>
 <p>
-    <b>@Model.Name</b> @Html.ActionLink("[Rename]", "RenameProjectPage", "TeamProjects",new {guid=Model.Guid},null)<br/>
+    <b>@Model.Name</b>
+    @if (@Model.Users.Any(t => (t.User.Username.Equals(User.Identity.Name)) && (t.UserRole == UserRole.ProjectOwner))){
+     
+        @Html.ActionLink("[Rename]", "RenameProjectPage", "TeamProjects",new {guid=Model.Guid},null)<br/>
+    }
     TFS-Project: @Model.TfsName
 
     <br/>
@@ -71,19 +80,25 @@
     }
 
     <br/>
-    <b>ProjectOwner:</b>
-    <ul>
-        @foreach (ProjectMember projectMember in Model.Users.Where(t=>t.UserRole == UserRole.ProjectOwner))
+    @if (projectOwners.Any())
+    {
+        <b>ProjectOwner:</b>
+        <ul>
+            @foreach (ProjectMember projectMember in projectOwners)
+            {
+                <li>@projectMember.User.Username</li>
+            }
+        </ul>
+        }
+    @if (contributors.Any())
+    {
+        <b>Contributor:</b>
+        <ul>
+        @foreach (ProjectMember projectMember in contributors)
         {
             <li>@projectMember.User.Username</li>
         }
-    </ul>
-
-    <b>Contributor:</b>
-    <ul>
-    @foreach (ProjectMember projectMember in Model.Users.Where(t=>t.UserRole == UserRole.Contributor))
-    {
-        <li>@projectMember.User.Username</li>
+        </ul>
     }
-    </ul>
+
 </p>

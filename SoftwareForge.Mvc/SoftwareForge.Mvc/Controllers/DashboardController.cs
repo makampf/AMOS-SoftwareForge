@@ -1,15 +1,34 @@
-﻿using System;
+﻿/*
+ * Copyright (c) 2013 by Denis Bach, Marvin Kampf, Konstantin Tsysin, Taner Tunc, Florian Wittmann
+ *
+ * This file is part of the Software Forge Overlay rating application.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public
+ * License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using SoftwareForge.Common.Models;
+using SoftwareForge.Mvc.Facade;
 using SoftwareForge.Mvc.Models;
-using SoftwareForge.Mvc.WebApiClient;
 
 namespace SoftwareForge.Mvc.Controllers
 {
-
+    
     public class DashboardController : Controller
     {
         //
@@ -22,7 +41,7 @@ namespace SoftwareForge.Mvc.Controllers
         public ActionResult Index()
         {
             DashboardModel dashboardModel = new DashboardModel();
-            List<TeamCollection> teamCollections = TeamCollectionsClient.GetTeamCollections().ToList();
+            List<TeamCollection> teamCollections = SoftwareForgeFacade.Client.GetTeamCollections().ToList();
 
             dashboardModel.RandomProjects = GetRandomProjects(teamCollections);
             dashboardModel.MyProjects = GetMyProjects(teamCollections);
@@ -100,8 +119,9 @@ namespace SoftwareForge.Mvc.Controllers
             ProjectInvitationMessageModel model = CreateInvitationModel(Convert.ToInt32(invitationId));
 
             model.Message.Text = message;
+            model.Message.Title = "Declined Invitation";
 
-            TeamCollectionsClient.DeleteInvitationMessage(model);
+            SoftwareForgeFacade.Client.DeleteInvitationMessage(model);
 
             return RedirectToAction("Index", "Dashboard");
         }
@@ -122,8 +142,9 @@ namespace SoftwareForge.Mvc.Controllers
             ProjectInvitationMessageModel model = CreateInvitationModel(Convert.ToInt32(invitationId));
 
             model.Message.Text = message;
+            model.Message.Title = "Accepted invitation!";
 
-            TeamCollectionsClient.CreateInvitationMessage(model);
+            SoftwareForgeFacade.Client.CreateInvitationMessage(model);
 
             return RedirectToAction("Index", "Dashboard");
         }
@@ -144,8 +165,9 @@ namespace SoftwareForge.Mvc.Controllers
             ProjectJoinMessageModel model = CreateMessageModel(Convert.ToInt32(requestId));
 
             model.Message.Text = message;
+            model.Message.Title = "Declined request!";
 
-            TeamCollectionsClient.DeleteMessage(model);
+            SoftwareForgeFacade.Client.DeleteMessage(model);
 
             return RedirectToAction("Index", "Dashboard");
         }
@@ -166,8 +188,9 @@ namespace SoftwareForge.Mvc.Controllers
             ProjectJoinMessageModel model = CreateMessageModel(Convert.ToInt32(requestId));
 
             model.Message.Text = message;
+            model.Message.Title = "Accepted Request";
 
-            TeamCollectionsClient.CreateMessage(model);
+            SoftwareForgeFacade.Client.CreateMessage(model);
 
             return RedirectToAction("Index", "Dashboard");
         }
@@ -180,11 +203,11 @@ namespace SoftwareForge.Mvc.Controllers
         /// <returns>the invitation model</returns>
         private ProjectInvitationMessageModel CreateInvitationModel(int invitationId)
         {
-            ProjectInvitationRequest request = TeamCollectionsClient.GetInvitationRequestById(invitationId);
+            ProjectInvitationRequest request = SoftwareForgeFacade.Client.GetInvitationRequestById(invitationId);
             ProjectInvitationMessageModel model = new ProjectInvitationMessageModel();
             model.ProjectInvitationRequest = request;
             model.Message = new Message();
-            model.Message.FromUserId = TeamCollectionsClient.GetOrCreateUserByName(User.Identity.Name).Id;
+            model.Message.FromUserId = SoftwareForgeFacade.Client.GetOrCreateUserByName(User.Identity.Name).Id;
             model.Message.ToUserId = request.UserId;
             return model;
         }
@@ -197,11 +220,11 @@ namespace SoftwareForge.Mvc.Controllers
         /// <returns>the message model</returns>
         private ProjectJoinMessageModel CreateMessageModel(int requestId)
         {
-            ProjectJoinRequest request = TeamCollectionsClient.GetProjectJoinRequestById(requestId);
+            ProjectJoinRequest request = SoftwareForgeFacade.Client.GetProjectJoinRequestById(requestId);
             ProjectJoinMessageModel model = new ProjectJoinMessageModel();
             model.ProjectJoinRequest = request;
             model.Message = new Message();
-            model.Message.FromUserId = TeamCollectionsClient.GetOrCreateUserByName(User.Identity.Name).Id;
+            model.Message.FromUserId = SoftwareForgeFacade.Client.GetOrCreateUserByName(User.Identity.Name).Id;
             model.Message.ToUserId = request.UserId;
             return model;
         }
@@ -278,7 +301,7 @@ namespace SoftwareForge.Mvc.Controllers
         /// <returns>a list of invitation requests</returns>
         private List<ProjectInvitationRequest> GetMyInvitationRequests()
         {
-            List<ProjectInvitationRequest> messages = TeamCollectionsClient.GetInvitations(User.Identity.Name);
+            List<ProjectInvitationRequest> messages = SoftwareForgeFacade.Client.GetInvitations(User.Identity.Name);
             return messages;
         }
 
@@ -288,7 +311,7 @@ namespace SoftwareForge.Mvc.Controllers
         /// <returns>a list off messages</returns>
         private List<Message> GetMyMessages()
         {
-            List<Message> messages = TeamCollectionsClient.GetMessages(User.Identity.Name);
+            List<Message> messages = SoftwareForgeFacade.Client.GetMessages(User.Identity.Name);
             return messages;
         }
 
@@ -298,7 +321,7 @@ namespace SoftwareForge.Mvc.Controllers
         /// <returns>a list of projects</returns>
         private List<ProjectJoinRequest> GetMyRequests()
         {
-            List<ProjectJoinRequest> requests = TeamCollectionsClient.GetProjectJoinRequests(User.Identity.Name);
+            List<ProjectJoinRequest> requests = SoftwareForgeFacade.Client.GetProjectJoinRequests(User.Identity.Name);
             return requests;
         }
     }

@@ -23,8 +23,8 @@ using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
 using SoftwareForge.Common.Models;
+using SoftwareForge.Mvc.Facade;
 using SoftwareForge.Mvc.Models;
-using SoftwareForge.Mvc.WebApiClient;
 
 namespace SoftwareForge.Mvc.Controllers
 {
@@ -58,7 +58,7 @@ namespace SoftwareForge.Mvc.Controllers
         {
             if (ModelState.IsValid)
             {
-                TeamCollectionsClient.CreateProject(project);
+                SoftwareForgeFacade.Client.CreateProject(project, User.Identity.Name);
             }
 
             return RedirectToAction("Index","Home");
@@ -71,7 +71,7 @@ namespace SoftwareForge.Mvc.Controllers
         /// <returns>The details page view</returns>
         public ActionResult ProjectDetailsPage(Guid guid)
         {
-            Project project = TeamCollectionsClient.GetTeamProject(guid);
+            Project project = SoftwareForgeFacade.Client.GetTeamProject(guid);
             return View(project);
         }
 
@@ -83,7 +83,7 @@ namespace SoftwareForge.Mvc.Controllers
         /// <returns>Redirects to overview page</returns>
         public ActionResult WatchProject(Guid guid, String username)
         {
-            TeamCollectionsClient.WatchProject(guid, username);
+            SoftwareForgeFacade.Client.WatchProject(guid, username);
             return RedirectToAction("ProjectDetailsPage",new {guid});
 
         }
@@ -96,7 +96,7 @@ namespace SoftwareForge.Mvc.Controllers
         /// <returns>Redirects to overview page</returns>
         public ActionResult UnwatchProject(Guid guid, String username)
         {
-            TeamCollectionsClient.UnwatchProject(guid, username);
+            SoftwareForgeFacade.Client.UnwatchProject(guid, username);
             return RedirectToAction("ProjectDetailsPage", new { guid });
         }
 
@@ -132,7 +132,7 @@ namespace SoftwareForge.Mvc.Controllers
 
                     };
                 ProjectInvitationRequest request = new ProjectInvitationRequest {ProjectGuid = guid};
-                //request.Project = TeamCollectionsClient.GetTeamProject(guid);
+                //request.Project = SoftwareForgeFacade.GetTeamProject(guid);
                 return View("CreateProjectInvitationRequest", request);
             }
         }
@@ -149,7 +149,7 @@ namespace SoftwareForge.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 project.User = new User { Username = User.Identity.Name };
-                TeamCollectionsClient.CreateJoinProjectRequest(project);
+                SoftwareForgeFacade.Client.CreateJoinProjectRequest(project);
             }
 
             return RedirectToAction("Index", "Home");
@@ -162,7 +162,7 @@ namespace SoftwareForge.Mvc.Controllers
         /// <returns>The rename page view</returns>
         public ActionResult RenameProjectPage(Guid guid)
         {
-            Project project = TeamCollectionsClient.GetTeamProject(guid);
+            Project project = SoftwareForgeFacade.Client.GetTeamProject(guid);
             return View(project);
         }
 
@@ -177,7 +177,11 @@ namespace SoftwareForge.Mvc.Controllers
         {
             if (ModelState.IsValid)
             {
-                TeamCollectionsClient.RenameProject(project.Guid, project.Name);
+                if (string.IsNullOrEmpty(project.Name))
+                {
+                    throw new Exception(" The Project Name can't be empty");
+                }
+                SoftwareForgeFacade.Client.RenameProject(project.Guid, project.Name, User.Identity.Name);
             }
             return RedirectToAction("ProjectDetailsPage", new { project.Guid });
         }
@@ -191,7 +195,7 @@ namespace SoftwareForge.Mvc.Controllers
         /// <returns>redirection to projectdetailspage</returns>
         public ActionResult LeaveProject(Guid projectGuid, string username, UserRole role)
         {
-            TeamCollectionsClient.LeaveProject(projectGuid, username, role);
+            SoftwareForgeFacade.Client.LeaveProject(projectGuid, username, role);
             return RedirectToAction("ProjectDetailsPage", new { guid = projectGuid });
         }
 
@@ -205,36 +209,36 @@ namespace SoftwareForge.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 String userName = invitation.User.Username;
-                User user = TeamCollectionsClient.GetUserByName(userName);
+                User user = SoftwareForgeFacade.Client.GetUserByName(userName);
                 if (user == null)
                     throw new Exception("Can't find user " + userName);
 
 
                 if (invitation.UserRole == UserRole.ProjectOwner)
                 {
-                    Project project = TeamCollectionsClient.GetTeamProject(invitation.ProjectGuid);
+                    Project project = SoftwareForgeFacade.Client.GetTeamProject(invitation.ProjectGuid);
                     IEnumerable<ProjectMember> projectMembers =
                         project.Users.Where(u => u.UserRole == UserRole.ProjectOwner);
 
-                    //if (projectMembers.Any(projectMember => projectMember.User.Username == userName))
-                    //{
-                    //    throw new Exception("The user " + userName + " is already project owner in project " + project.Name);
-                    //}
+                    if (projectMembers.Any(projectMember => projectMember.User.Username == userName))
+                    {
+                        throw new Exception("The user " + userName + " is already project owner in project " + project.Name);
+                    }
                 }
                 else
                 {
-                    Project project = TeamCollectionsClient.GetTeamProject(invitation.ProjectGuid);
+                    Project project = SoftwareForgeFacade.Client.GetTeamProject(invitation.ProjectGuid);
                     IEnumerable<ProjectMember> projectMembers =
                         project.Users.Where(u => (u.UserRole == UserRole.ProjectOwner) || (u.UserRole == UserRole.Contributor));
 
-                    //if (projectMembers.Any(projectMember => projectMember.User.Username == userName))
-                    //{
-                    //    throw new Exception("The user " + userName + " is already contributor or project owner in project " + project.Name);
-                    //}
+                    if (projectMembers.Any(projectMember => projectMember.User.Username == userName))
+                    {
+                        throw new Exception("The user " + userName + " is already contributor or project owner in project " + project.Name);
+                    }
                 }
 
 
-                TeamCollectionsClient.CreateProjectInvitationRequest(invitation);
+                SoftwareForgeFacade.Client.CreateProjectInvitationRequest(invitation);
             }
 
             return RedirectToAction("Index", "Home");
@@ -244,25 +248,30 @@ namespace SoftwareForge.Mvc.Controllers
         /// Show the CodeView for a project
         /// </summary>
         /// <param name="guid">the project guid</param>
+        /// <param name="branch"></param>
         /// <returns>A CodeView view</returns>
         public ActionResult CodeView(Guid guid, string branch = null)
         {
-           
-            List<string> branchList = TeamCollectionsClient.GetBranches(guid);
-            List<string> files = new List<string>();
-            if (branch == null && branchList.Count > 0) branch = branchList[0];
+            List<string> branchList = SoftwareForgeFacade.Client.GetBranches(guid);
+            List<CompositeItem> files = new List<CompositeItem>();
 
+            if (branch == null && branchList.Count > 0) branch = branchList[0];
 
             if (branch != null)
             {
-                files = TeamCollectionsClient.GetFiles(guid, branch);
+                files = SoftwareForgeFacade.Client.GetFiles(guid, branch);
+            }
+            else
+            {
+                String tfsProjectName = SoftwareForgeFacade.Client.GetTeamProject(guid).TfsName;
+                files = SoftwareForgeFacade.Client.GetFiles(guid, "$/" + tfsProjectName);
             }
 
             List<SelectListItem> branchSelectListItems = new List<SelectListItem>();
             foreach (string branchElement in branchList)
             {
                 bool selected = branchElement.Equals(branch);
-                branchSelectListItems.Add(new SelectListItem { Text = branchElement, Value = branch, Selected = selected});
+                branchSelectListItems.Add(new SelectListItem { Text = branchElement, Value = branchElement, Selected = selected});
             }
 
             CodeViewModel project = new CodeViewModel { ProjectGuid = guid, Files = files };
@@ -274,12 +283,24 @@ namespace SoftwareForge.Mvc.Controllers
         /// <summary>
         /// Change the choosen Branch
         /// </summary>
-        /// <param name="branchList"></param>
+        /// <param name="branch"></param>
         /// <param name="guid"></param>
         /// <returns></returns>
         public ActionResult BranchChoosen(string branch, string guid)
         {
             return RedirectToAction("CodeView", new {guid, branch});
         }
+
+        /// <summary>
+        /// Change the choosen Branch
+        /// </summary>
+        /// <param name="branch"></param>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        public ActionResult CodePartial(string filePath, string guid)
+        {
+            return PartialView(SoftwareForgeFacade.Client.GetFileContent(filePath,new Guid(guid)));
+        }
+
     }
 }

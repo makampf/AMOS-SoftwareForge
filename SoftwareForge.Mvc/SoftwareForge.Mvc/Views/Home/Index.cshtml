@@ -40,19 +40,21 @@
 @foreach (TeamCollection teamCollection in Model)
 {
     
-    <b>@teamCollection.Name</b> 
+    <h3>@teamCollection.Name</h3> 
           
-    <ul>
-        @foreach (Project project in teamCollection.Projects)
+  
+        foreach (Project project in teamCollection.Projects)
         {
-            <li>
+  
                 @Html.Partial("ProjectPreviewPartial",project)
 
-            </li>
         }
-    </ul>
-    @Html.ActionLink("Create new Project","CreateProject","TeamProjects", new {teamCollectionGuid = teamCollection.Guid}, null)
-    <br/> <br/>
+ 
+    <p style="clear: both">
+        @Html.ActionLink("Create new Project","CreateProject","TeamProjects", new {teamCollectionGuid = teamCollection.Guid}, null)
+    </p>
+    
+    <br/>
 }
     
 <div>

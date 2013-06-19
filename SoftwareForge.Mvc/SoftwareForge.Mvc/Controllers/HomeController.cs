@@ -17,13 +17,11 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-using System;
-using System.Linq;
+
 using SoftwareForge.Common.Models;
 using System.Collections.Generic;
 using System.Web.Mvc;
-using SoftwareForge.Mvc.Models;
-using SoftwareForge.Mvc.WebApiClient;
+using SoftwareForge.Mvc.Facade;
 
 namespace SoftwareForge.Mvc.Controllers
 {
@@ -38,7 +36,7 @@ namespace SoftwareForge.Mvc.Controllers
         /// <returns>Home view with teamcollections.</returns>
         public ActionResult Index()
         {
-            IEnumerable<TeamCollection> teamCollections = TeamCollectionsClient.GetTeamCollections();
+            IEnumerable<TeamCollection> teamCollections = SoftwareForgeFacade.Client.GetTeamCollections();
             return View(teamCollections);
         }
 

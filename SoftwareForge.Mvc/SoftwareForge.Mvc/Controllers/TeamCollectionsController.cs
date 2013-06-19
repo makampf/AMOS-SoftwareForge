@@ -19,7 +19,7 @@
  */
 
 using System.Web.Mvc;
-using SoftwareForge.Mvc.WebApiClient;
+using SoftwareForge.Mvc.Facade;
 
 namespace SoftwareForge.Mvc.Controllers
 {
@@ -50,8 +50,8 @@ namespace SoftwareForge.Mvc.Controllers
                 {
                     return RedirectToAction("Index", "Home");
                 }
-               
-                TeamCollectionsClient.CreateTeamCollection(name.AttemptedValue);
+
+                SoftwareForgeFacade.Client.CreateTeamCollection(name.AttemptedValue);
                 
                 
         

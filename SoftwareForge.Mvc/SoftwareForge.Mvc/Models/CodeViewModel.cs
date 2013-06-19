@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
+using SoftwareForge.Common.Models;
 
 namespace SoftwareForge.Mvc.Models
 {
@@ -36,6 +37,6 @@ namespace SoftwareForge.Mvc.Models
         /// </summary>
         public Guid ProjectGuid {get; set; }
 
-        public List<string> Files { get; set; }
+        public List<CompositeItem> Files { get; set; }
     }
 }

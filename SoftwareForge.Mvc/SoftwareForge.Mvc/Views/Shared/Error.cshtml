@@ -17,13 +17,16 @@
  - License along with this program. If not, see
  - <http://www.gnu.org/licenses/>.
  -->
-@model System.Web.Mvc.HandleErrorInfo
+@model HandleErrorInfo
 
 @{
     ViewBag.Title = "Error";
 }
 
-<hgroup class="title">
-    <h1 class="error">Error</h1>
-    <h2 class="error">Some error occurred.</h2>
-</hgroup>
+    <h2>Exception details</h2>
+<p>
+    Controller: @Model.ControllerName <br>
+    Action: @Model.ActionName <br>
+    @Model.Exception.Message
+    
+</p>
