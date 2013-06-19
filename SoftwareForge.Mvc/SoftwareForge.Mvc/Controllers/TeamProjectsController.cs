@@ -177,6 +177,10 @@ namespace SoftwareForge.Mvc.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (string.IsNullOrEmpty(project.Name))
+                {
+                    throw new Exception(" The Project Name can't be empty");
+                }
                 SoftwareForgeFacade.Client.RenameProject(project.Guid, project.Name, User.Identity.Name);
             }
             return RedirectToAction("ProjectDetailsPage", new { project.Guid });

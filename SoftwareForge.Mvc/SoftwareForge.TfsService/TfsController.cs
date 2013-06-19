@@ -497,6 +497,12 @@ namespace SoftwareForge.TfsService
             return GetFilesRecursive(versionControlServer, path);
         }
 
+        /// <summary>
+        /// Get Files and Folders recursively from tfs
+        /// </summary>
+        /// <param name="versionControlServer">the version control server</param>
+        /// <param name="path">the path to traverse</param>
+        /// <returns></returns>
         private List<CompositeItem> GetFilesRecursive(VersionControlServer versionControlServer, string path)
         {
             List<CompositeItem> result = new List<CompositeItem>();
@@ -527,7 +533,7 @@ namespace SoftwareForge.TfsService
         }
 
 
-
+        //ToDo: Is this method used?
         public string DownloadFile(Guid teamProjectGuid, string serverPath)
         {
             string fileName = Path.GetFileName(serverPath);

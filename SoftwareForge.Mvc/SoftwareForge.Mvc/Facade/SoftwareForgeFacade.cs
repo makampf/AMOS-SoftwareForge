@@ -109,6 +109,11 @@ namespace SoftwareForge.Mvc.Facade
             if (templates.Count < 1)
                 throw new ArgumentException("The project given is in a collection that has no templates! ");
 
+            if (string.IsNullOrEmpty(project.TfsName) || (string.IsNullOrEmpty(project.Name)))
+            {
+                throw new ArgumentException("Tfs Name and Project Name must not be empty");
+            }
+      
             Project createdProject = TfsController.CreateTeamProjectInTeamCollection(project.TeamCollectionGuid, project.Name, project.TfsName, project.Description, project.ProjectType, templates[0]);
             ProjectsDao.ProcessMembershipRequest(new ProjectMembershipRequestModel { ProjectGuid = createdProject.Guid, Username = username, UserRole = UserRole.ProjectOwner });
             return createdProject;
