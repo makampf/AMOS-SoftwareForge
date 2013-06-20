@@ -256,6 +256,7 @@
     <Content Include="Views\TeamProjects\CreateProjectInvitationRequest.cshtml" />
     <Content Include="Views\TeamProjects\CodeView.cshtml" />
     <Content Include="Views\TeamProjects\CodePartial.cshtml" />
+    <Content Include="Views\Shared\UserPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -893,3 +893,17 @@ h3 {
     font-size: larger;
     padding-top: 80px;
 }
+
+.user {
+    margin: 5px;
+    padding: 3px;
+    background-color: #ffffff;
+    border: solid 3px  #dddddd;
+	height:auto;
+	width: auto;
+    display: block;
+    float: left;
+}
+.user:hover {
+     background-color: #dddddd;
+}
