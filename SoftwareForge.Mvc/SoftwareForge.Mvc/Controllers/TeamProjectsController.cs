@@ -22,9 +22,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using SoftwareForge.Common.Models;
 using SoftwareForge.Mvc.Facade;
 using SoftwareForge.Mvc.Models;
+using Project = SoftwareForge.Common.Models.Project;
+using WorkItem = SoftwareForge.Common.Models.WorkItem;
 
 namespace SoftwareForge.Mvc.Controllers
 {
@@ -281,22 +284,38 @@ namespace SoftwareForge.Mvc.Controllers
         }
 
         /// <summary>
+        /// Show the WorkItems for a project
+        /// </summary>
+        /// <param name="guid">the project guid</param>
+        /// <returns>A WorkItems view</returns>
+        public ActionResult WorkItemsView(Guid guid)
+        {
+            List<WorkItem> workItems = SoftwareForgeFacade.Client.GetWorkItems(guid);
+            WorkItemsViewModel project = new WorkItemsViewModel
+                {
+                    ProjectGuid = guid,
+                    WorkItems = workItems
+                };
+            return View(project);
+        }
+
+        /// <summary>
         /// Change the choosen Branch
         /// </summary>
-        /// <param name="branch"></param>
-        /// <param name="guid"></param>
-        /// <returns></returns>
+        /// <param name="branch">the branch choosen</param>
+        /// <param name="guid">the project guid</param>
+        /// <returns>Returns to CodeView with changed branch selection</returns>
         public ActionResult BranchChoosen(string branch, string guid)
         {
             return RedirectToAction("CodeView", new {guid, branch});
         }
 
         /// <summary>
-        /// Change the choosen Branch
+        /// Return the Codepartial
         /// </summary>
-        /// <param name="branch"></param>
-        /// <param name="guid"></param>
-        /// <returns></returns>
+        /// <param name="filePath">file to load for codepartial</param>
+        /// <param name="guid">the project guid</param>
+        /// <returns>a partialview with the file contents</returns>
         public ActionResult CodePartial(string filePath, string guid)
         {
             return PartialView(SoftwareForgeFacade.Client.GetFileContent(filePath,new Guid(guid)));

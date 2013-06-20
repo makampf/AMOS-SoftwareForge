@@ -27,7 +27,7 @@
     bool isUserMember = user != null;
     
     }
-<p>Project Details - @Html.ActionLink("[Code View]", "CodeView", "TeamProjects", new {guid = Model.Guid}, null)</p>
+<p>Project Details - @Html.ActionLink("[Code View]", "CodeView", "TeamProjects", new {guid = Model.Guid}, null) -  @Html.ActionLink("[Bug View]", "WorkItemsView", "TeamProjects", new { guid = Model.Guid }, null)</p>
 <p>
     <b>@Model.Name</b>
     @if (@Model.Users.Any(t => (t.User.Username.Equals(User.Identity.Name)) && (t.UserRole == UserRole.ProjectOwner))){
