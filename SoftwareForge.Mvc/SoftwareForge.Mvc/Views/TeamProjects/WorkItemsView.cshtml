@@ -25,6 +25,7 @@
 <p>@Html.ActionLink("[Project Details]", "ProjectDetailsPage", "TeamProjects", new { guid = Model.ProjectGuid }, null) - @Html.ActionLink("[Code View]", "CodeView", "TeamProjects", new {guid = Model.ProjectGuid}, null) - Bug View</p>
 <p>
   @foreach (WorkItem workItem in Model.WorkItems) {
-    <text>@workItem.Title</text><br/>
+      
+      <text>@workItem.Title</text><br/>
   }
 </p>

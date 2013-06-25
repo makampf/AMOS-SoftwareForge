@@ -66,7 +66,7 @@ namespace SoftwareForge.Mvc.Facade
         public SoftwareForgeFacade()
         {
             _tfsController = new TfsController(new Uri(Properties.Settings.Default.TfsServerUri), Properties.Settings.Default.DbConnectionString);
-            _bugController = new BugController(new Uri(Properties.Settings.Default.TfsServerUri), Properties.Settings.Default.DbConnectionString);
+            _bugController = new BugController(new Uri(Properties.Settings.Default.TfsServerUri));
         }
    
         /// <summary>

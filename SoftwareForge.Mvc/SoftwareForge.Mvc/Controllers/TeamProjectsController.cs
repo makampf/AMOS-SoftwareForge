@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
-using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using SoftwareForge.Common.Models;
 using SoftwareForge.Mvc.Facade;
 using SoftwareForge.Mvc.Models;

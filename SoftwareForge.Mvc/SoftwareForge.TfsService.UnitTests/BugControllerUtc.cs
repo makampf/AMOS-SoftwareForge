@@ -43,7 +43,7 @@ namespace SoftwareForge.TfsService.UnitTests
         [TestInitialize]
         public void TestInit()
         {
-            _bugController = new BugController(new Uri(Properties.Settings.Default.TfsTestServerUri), Properties.Settings.Default.DbTestConnectionString);
+            _bugController = new BugController(new Uri(Properties.Settings.Default.TfsTestServerUri));
             Assert.IsNotNull(_bugController);
             
         }

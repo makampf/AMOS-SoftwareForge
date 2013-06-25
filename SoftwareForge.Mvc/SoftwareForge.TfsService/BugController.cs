@@ -30,16 +30,14 @@ namespace SoftwareForge.TfsService
 {
     public class BugController
     {
-        private TfsConfigurationServer _tfsConfigurationServer;
+        private readonly TfsConfigurationServer _tfsConfigurationServer;
 
         /// <summary>
-        /// Constructor of the tfsController.
+        /// Constructor of the BugController.
         /// </summary>
         /// <param name="tfsUri">The uri of the tfs</param>
-        /// <param name="connectionString">The connection String to the mssql-server holding the ProjectCollections</param>
-        public BugController(Uri tfsUri, String connectionString)
+        public BugController(Uri tfsUri)
         {
-
             _tfsConfigurationServer = new TfsConfigurationServer(tfsUri);
             _tfsConfigurationServer.Authenticate();
         }
@@ -52,12 +50,15 @@ namespace SoftwareForge.TfsService
             get { return _tfsConfigurationServer.HasAuthenticated; }
         }
 
-        public List<ForgeWorkItem> GetWorkItems(Guid teamProjectGuid)
+
+        public List<ForgeWorkItem> GetBugWorkItems(Guid teamProjectGuid)
         {
-            List<ForgeWorkItem> workItems = new List<ForgeWorkItem>();
-            Project project = ProjectsDao.Get(teamProjectGuid);
             if (HasAuthenticated == false)
                 _tfsConfigurationServer.Authenticate();
+
+            List<ForgeWorkItem> workItems = new List<ForgeWorkItem>();
+            Project project = ProjectsDao.Get(teamProjectGuid);
+            
 
             TfsTeamProjectCollection tpc = _tfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid);
             WorkItemStore store = tpc.GetService<WorkItemStore>();
@@ -73,5 +74,34 @@ namespace SoftwareForge.TfsService
             }
             return workItems;
         }
+
+
+        //type = "Bug"
+        public List<FieldDefinition> GetAllFieldsOfType(Guid teamProjectGuid, String type)
+        {
+            List<FieldDefinition> list = new List<FieldDefinition>();
+            
+            Project project = ProjectsDao.Get(teamProjectGuid);
+
+            TfsTeamProjectCollection tpc = _tfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid);
+            WorkItemStore store = tpc.GetService<WorkItemStore>();
+
+            Microsoft.TeamFoundation.WorkItemTracking.Client.Project p = store.Projects[project.TfsName];
+            if (p == null)
+                    throw new Exception("GetAllBugFields: Could not find tfs-project " + project.TfsName);
+
+            WorkItemType wiType = p.WorkItemTypes[type];
+            if (wiType == null)
+                throw new Exception("GetAllBugFields: Could not find workitemtype " + type);
+
+            foreach (FieldDefinition field in wiType.FieldDefinitions)
+            {
+                list.Add(field);
+            }
+
+
+            return list;
+        }
+
     }
 }
