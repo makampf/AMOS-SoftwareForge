@@ -22,5 +22,6 @@ namespace SoftwareForge.Common.Models
     public class WorkItem
     {
         public string Title { get; set; }
+        public string State { get; set; }
     }
 }

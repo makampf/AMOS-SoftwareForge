@@ -69,7 +69,7 @@ namespace SoftwareForge.TfsService
             "' ORDER BY [System.WorkItemType], [System.Id]");
             foreach (WorkItem workItem in workItemCollection)
             {
-                workItems.Add(new ForgeWorkItem{Title = workItem.Title});
+                workItems.Add(new ForgeWorkItem{Title = workItem.Title, State = workItem.State});
             }
             return workItems;
         }
