@@ -21,9 +21,11 @@ using System;
 using System.Collections.Generic;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
+using SoftwareForge.Common.Models;
 using SoftwareForge.DbService;
 using Project = SoftwareForge.Common.Models.Project;
 using ForgeWorkItem = SoftwareForge.Common.Models.WorkItem;
+using WorkItem = Microsoft.TeamFoundation.WorkItemTracking.Client.WorkItem;
 
 
 namespace SoftwareForge.TfsService
@@ -70,7 +72,7 @@ namespace SoftwareForge.TfsService
             "' ORDER BY [System.WorkItemType], [System.Id]");
             foreach (WorkItem workItem in workItemCollection)
             {
-                workItems.Add(new ForgeWorkItem{id = workItem.Id, Title = workItem.Title, Description = workItem.Description, State = workItem.State});
+                workItems.Add(new ForgeWorkItem{Id = workItem.Id, Title = workItem.Title, Description = workItem.Description, State = workItem.State});
             }
             return workItems;
         }
@@ -87,7 +89,7 @@ namespace SoftwareForge.TfsService
             WorkItem item = store.GetWorkItem(id);
             return new ForgeWorkItem
                 {
-                    id = item.Id,
+                    Id = item.Id,
                     Title = item.Title,
                     Description = item.Description,
                     State = item.State
@@ -96,9 +98,9 @@ namespace SoftwareForge.TfsService
 
 
         //type = "Bug"
-        public List<FieldDefinition> GetAllFieldsOfType(Guid teamProjectGuid, String type)
+        public List<WorkItemField> GetAllFieldsOfType(Guid teamProjectGuid, String type)
         {
-            List<FieldDefinition> list = new List<FieldDefinition>();
+            List<WorkItemField> list = new List<WorkItemField>();
             
             Project project = ProjectsDao.Get(teamProjectGuid);
 
@@ -115,7 +117,18 @@ namespace SoftwareForge.TfsService
 
             foreach (FieldDefinition field in wiType.FieldDefinitions)
             {
-                list.Add(field);
+                WorkItemField workItemField = new WorkItemField();
+                foreach (string value in field.AllowedValues)
+                    workItemField.AllowedValues.Add(value);
+
+                workItemField.FieldType = field.FieldType.ToString();
+                workItemField.Id = field.Id;
+                workItemField.IsCoreField = field.IsCoreField;
+                workItemField.Name = field.Name;
+                workItemField.IsUserNameField = field.IsUserNameField;
+                workItemField.IsEditable = field.IsEditable;
+
+                list.Add(workItemField);
             }
 
             return list;

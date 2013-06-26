@@ -18,9 +18,18 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
+
 namespace SoftwareForge.Common.Models
 {
     public class WorkItemField
     {
+        public int Id { get; set; }
+        public List<string> AllowedValues = new List<string>();
+        public string FieldType { get; set; }
+        public bool IsCoreField { get; set; }
+        public bool IsUserNameField { get; set; }
+        public bool IsEditable { get; set; }
+        public string Name{ get; set; }
     }
 }

@@ -22,7 +22,7 @@ namespace SoftwareForge.Common.Models
 {
     public class WorkItem
     {
-        public int id;
+        public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string State { get; set; }
