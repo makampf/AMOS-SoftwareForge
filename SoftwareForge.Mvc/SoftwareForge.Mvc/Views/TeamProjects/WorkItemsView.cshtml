@@ -22,10 +22,42 @@
 @using SoftwareForge.Mvc.Models
 @model WorkItemsViewModel
 
+
 <p>@Html.ActionLink("[Project Details]", "ProjectDetailsPage", "TeamProjects", new { guid = Model.ProjectGuid }, null) - @Html.ActionLink("[Code View]", "CodeView", "TeamProjects", new {guid = Model.ProjectGuid}, null) - Bug View</p>
 <p>
-  @foreach (WorkItem workItem in Model.WorkItems) {
+   
+    
+
+    @foreach (WorkItem workItem in Model.WorkItems) {
       
-      <text>@workItem.Title</text><br/>
-  }
+        
+        if(workItem.State == "Bestätigt")
+        {
+            <div class="redcircled"></div>
+            <text>@workItem.Title</text><br/>
+            
+        }
+        
+        else if(workItem.State == "Fertig")
+         { 
+             <div class="greencircled"></div>
+             <text>@workItem.Title</text><br/>
+             
+         }
+         
+         else if (workItem.State == "Neu")
+         {
+             <div class="yellowcircled"></div>
+             <text>@workItem.Title</text><br/>
+         }
+         
+         else
+         {
+              <div class="greycircled"></div>
+             <text>@workItem.Title</text><br/>
+             
+          }
+        
+        
+    }
 </p>

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 by Denis Bach, Marvin Kampf, Konstantin Tsysin, Taner Tunc, Florian Wittmann
+ * Copyright (c) 2013 by Denis Bach, Konstantin Tsysin, Taner Tunc, Marvin Kampf, Florian Wittmann
  *
  * This file is part of the Software Forge Overlay rating application.
  *
@@ -20,23 +20,7 @@
 
 namespace SoftwareForge.Common.Models
 {
-    public class WorkItem
+    public class WorkItemField
     {
-        public int id;
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string State { get; set; }
-
-        public string Iteration { get; set; }
-        public string Area { get; set; }
-
-        //Zugewiesen an
-        public string AssignedTo { get; set; }
-
-        //Aufwand
-        public string StoryPoints { get; set; }
-
-        //Schweregrad
-        public string Severity { get; set; }
     }
 }

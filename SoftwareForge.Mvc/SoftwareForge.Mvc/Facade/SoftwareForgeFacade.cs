@@ -404,7 +404,7 @@ namespace SoftwareForge.Mvc.Facade
 
         public List<WorkItem> GetWorkItems(Guid guid)
         {
-            return BugController.GetWorkItems(guid);
+            return BugController.GetBugWorkItems(guid);
         }
     }
 }

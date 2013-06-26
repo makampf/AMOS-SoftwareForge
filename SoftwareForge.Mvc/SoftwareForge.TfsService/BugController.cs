@@ -70,9 +70,28 @@ namespace SoftwareForge.TfsService
             "' ORDER BY [System.WorkItemType], [System.Id]");
             foreach (WorkItem workItem in workItemCollection)
             {
-                workItems.Add(new ForgeWorkItem{Title = workItem.Title});
+                workItems.Add(new ForgeWorkItem{id = workItem.Id, Title = workItem.Title, Description = workItem.Description, State = workItem.State});
             }
             return workItems;
+        }
+
+
+        public ForgeWorkItem GetWorkItemById(Guid teamProjectGuid, int id)
+        {
+            if (HasAuthenticated == false)
+                _tfsConfigurationServer.Authenticate();
+
+            Project project = ProjectsDao.Get(teamProjectGuid);
+            TfsTeamProjectCollection tpc = _tfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid);
+            WorkItemStore store = tpc.GetService<WorkItemStore>();
+            WorkItem item = store.GetWorkItem(id);
+            return new ForgeWorkItem
+                {
+                    id = item.Id,
+                    Title = item.Title,
+                    Description = item.Description,
+                    State = item.State
+                };
         }
 
 
@@ -99,9 +118,7 @@ namespace SoftwareForge.TfsService
                 list.Add(field);
             }
 
-
             return list;
         }
-
     }
 }
