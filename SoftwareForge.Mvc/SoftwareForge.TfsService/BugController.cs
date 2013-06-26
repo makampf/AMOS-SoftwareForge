@@ -98,7 +98,7 @@ namespace SoftwareForge.TfsService
         }
 
 
-        //type = "Bug"
+        //type = "Fehler"
         public List<WorkItemField> GetAllFieldsOfType(Guid teamProjectGuid, String type)
         {
             List<WorkItemField> list = new List<WorkItemField>();
@@ -139,19 +139,21 @@ namespace SoftwareForge.TfsService
 
 
 
-        public int CreateBug(Guid teamProjectGuid, Dictionary<String, String> fieldDictionary)
+        public void CreateBug(Guid teamProjectGuid, Common.Models.WorkItem item, Dictionary<String, String> fieldDictionary)
         {
             Project project = ProjectsDao.Get(teamProjectGuid);
 
             TfsTeamProjectCollection tpc = _tfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid);
             WorkItemStore store = tpc.GetService<WorkItemStore>();
 
-            WorkItemType wiType = store.Projects[project.TfsName].WorkItemTypes["Bug"];
+            WorkItemType wiType = store.Projects[project.TfsName].WorkItemTypes["Fehler"];
 
             if (wiType == null)
                 throw new Exception("WorkItemType Bug could not be found");
 
-            WorkItem wi = new WorkItem(wiType);
+            WorkItem wi = new WorkItem(wiType) {Title = item.Title, Description = item.Description};
+
+
             foreach (KeyValuePair<String, String> kvp in fieldDictionary)
             {
                 wi.Fields[kvp.Key].Value = kvp.Value;
@@ -167,7 +169,6 @@ namespace SoftwareForge.TfsService
             }
 
             wi.Save();
-            return wi.Id;
         }
 
 

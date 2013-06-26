@@ -406,5 +406,10 @@ namespace SoftwareForge.Mvc.Facade
         {
             return BugController.GetBugWorkItems(guid);
         }
+
+        public void CreateBug(WorkItem workItem)
+        {
+            BugController.CreateBug(workItem.TeamProjectGuid, workItem, new Dictionary<string, string>());
+        }
     }
 }

@@ -18,11 +18,15 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+using System;
+
 namespace SoftwareForge.Common.Models
 {
     public class WorkItem
     {
         public int Id { get; set; }
+        public Guid TeamProjectGuid { get; set; }
+
         public string Title { get; set; }
         public string Description { get; set; }
         public string State { get; set; }

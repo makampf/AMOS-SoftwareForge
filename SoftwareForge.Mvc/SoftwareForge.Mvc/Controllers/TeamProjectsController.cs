@@ -255,7 +255,7 @@ namespace SoftwareForge.Mvc.Controllers
         public ActionResult CodeView(Guid guid, string branch = null)
         {
             List<string> branchList = SoftwareForgeFacade.Client.GetBranches(guid);
-            List<CompositeItem> files = new List<CompositeItem>();
+            List<CompositeItem> files;
 
             if (branch == null && branchList.Count > 0) branch = branchList[0];
 
@@ -325,12 +325,20 @@ namespace SoftwareForge.Mvc.Controllers
         /// <summary>
         /// Create a new bug
         /// </summary>
-        /// <param name="teamProjectGuid">the guid of the project</param>
+        /// <param name="guid">the guid of the project</param>
         /// <returns>A CreateBug View</returns>
-        public ActionResult CreateBug(Guid teamProjectGuid)
+        public ActionResult CreateBug(Guid guid)
         {
-            return View();
+            return View(new WorkItem {TeamProjectGuid = guid});
         }
 
+        public ActionResult PostCreateBug(WorkItem workItem)
+        {
+            if (string.IsNullOrEmpty(workItem.Title))
+                throw new Exception("Titel must not be empty");
+
+            SoftwareForgeFacade.Client.CreateBug(workItem);
+            return RedirectToAction("WorkItemsView", new {guid = workItem.TeamProjectGuid});
+        }
     }
 }
