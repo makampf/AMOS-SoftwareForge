@@ -64,6 +64,7 @@ namespace SoftwareForge.TfsService
 
             TfsTeamProjectCollection tpc = _tfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid);
             WorkItemStore store = tpc.GetService<WorkItemStore>();
+            
             WorkItemCollection workItemCollection = store.Query(
              " SELECT [System.Id], [System.WorkItemType]," +
              " [System.State], [System.AssignedTo], [System.Title] " +
@@ -127,11 +128,49 @@ namespace SoftwareForge.TfsService
                 workItemField.Name = field.Name;
                 workItemField.IsUserNameField = field.IsUserNameField;
                 workItemField.IsEditable = field.IsEditable;
-
+                
                 list.Add(workItemField);
             }
-
             return list;
         }
+
+
+
+
+
+
+        public int CreateBug(Guid teamProjectGuid, Dictionary<String, String> fieldDictionary)
+        {
+            Project project = ProjectsDao.Get(teamProjectGuid);
+
+            TfsTeamProjectCollection tpc = _tfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid);
+            WorkItemStore store = tpc.GetService<WorkItemStore>();
+
+            WorkItemType wiType = store.Projects[project.TfsName].WorkItemTypes["Bug"];
+
+            if (wiType == null)
+                throw new Exception("WorkItemType Bug could not be found");
+
+            WorkItem wi = new WorkItem(wiType);
+            foreach (KeyValuePair<String, String> kvp in fieldDictionary)
+            {
+                wi.Fields[kvp.Key].Value = kvp.Value;
+            }
+
+            
+            foreach (Field field in wi.Fields)
+            {
+                if (!field.IsValid)
+                {
+                    throw new Exception("Invalid Field " + field.Name + ": " + field.Status + Environment.NewLine + "Current Value: " + field.Value);
+                }
+            }
+
+            wi.Save();
+            return wi.Id;
+        }
+
+
+
     }
 }
