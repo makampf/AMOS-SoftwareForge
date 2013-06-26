@@ -260,6 +260,7 @@
     <Content Include="Views\TeamProjects\CodePartial.cshtml" />
     <Content Include="Views\Shared\UserPartial.cshtml" />
     <Content Include="Views\TeamProjects\WorkItemsView.cshtml" />
+    <Content Include="Views\TeamProjects\CreateBug.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

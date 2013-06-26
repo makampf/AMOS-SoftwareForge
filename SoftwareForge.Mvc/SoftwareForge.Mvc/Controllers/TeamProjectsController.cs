@@ -320,5 +320,17 @@ namespace SoftwareForge.Mvc.Controllers
             return PartialView(SoftwareForgeFacade.Client.GetFileContent(filePath,new Guid(guid)));
         }
 
+
+
+        /// <summary>
+        /// Create a new bug
+        /// </summary>
+        /// <param name="teamProjectGuid">the guid of the project</param>
+        /// <returns>A CreateBug View</returns>
+        public ActionResult CreateBug(Guid teamProjectGuid)
+        {
+            return View();
+        }
+
     }
 }
