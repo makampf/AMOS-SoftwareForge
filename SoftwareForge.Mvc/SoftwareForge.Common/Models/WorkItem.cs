@@ -30,13 +30,10 @@ namespace SoftwareForge.Common.Models
         public string Iteration { get; set; }
         public string Area { get; set; }
 
-        //Zugewiesen an
         public string AssignedTo { get; set; }
 
-        //Aufwand
         public string StoryPoints { get; set; }
 
-        //Schweregrad
         public string Severity { get; set; }
     }
 }

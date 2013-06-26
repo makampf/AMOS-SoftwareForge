@@ -26,38 +26,61 @@
 <p>@Html.ActionLink("[Project Details]", "ProjectDetailsPage", "TeamProjects", new { guid = Model.ProjectGuid }, null) - @Html.ActionLink("[Code View]", "CodeView", "TeamProjects", new {guid = Model.ProjectGuid}, null) - Bug View</p>
 <p>
    
-    
+    <table>
+        <tr>
+            <th>
+                State
+            </th>
+            <th>
+                ID
+            </th>
+            <th>
+                Title
+            </th>
+        </tr>
+   
 
     @foreach (WorkItem workItem in Model.WorkItems) {
       
+        <tr>
+            <td>
+                @if(workItem.State == "Bestätigt")
+                {
+                    <div class="redcircled"></div>
+                }
         
-        if(workItem.State == "Bestätigt")
-        {
-            <div class="redcircled"></div>
-            <text>@workItem.Title</text><br/>
+                else if(workItem.State == "Fertig")
+                { 
+                    <div class="greencircled"></div>
+                }
+         
+                else if (workItem.State == "Neu")
+                {
+                    <div class="yellowcircled"></div>
+                }
+         
+                else
+                {
+                    <div class="greycircled"></div>
+                }
+            </td>
+            <td>
+                <text>@workItem.Id</text>
+            </td>
+            <td>
+                <text>@workItem.Title</text>
+            </td>
+     
             
-        }
+            
+
+        </tr>
         
-        else if(workItem.State == "Fertig")
-         { 
-             <div class="greencircled"></div>
-             <text>@workItem.Title</text><br/>
-             
-         }
-         
-         else if (workItem.State == "Neu")
-         {
-             <div class="yellowcircled"></div>
-             <text>@workItem.Title</text><br/>
-         }
-         
-         else
-         {
-              <div class="greycircled"></div>
-             <text>@workItem.Title</text><br/>
-             
-          }
+        
+        
+  
         
         
     }
+         </table>
 </p>

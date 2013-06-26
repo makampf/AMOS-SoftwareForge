@@ -67,7 +67,7 @@ namespace SoftwareForge.TfsService
             
             WorkItemCollection workItemCollection = store.Query(
              " SELECT [System.Id], [System.WorkItemType]," +
-             " [System.State], [System.AssignedTo], [System.Title] " +
+             " [System.State], [System.AssignedTo], [System.Title], [System.Description] " +
              " FROM WorkItems " +
              " WHERE [System.TeamProject] = '" + project.Name +
             "' ORDER BY [System.WorkItemType], [System.Id]");
