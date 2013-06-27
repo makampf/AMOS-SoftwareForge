@@ -48,8 +48,12 @@ namespace SoftwareForge.TfsService.UnitTests
             Assert.IsTrue(_tfsController.HasAuthenticated);
         }
 
-        
-
+        //[TestMethod]
+        //public void TestRemoveProject()
+        //{
+        //    //TODO: remove project deletion?
+        //    _tfsController.RemoveTeamCollection(new Guid(""));
+        //}
 
         /// <summary>
         /// Test the GetTeamCollections method.

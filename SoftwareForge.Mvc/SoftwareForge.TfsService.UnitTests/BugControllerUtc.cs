@@ -19,26 +19,46 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 
 namespace SoftwareForge.TfsService.UnitTests
 {
+    /// <summary>
+    /// Test the TfsController
+    /// </summary>
     [TestClass]
-    public class FileTypeReaderUtc
+    public class BugControllerUtc
     {
-        [TestMethod]
-        public void TestGetFilesFromPath()
-        {
-            FileTypeReader test = new FileTypeReader();
-            //string path = "C:\\Users\\Administrator\\Desktop\\AMOS-SoftwareForge\\SoftwareForge.Mvc\\SoftwareForge.TfsService.UnitTests\\Files\\test.html";
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files\\test.html");
-            test.GetFilesFromPath(path);
-            List<string> expectedFileContent = new List<string> { "test", "test123", "blatest" };
-            List<string> actual = test.GetFilesFromPath(path);
-            CollectionAssert.AreEqual(expectedFileContent, actual);
+        private BugController _bugController;
+        
 
+
+        /// <summary>
+        /// Init the connection to tfs
+        /// </summary>
+        [TestInitialize]
+        public void TestInit()
+        {
+            _bugController = new BugController(new Uri(Properties.Settings.Default.TfsTestServerUri));
+            Assert.IsNotNull(_bugController);
+            
         }
+
+
+        ///// <summary>
+        ///// Test the GetWorkItems Method
+        ///// </summary>
+        //[TestMethod]
+        //public void TestGetWorkItemsShouldReturnAllWorkItems()
+        //{
+        //    //TODO: Ensure a project exists and bugs exist!
+        //    List<WorkItem> workItemCollection = _bugController.GetWorkItems(new Guid("ee0fe868-0c18-47f6-9e08-34de09c678a1"));
+        //    Assert.IsNotNull(workItemCollection);
+        //    Assert.AreNotEqual(0,workItemCollection.Count);
+        //}
+
+        
+
     }
 }

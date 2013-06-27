@@ -19,26 +19,25 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace SoftwareForge.TfsService.UnitTests
+namespace SoftwareForge.Common.Models
 {
-    [TestClass]
-    public class FileTypeReaderUtc
+    public class WorkItem
     {
-        [TestMethod]
-        public void TestGetFilesFromPath()
-        {
-            FileTypeReader test = new FileTypeReader();
-            //string path = "C:\\Users\\Administrator\\Desktop\\AMOS-SoftwareForge\\SoftwareForge.Mvc\\SoftwareForge.TfsService.UnitTests\\Files\\test.html";
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files\\test.html");
-            test.GetFilesFromPath(path);
-            List<string> expectedFileContent = new List<string> { "test", "test123", "blatest" };
-            List<string> actual = test.GetFilesFromPath(path);
-            CollectionAssert.AreEqual(expectedFileContent, actual);
+        public int Id { get; set; }
+        public Guid TeamProjectGuid { get; set; }
 
-        }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string State { get; set; }
+
+        public string Iteration { get; set; }
+        public string Area { get; set; }
+
+        public string AssignedTo { get; set; }
+
+        public string StoryPoints { get; set; }
+
+        public string Severity { get; set; }
     }
 }

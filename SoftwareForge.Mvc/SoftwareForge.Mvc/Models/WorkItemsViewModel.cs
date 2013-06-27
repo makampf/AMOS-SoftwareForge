@@ -17,28 +17,23 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SoftwareForge.Common.Models;
 
-namespace SoftwareForge.TfsService.UnitTests
+namespace SoftwareForge.Mvc.Models
 {
-    [TestClass]
-    public class FileTypeReaderUtc
+    public class WorkItemsViewModel
     {
-        [TestMethod]
-        public void TestGetFilesFromPath()
-        {
-            FileTypeReader test = new FileTypeReader();
-            //string path = "C:\\Users\\Administrator\\Desktop\\AMOS-SoftwareForge\\SoftwareForge.Mvc\\SoftwareForge.TfsService.UnitTests\\Files\\test.html";
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files\\test.html");
-            test.GetFilesFromPath(path);
-            List<string> expectedFileContent = new List<string> { "test", "test123", "blatest" };
-            List<string> actual = test.GetFilesFromPath(path);
-            CollectionAssert.AreEqual(expectedFileContent, actual);
+        /// <summary>
+        /// The collection of workItems for the branch
+        /// </summary>
+        public List<WorkItem> WorkItems { get; set; }
 
-        }
+        /// <summary>
+        /// The guid of the choosen project
+        /// </summary>
+        public Guid ProjectGuid { get; set; }
     }
 }

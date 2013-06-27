@@ -24,6 +24,7 @@ using SoftwareForge.Common.Models;
 using SoftwareForge.Common.Models.Requests;
 using SoftwareForge.DbService;
 using SoftwareForge.TfsService;
+using Project = SoftwareForge.Common.Models.Project;
 
 namespace SoftwareForge.Mvc.Facade
 {
@@ -50,15 +51,22 @@ namespace SoftwareForge.Mvc.Facade
 
 
         private readonly TfsController _tfsController;
+        TfsController TfsController
+        {
+            get { return _tfsController; }
+        }
+
+        private readonly BugController _bugController;
+        BugController BugController
+        {
+            get { return _bugController; }
+        }
+
 
         public SoftwareForgeFacade()
         {
             _tfsController = new TfsController(new Uri(Properties.Settings.Default.TfsServerUri), Properties.Settings.Default.DbConnectionString);
-        }
-
-        TfsController TfsController
-        {
-            get { return _tfsController; }
+            _bugController = new BugController(new Uri(Properties.Settings.Default.TfsServerUri));
         }
    
         /// <summary>
@@ -392,7 +400,16 @@ namespace SoftwareForge.Mvc.Facade
                 return new List<string>{"Can not show " + serverPath,"It seems to be a binary file!"};
             }
         }
-   
 
+
+        public List<WorkItem> GetWorkItems(Guid guid)
+        {
+            return BugController.GetBugWorkItems(guid);
+        }
+
+        public void CreateBug(WorkItem workItem)
+        {
+            BugController.CreateBug(workItem.TeamProjectGuid, workItem, new Dictionary<string, string>());
+        }
     }
 }
