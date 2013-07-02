@@ -30,28 +30,16 @@ using WorkItem = Microsoft.TeamFoundation.WorkItemTracking.Client.WorkItem;
 
 namespace SoftwareForge.TfsService
 {
-    public class BugController
+    public class BugController : AbstractTfsController
     {
-        private readonly TfsConfigurationServer _tfsConfigurationServer;
-
         /// <summary>
         /// Constructor of the BugController.
         /// </summary>
         /// <param name="tfsUri">The uri of the tfs</param>
-        public BugController(Uri tfsUri)
+        /// <param name="connectionString"></param>
+        public BugController(Uri tfsUri, String connectionString):  base( tfsUri, connectionString)
         {
-            _tfsConfigurationServer = new TfsConfigurationServer(tfsUri);
-            _tfsConfigurationServer.Authenticate();
         }
-
-        /// <summary>
-        /// Bool if the tfs has authenticated.
-        /// </summary>
-        private bool HasAuthenticated
-        {
-            get { return _tfsConfigurationServer.HasAuthenticated; }
-        }
-
 
         public List<ForgeWorkItem> GetBugWorkItems(Guid teamProjectGuid)
         {
@@ -73,7 +61,13 @@ namespace SoftwareForge.TfsService
             "' ORDER BY [System.WorkItemType], [System.Id]");
             foreach (WorkItem workItem in workItemCollection)
             {
-                workItems.Add(new ForgeWorkItem{Id = workItem.Id, Title = workItem.Title, Description = workItem.Description, State = workItem.State});
+                workItems.Add(new ForgeWorkItem
+                    {
+                        Id = workItem.Id,
+                        Title = workItem.Title,
+                        Description = workItem.Description,
+                        State = workItem.State
+                    });
             }
             return workItems;
         }
