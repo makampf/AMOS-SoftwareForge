@@ -46,6 +46,13 @@ namespace SoftwareForge.TfsService.UnitTests
             _projectsController = new ProjectsController(new Uri(Properties.Settings.Default.TfsTestServerUri), Properties.Settings.Default.DbTestConnectionString);
             Assert.IsNotNull(_projectsController);
             Assert.IsTrue(_projectsController.HasAuthenticated);
+
+            IEnumerable<TeamCollection> testCollections =
+                _projectsController.GetTeamCollections();
+            IEnumerable<TeamCollection> filteredCollections = testCollections
+                .Where(t => t.Name == Properties.Settings.Default.TestCollectionName);
+            if (filteredCollections.Any())
+                _projectsController.RemoveTeamCollection(filteredCollections.First().Guid);
         }
 
         //[TestMethod]
