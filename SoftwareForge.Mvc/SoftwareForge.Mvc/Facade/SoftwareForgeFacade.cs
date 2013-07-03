@@ -33,8 +33,7 @@ namespace SoftwareForge.Mvc.Facade
     /// </summary>
     public class SoftwareForgeFacade
     {
-
-
+        
         public static SoftwareForgeFacade Client
         {
             get { return _facade ?? (_facade = new SoftwareForgeFacade()); }
@@ -413,7 +412,7 @@ namespace SoftwareForge.Mvc.Facade
 
         public void CreateBug(WorkItem workItem)
         {
-            BugController.CreateBug(workItem.TeamProjectGuid, workItem, new Dictionary<string, string>());
+            BugController.CreateBug(workItem.TeamProjectGuid, workItem, new Dictionary<string, string>(), System.Web.HttpContext.Current.User.Identity.Name);
         }
     }
 }

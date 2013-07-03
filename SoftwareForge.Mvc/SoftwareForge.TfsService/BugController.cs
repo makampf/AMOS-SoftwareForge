@@ -36,21 +36,24 @@ namespace SoftwareForge.TfsService
         /// Constructor of the BugController.
         /// </summary>
         /// <param name="tfsUri">The uri of the tfs</param>
-        /// <param name="connectionString"></param>
-        public BugController(Uri tfsUri, String connectionString):  base( tfsUri, connectionString)
+        /// <param name="connectionString">The connection string for the database</param>
+        public BugController(Uri tfsUri, String connectionString)
+            : base(tfsUri, connectionString)
         {
         }
 
         public List<ForgeWorkItem> GetBugWorkItems(Guid teamProjectGuid)
         {
             if (HasAuthenticated == false)
-                _tfsConfigurationServer.Authenticate();
+                TfsConfigurationServer.Authenticate();
+
+            
 
             List<ForgeWorkItem> workItems = new List<ForgeWorkItem>();
             Project project = ProjectsDao.Get(teamProjectGuid);
             
 
-            TfsTeamProjectCollection tpc = _tfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid);
+            TfsTeamProjectCollection tpc = TfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid);
             WorkItemStore store = tpc.GetService<WorkItemStore>();
             
             WorkItemCollection workItemCollection = store.Query(
@@ -76,10 +79,10 @@ namespace SoftwareForge.TfsService
         public ForgeWorkItem GetWorkItemById(Guid teamProjectGuid, int id)
         {
             if (HasAuthenticated == false)
-                _tfsConfigurationServer.Authenticate();
+                TfsConfigurationServer.Authenticate();
 
             Project project = ProjectsDao.Get(teamProjectGuid);
-            TfsTeamProjectCollection tpc = _tfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid);
+            TfsTeamProjectCollection tpc = TfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid);
             WorkItemStore store = tpc.GetService<WorkItemStore>();
             WorkItem item = store.GetWorkItem(id);
             return new ForgeWorkItem
@@ -99,7 +102,7 @@ namespace SoftwareForge.TfsService
             
             Project project = ProjectsDao.Get(teamProjectGuid);
 
-            TfsTeamProjectCollection tpc = _tfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid);
+            TfsTeamProjectCollection tpc = TfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid);
             WorkItemStore store = tpc.GetService<WorkItemStore>();
 
             Microsoft.TeamFoundation.WorkItemTracking.Client.Project p = store.Projects[project.TfsName];
@@ -133,36 +136,39 @@ namespace SoftwareForge.TfsService
 
 
 
-        public void CreateBug(Guid teamProjectGuid, Common.Models.WorkItem item, Dictionary<String, String> fieldDictionary)
+        public void CreateBug(Guid teamProjectGuid, Common.Models.WorkItem item, Dictionary<String, String> fieldDictionary, String userToImpersonate)
         {
             Project project = ProjectsDao.Get(teamProjectGuid);
 
-            TfsTeamProjectCollection tpc = _tfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid);
-            WorkItemStore store = tpc.GetService<WorkItemStore>();
-
-            WorkItemType wiType = store.Projects[project.TfsName].WorkItemTypes["Fehler"];
-
-            if (wiType == null)
-                throw new Exception("WorkItemType Bug could not be found");
-
-            WorkItem wi = new WorkItem(wiType) {Title = item.Title, Description = item.Description};
-
-
-            foreach (KeyValuePair<String, String> kvp in fieldDictionary)
+            using (ImpersonatedTfsTeamProjectCollection tpc = new ImpersonatedTfsTeamProjectCollection(TfsConfigurationServer, userToImpersonate))
             {
-                wi.Fields[kvp.Key].Value = kvp.Value;
-            }
+                WorkItemStore store = tpc.Impersonate(project.TeamCollectionGuid).GetService<WorkItemStore>();
 
-            
-            foreach (Field field in wi.Fields)
-            {
-                if (!field.IsValid)
+                WorkItemType wiType = store.Projects[project.TfsName].WorkItemTypes["Fehler"];
+
+                if (wiType == null)
+                    throw new Exception("WorkItemType Bug could not be found");
+
+                WorkItem wi = new WorkItem(wiType) {Title = item.Title, Description = item.Description};
+
+
+                foreach (KeyValuePair<String, String> kvp in fieldDictionary)
                 {
-                    throw new Exception("Invalid Field " + field.Name + ": " + field.Status + Environment.NewLine + "Current Value: " + field.Value);
+                    wi.Fields[kvp.Key].Value = kvp.Value;
                 }
-            }
 
-            wi.Save();
+
+                foreach (Field field in wi.Fields)
+                {
+                    if (!field.IsValid)
+                    {
+                        throw new Exception("Invalid Field " + field.Name + ": " + field.Status + Environment.NewLine +
+                                            "Current Value: " + field.Value);
+                    }
+                }
+
+                wi.Save();
+            }
         }
 
 

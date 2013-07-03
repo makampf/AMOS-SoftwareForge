@@ -22,13 +22,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
-using System.Threading;
-using Microsoft.TeamFoundation.Client;
-using Microsoft.TeamFoundation.Framework.Client;
-using Microsoft.TeamFoundation.Framework.Common;
-using Microsoft.TeamFoundation.Server;
 using Microsoft.TeamFoundation.VersionControl.Client;
-using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using SoftwareForge.Common.Models;
 using SoftwareForge.DbService;
 using Project = SoftwareForge.Common.Models.Project;
@@ -46,7 +40,8 @@ namespace SoftwareForge.TfsService
         /// </summary>
         /// <param name="tfsUri">The uri of the tfs</param>
         /// <param name="connectionString">The connection String to the mssql-server holding the ProjectCollections</param>
-        public CodeViewController(Uri tfsUri, String connectionString) : base( tfsUri, connectionString)
+        public CodeViewController(Uri tfsUri, String connectionString)
+            : base(tfsUri, connectionString)
         {
         }
 
@@ -61,7 +56,7 @@ namespace SoftwareForge.TfsService
 
             String serverPath = "$/" + project.TfsName;
             VersionControlServer versionControlServer =
-                _tfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid).
+                TfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid).
                                         GetService<VersionControlServer>();
 
             IEnumerable<BranchObject> branchObjects = versionControlServer.QueryRootBranchObjects(RecursionType.Full).
@@ -86,7 +81,7 @@ namespace SoftwareForge.TfsService
         {
             Project project = ProjectsDao.Get(teamProjectGuid);
             VersionControlServer versionControlServer =
-                _tfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid).
+                TfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid).
                                         GetService<VersionControlServer>();
 
             return GetFilesRecursive(versionControlServer, path);
@@ -140,7 +135,7 @@ namespace SoftwareForge.TfsService
             string localFileName = "C:\\MVCCache\\" + fileName;
             Project project = ProjectsDao.Get(teamProjectGuid);
             VersionControlServer versionControlServer =
-                _tfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid).
+                TfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid).
                                         GetService<VersionControlServer>();
             versionControlServer.DownloadFile(serverPath, localFileName);
             return localFileName;
