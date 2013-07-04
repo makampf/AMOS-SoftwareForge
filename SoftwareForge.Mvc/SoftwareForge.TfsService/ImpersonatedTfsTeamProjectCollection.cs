@@ -36,23 +36,31 @@ namespace SoftwareForge.TfsService
             _userToImpersonate = userToImpersonate;
         }
 
-        public TfsTeamProjectCollection Impersonate(Guid teamCollectionGuid)
+        public TfsTeamProjectCollection CreateImpersonatedCollection(Guid teamCollectionGuid)
         {
             TfsTeamProjectCollection tfsTeamProjectCollection = _tfsConfigurationServer.GetTeamProjectCollection(teamCollectionGuid);
+            Uri teamCollectionUri = tfsTeamProjectCollection.Uri;
 
             IIdentityManagementService ims = tfsTeamProjectCollection.GetService<IIdentityManagementService>();
+
 
             // Read out the identity of the user we want to impersonate
             TeamFoundationIdentity identity = ims.ReadIdentity(IdentitySearchFactor.AccountName,
                 _userToImpersonate,
                 MembershipQuery.None,
                 ReadIdentityOptions.None);
+            
+            if (identity == null)
+                throw new Exception("User " + _userToImpersonate + " not found in collection!");
 
-            var impersontedTfs = new TfsTeamProjectCollection(tfsTeamProjectCollection.Uri, identity.Descriptor);
-            impersontedTfs.Authenticate();
+            TfsTeamProjectCollection impersontedTfsTeamProjectCollection = new TfsTeamProjectCollection(teamCollectionUri, identity.Descriptor);
+            impersontedTfsTeamProjectCollection.Authenticate();
+            impersontedTfsTeamProjectCollection.EnsureAuthenticated();
 
-            return impersontedTfs;
+            TeamFoundationIdentity newIdentity;
+            impersontedTfsTeamProjectCollection.GetAuthenticatedIdentity(out newIdentity);
 
+            return impersontedTfsTeamProjectCollection;
         }
 
         public void Dispose() { }

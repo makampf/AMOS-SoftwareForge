@@ -19,7 +19,9 @@
  */
 
 using System;
+using System.Net;
 using Microsoft.TeamFoundation.Client;
+using SoftwareForge.Common;
 using SoftwareForge.DbService;
 
 
@@ -43,6 +45,7 @@ namespace SoftwareForge.TfsService
         }
 
 
+        
         /// <summary>
         /// Constructor of the tfsController.
         /// </summary>
@@ -50,10 +53,9 @@ namespace SoftwareForge.TfsService
         /// <param name="connectionString">The connection String to the mssql-server holding the ProjectCollections</param>
         protected AbstractTfsController(Uri tfsUri, String connectionString)
         {
-            TfsConfigurationServer = new TfsConfigurationServer(tfsUri);
-            TfsConfigurationServer.Authenticate();
-
             TfsDbController = new TfsDbController(connectionString);
+            TfsConfigurationServer = new TfsConfigurationServer(tfsUri, CredentialCache.DefaultNetworkCredentials);
+            TfsConfigurationServer.Authenticate();
         }
 
 

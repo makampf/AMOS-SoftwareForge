@@ -47,15 +47,15 @@ namespace SoftwareForge.TfsService
             if (HasAuthenticated == false)
                 TfsConfigurationServer.Authenticate();
 
-            
+
 
             List<ForgeWorkItem> workItems = new List<ForgeWorkItem>();
             Project project = ProjectsDao.Get(teamProjectGuid);
-            
+
 
             TfsTeamProjectCollection tpc = TfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid);
             WorkItemStore store = tpc.GetService<WorkItemStore>();
-            
+
             WorkItemCollection workItemCollection = store.Query(
              " SELECT [System.Id], [System.WorkItemType]," +
              " [System.State], [System.AssignedTo], [System.Title], [System.Description] " +
@@ -99,7 +99,7 @@ namespace SoftwareForge.TfsService
         public List<WorkItemField> GetAllFieldsOfType(Guid teamProjectGuid, String type)
         {
             List<WorkItemField> list = new List<WorkItemField>();
-            
+
             Project project = ProjectsDao.Get(teamProjectGuid);
 
             TfsTeamProjectCollection tpc = TfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid);
@@ -107,7 +107,7 @@ namespace SoftwareForge.TfsService
 
             Microsoft.TeamFoundation.WorkItemTracking.Client.Project p = store.Projects[project.TfsName];
             if (p == null)
-                    throw new Exception("GetAllBugFields: Could not find tfs-project " + project.TfsName);
+                throw new Exception("GetAllBugFields: Could not find tfs-project " + project.TfsName);
 
             WorkItemType wiType = p.WorkItemTypes[type];
             if (wiType == null)
@@ -125,14 +125,11 @@ namespace SoftwareForge.TfsService
                 workItemField.Name = field.Name;
                 workItemField.IsUserNameField = field.IsUserNameField;
                 workItemField.IsEditable = field.IsEditable;
-                
+
                 list.Add(workItemField);
             }
             return list;
         }
-
-
-
 
 
 
@@ -142,14 +139,14 @@ namespace SoftwareForge.TfsService
 
             using (ImpersonatedTfsTeamProjectCollection tpc = new ImpersonatedTfsTeamProjectCollection(TfsConfigurationServer, userToImpersonate))
             {
-                WorkItemStore store = tpc.Impersonate(project.TeamCollectionGuid).GetService<WorkItemStore>();
+                WorkItemStore store = tpc.CreateImpersonatedCollection(project.TeamCollectionGuid).GetService<WorkItemStore>();
 
                 WorkItemType wiType = store.Projects[project.TfsName].WorkItemTypes["Fehler"];
 
                 if (wiType == null)
                     throw new Exception("WorkItemType Bug could not be found");
 
-                WorkItem wi = new WorkItem(wiType) {Title = item.Title, Description = item.Description};
+                WorkItem wi = new WorkItem(wiType) { Title = item.Title, Description = item.Description };
 
 
                 foreach (KeyValuePair<String, String> kvp in fieldDictionary)
@@ -170,6 +167,7 @@ namespace SoftwareForge.TfsService
                 wi.Save();
             }
         }
+
 
 
 
