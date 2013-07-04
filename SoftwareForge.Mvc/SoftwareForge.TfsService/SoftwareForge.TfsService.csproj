@@ -46,13 +46,16 @@
   <ItemGroup>
     <Compile Include="BugController.cs" />
     <Compile Include="FileTypeReader.cs" />
+    <Compile Include="AbstractTfsController.cs" />
+    <Compile Include="ImpersonatedTfsTeamProjectCollection.cs" />
+    <Compile Include="ProjectsController.cs" />
+    <Compile Include="CodeViewController.cs" />
     <Compile Include="PowerToolsUtil.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="TfsController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

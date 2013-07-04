@@ -21,7 +21,7 @@
 @model Project
 @{
     string shortDescription;
-    if (Model.Description.Length > 100)
+    if (Model.Description!=null && Model.Description.Length > 100)
     {
         shortDescription = Model.Description.Substring(0, 100) + " [...]";
     }

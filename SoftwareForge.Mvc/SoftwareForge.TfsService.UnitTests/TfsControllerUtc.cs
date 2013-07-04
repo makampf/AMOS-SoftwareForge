@@ -33,7 +33,7 @@ namespace SoftwareForge.TfsService.UnitTests
     [TestClass]
     public class TfsControllerUtc
     {
-        private TfsController _tfsController;
+        private ProjectsController _projectsController;
         
 
 
@@ -43,16 +43,23 @@ namespace SoftwareForge.TfsService.UnitTests
         [TestInitialize]
         public void TestInit()
         {
-            _tfsController = new TfsController(new Uri(Properties.Settings.Default.TfsTestServerUri), Properties.Settings.Default.DbTestConnectionString);
-            Assert.IsNotNull(_tfsController);
-            Assert.IsTrue(_tfsController.HasAuthenticated);
+            _projectsController = new ProjectsController(new Uri(Properties.Settings.Default.TfsTestServerUri), Properties.Settings.Default.DbTestConnectionString);
+            Assert.IsNotNull(_projectsController);
+            Assert.IsTrue(_projectsController.HasAuthenticated);
+
+            IEnumerable<TeamCollection> testCollections =
+                _projectsController.GetTeamCollections();
+            IEnumerable<TeamCollection> filteredCollections = testCollections
+                .Where(t => t.Name == Properties.Settings.Default.TestCollectionName);
+            if (filteredCollections.Any())
+                _projectsController.RemoveTeamCollection(filteredCollections.First().Guid);
         }
 
         //[TestMethod]
         //public void TestRemoveProject()
         //{
         //    //TODO: remove project deletion?
-        //    _tfsController.RemoveTeamCollection(new Guid(""));
+        //    _projectsController.RemoveTeamCollection(new Guid(""));
         //}
 
         /// <summary>
@@ -61,7 +68,7 @@ namespace SoftwareForge.TfsService.UnitTests
         [TestMethod]
         public void TestGetTeamCollections()
         {
-            List<TeamCollection> collections = _tfsController.GetTeamCollections();
+            List<TeamCollection> collections = _projectsController.GetTeamCollections();
             Assert.IsNotNull(collections);
 
             foreach (var teamCollection in collections)
@@ -89,7 +96,7 @@ namespace SoftwareForge.TfsService.UnitTests
         [TestMethod, ExpectedException(typeof(Exception))]
         public void TestGetProjectsOfTeamCollectionGuidWithInvalidGuid()
         {
-            _tfsController.GetTeamProjectsOfTeamCollection(new Guid());
+            _projectsController.GetTeamProjectsOfTeamCollection(new Guid());
         }
 
         /// <summary>
@@ -98,7 +105,7 @@ namespace SoftwareForge.TfsService.UnitTests
         [TestMethod]
         public void TestGetTeamProjectsOfTeamCollection()
         {
-            List<TeamCollection> collections = _tfsController.GetTeamCollections();
+            List<TeamCollection> collections = _projectsController.GetTeamCollections();
             Assert.IsNotNull(collections);
 
             foreach (var teamCollection in collections)
@@ -106,7 +113,7 @@ namespace SoftwareForge.TfsService.UnitTests
                 Assert.AreNotEqual(new Guid(), teamCollection.Guid);
                 Assert.IsFalse(String.IsNullOrEmpty(teamCollection.Name));
 
-                List<Project> list = _tfsController.GetTeamProjectsOfTeamCollection(teamCollection.Guid);
+                List<Project> list = _projectsController.GetTeamProjectsOfTeamCollection(teamCollection.Guid);
                 Assert.IsNotNull(list);
 
                 foreach (var project in list)
@@ -125,7 +132,7 @@ namespace SoftwareForge.TfsService.UnitTests
         [TestMethod]
         public void TestGetTeamCollection()
         {
-            List<TeamCollection> collections = _tfsController.GetTeamCollections();
+            List<TeamCollection> collections = _projectsController.GetTeamCollections();
             Assert.IsNotNull(collections);
 
             foreach (var teamCollection in collections)
@@ -133,7 +140,7 @@ namespace SoftwareForge.TfsService.UnitTests
                 Assert.AreNotEqual(new Guid(), teamCollection.Guid);
                 Assert.IsFalse(String.IsNullOrEmpty(teamCollection.Name));
 
-                TeamCollection collection = _tfsController.GetTeamCollection(teamCollection.Guid);
+                TeamCollection collection = _projectsController.GetTeamCollection(teamCollection.Guid);
 
                 Assert.AreNotEqual(new Guid(), collection.Guid);
                 Assert.IsFalse(String.IsNullOrEmpty(collection.Name));
@@ -167,10 +174,10 @@ namespace SoftwareForge.TfsService.UnitTests
             //Hint: If something goes wrong, remove TeamCollection manually:
             //C:\Program Files\Microsoft Team Foundation Server 11.0\Tools\TFSConfig.exe Collection /delete /CollectionName:"newTestCollection"
 
-            List<TeamCollection> collections = _tfsController.GetTeamCollections();
+            List<TeamCollection> collections = _projectsController.GetTeamCollections();
             Assert.IsNotNull(collections);
 
-            TeamCollection teamCollection = _tfsController.CreateTeamCollection(Properties.Settings.Default.TestCollectionName);
+            TeamCollection teamCollection = _projectsController.CreateTeamCollection(Properties.Settings.Default.TestCollectionName);
             Assert.IsNotNull(teamCollection);
             Assert.IsFalse(String.IsNullOrEmpty(teamCollection.Name));
             Assert.AreNotEqual(new Guid(), teamCollection.Guid);
@@ -178,13 +185,13 @@ namespace SoftwareForge.TfsService.UnitTests
             Assert.AreEqual(0, teamCollection.Projects.Count);
 
             int expectedCollectionsCount = collections.Count + 1;
-            collections = _tfsController.GetTeamCollections();
+            collections = _projectsController.GetTeamCollections();
             Assert.AreEqual(expectedCollectionsCount, collections.Count);
             
-            _tfsController.RemoveTeamCollection(teamCollection.Guid);
+            _projectsController.RemoveTeamCollection(teamCollection.Guid);
           
             expectedCollectionsCount = expectedCollectionsCount - 1;
-            collections = _tfsController.GetTeamCollections();
+            collections = _projectsController.GetTeamCollections();
             Assert.AreEqual(expectedCollectionsCount, collections.Count);
         }
 
@@ -195,11 +202,11 @@ namespace SoftwareForge.TfsService.UnitTests
         [TestMethod]
         public void TestGetTemplatesInCollection()
         {
-            List<TeamCollection> collections = _tfsController.GetTeamCollections();
+            List<TeamCollection> collections = _projectsController.GetTeamCollections();
             
             foreach (var teamCollection in collections)
             {
-                List<String> results = _tfsController.GetTemplatesInCollection(teamCollection.Guid);
+                List<String> results = _projectsController.GetTemplatesInCollection(teamCollection.Guid);
                 Assert.IsNotNull(results);
             }
         }
@@ -211,7 +218,7 @@ namespace SoftwareForge.TfsService.UnitTests
         [TestMethod]
         public void TestCreateTeamProjectInTeamCollection()
         {
-            List<TeamCollection> collections = _tfsController.GetTeamCollections();
+            List<TeamCollection> collections = _projectsController.GetTeamCollections();
             Assert.IsNotNull(collections);
 
             String testCollectionName = Properties.Settings.Default.TestCollectionName;
@@ -221,7 +228,7 @@ namespace SoftwareForge.TfsService.UnitTests
             if (collections.Any(a => a.Name == testCollectionName))
                 teamCollection = collections.Find(a => a.Name == testCollectionName);
             else
-                teamCollection = _tfsController.CreateTeamCollection(testCollectionName);
+                teamCollection = _projectsController.CreateTeamCollection(testCollectionName);
 
 
             Assert.IsNotNull(teamCollection);
@@ -229,12 +236,12 @@ namespace SoftwareForge.TfsService.UnitTests
             Assert.AreNotEqual(new Guid(), teamCollection.Guid);
             Assert.IsNotNull(teamCollection.Projects);
 
-            List<String> templates = _tfsController.GetTemplatesInCollection(teamCollection.Guid);
+            List<String> templates = _projectsController.GetTemplatesInCollection(teamCollection.Guid);
             Assert.IsNotNull(templates);
             Assert.IsTrue(templates.Count > 0);
-            _tfsController.CreateTeamProjectInTeamCollection(teamCollection.Guid, testProjectName, testProjectName, "Description", ProjectType.Application, templates[0]);
+            _projectsController.CreateTeamProjectInTeamCollection(teamCollection.Guid, testProjectName, testProjectName, "Description", ProjectType.Application, templates[0]);
             
-            _tfsController.RemoveTeamCollection(teamCollection.Guid);
+            _projectsController.RemoveTeamCollection(teamCollection.Guid);
         }
 
 
@@ -242,7 +249,7 @@ namespace SoftwareForge.TfsService.UnitTests
         [TestMethod]
         public void TestGetTfsProjectUserList()
         {
-            List<ProjectUser> list = _tfsController.GetTfsProjectUserList();
+            List<ProjectUser> list = _projectsController.GetTfsProjectUserList();
             Assert.IsNotNull(list);
         }
 
