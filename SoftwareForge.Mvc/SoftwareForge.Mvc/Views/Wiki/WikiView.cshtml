@@ -1,0 +1,14 @@
+﻿
+@model  List<SoftwareForge.Common.Models.WikiModel>
+@{
+    
+}
+
+<h2>Project Wiki</h2>
+
+<p>@Html.ActionLink("[Project Details]", "ProjectDetailsPage", "TeamProjects", new { guid = Model.ProjectGuid }, null) -  
+    @Html.ActionLink("[Code View]", "CodeView", "TeamProjects", new {guid = Model.ProjectGuid}, null) - 
+    @Html.ActionLink("[Bug View]", "WorkItemsView", "TeamProjects", new { guid = Model.ProjectGuid }, null)
+    - Wiki View
+</p>
+ @Html.ActionLink("[Create Entry]", "CreateWikiEntry", "Wiki",new {guid=Model.ProjectGuid},null)<br/>

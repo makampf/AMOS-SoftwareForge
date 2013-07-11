@@ -43,6 +43,7 @@
     <Compile Include="ProjectsDao.cs" />
     <Compile Include="SoftwareForgeDbContext.cs" />
     <Compile Include="TfsDbController.cs" />
+    <Compile Include="WikiDao.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="EntityFramework">

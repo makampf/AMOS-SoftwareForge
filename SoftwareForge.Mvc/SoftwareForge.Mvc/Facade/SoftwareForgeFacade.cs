@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net.Mime;
 using SoftwareForge.Common.Models;
 using SoftwareForge.Common.Models.Requests;
 using SoftwareForge.DbService;
@@ -313,7 +314,6 @@ namespace SoftwareForge.Mvc.Facade
             return MessageDao.GetMessagesOfUser(ProjectMembershipDao.GetUser(userName));
         }
 
-
         /// <summary>
         /// Lists the InvitationRequests of a user
         /// </summary>
@@ -404,15 +404,48 @@ namespace SoftwareForge.Mvc.Facade
             }
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
         public List<WorkItem> GetWorkItems(Guid guid)
         {
             return BugController.GetBugWorkItems(guid);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="workItem"></param>
         public void CreateBug(WorkItem workItem)
         {
             BugController.CreateBug(workItem.TeamProjectGuid, workItem, new Dictionary<string, string>(), System.Web.HttpContext.Current.User.Identity.Name);
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projectGuid"></param>
+        /// <returns></returns>
+        public List<WikiModel> GetEntriesOfProject(Guid projectGuid)
+        {
+            return WikiDao.GetEntriesForProject(projectGuid);
+        }
+
+        public WikiModel GetEntry(int id)
+        {
+            return WikiDao.GetEntry(id);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        public void CreateEntry(WikiModel model)
+        {
+            WikiDao.AddEntry(model);
         }
     }
 }
