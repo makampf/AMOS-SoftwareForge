@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Net.Mime;
 using SoftwareForge.Common.Models;
 using SoftwareForge.Common.Models.Requests;
@@ -418,18 +419,19 @@ namespace SoftwareForge.Mvc.Facade
         /// </summary>
         /// <param name="serverPath">the serverPath</param>
         /// <param name="teamProjectGuid">the guid of the project</param>
-        /// <returns>the content as a list of lines</returns>
-        public List<string> GetFileContent(string serverPath, Guid teamProjectGuid)
+        /// <returns>the content as a array of lines</returns>
+        public String[] GetFileContent(string serverPath, Guid teamProjectGuid)
         {
-            string localTempFile = CodeViewController.DownloadFile(teamProjectGuid, serverPath);
+            string content = CodeViewController.DownloadFile(teamProjectGuid, serverPath);
             try
             {
-                return new FileTypeReader().GetFilesFromPath(localTempFile);
+                string fileName = Path.GetFileName(serverPath);
+                return new FileTypeReader().GetFilesFromPath(fileName, content);
 
             }
             catch
             {
-                return new List<string>{"Can not show " + serverPath,"It seems to be a binary file!"};
+                return new[] {"Can not show " + serverPath, "It seems to be a binary file!"};
             }
         }
 

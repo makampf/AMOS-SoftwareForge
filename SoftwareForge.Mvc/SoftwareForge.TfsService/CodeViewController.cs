@@ -128,17 +128,27 @@ namespace SoftwareForge.TfsService
         /// </summary>
         /// <param name="teamProjectGuid">the guid of the project</param>
         /// <param name="serverPath">the serverpath</param>
-        /// <returns>a string with the local filename</returns>
+        /// <returns>the file content as string</returns>
         public string DownloadFile(Guid teamProjectGuid, string serverPath)
         {
-            string fileName = Path.GetFileName(serverPath);
-            string localFileName = "C:\\MVCCache\\" + fileName;
             Project project = ProjectsDao.Get(teamProjectGuid);
             VersionControlServer versionControlServer =
                 TfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid).
                                         GetService<VersionControlServer>();
-            versionControlServer.DownloadFile(serverPath, localFileName);
-            return localFileName;
+
+            Item item = versionControlServer.GetItem(serverPath);
+
+            String content = null;
+            if (item.ItemType == ItemType.File)
+            {
+                using (Stream stream = item.DownloadFile())
+                {
+                    TextReader reader = new StreamReader(stream);
+                    content = reader.ReadToEnd();
+                }
+            }
+
+            return content;
         }
     }
 
