@@ -261,6 +261,7 @@
     <Content Include="Views\Shared\UserPartial.cshtml" />
     <Content Include="Views\TeamProjects\WorkItemsView.cshtml" />
     <Content Include="Views\TeamProjects\CreateBug.cshtml" />
+    <Content Include="Views\TeamProjects\ForkProject.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

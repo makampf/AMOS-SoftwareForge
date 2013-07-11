@@ -39,8 +39,7 @@ namespace SoftwareForge.Mvc.Controllers
         /// <returns>A CreateProject View</returns>
         public ActionResult CreateProject(Guid teamCollectionGuid)
         {
-            SelectListItem[] projectTypes = new[]
-            {
+            List<SelectListItem> projectTypes = new List<SelectListItem> {
                 new SelectListItem { Value = ProjectType.Application.ToString(), Text = ProjectType.Application.ToString() },
                 new SelectListItem { Value = ProjectType.Library.ToString(), Text =ProjectType.Library.ToString() },
                 new SelectListItem { Value = ProjectType.Nonsoftware.ToString(), Text = ProjectType.Nonsoftware.ToString() }
@@ -339,6 +338,38 @@ namespace SoftwareForge.Mvc.Controllers
 
             SoftwareForgeFacade.Client.CreateBug(workItem);
             return RedirectToAction("WorkItemsView", new {guid = workItem.TeamProjectGuid});
+        }
+
+        /// <summary>
+        /// Fork a project
+        /// </summary>
+        /// <param name="guid">project guid of the project to fork</param>
+        /// <returns>ForkProject View</returns>
+        public ActionResult ForkProject(Guid guid)
+        {
+            Project project = SoftwareForgeFacade.Client.GetTeamProject(guid);
+            List<SelectListItem> teamCollectionList = new List<SelectListItem>();
+
+            IEnumerable<TeamCollection> teamCollectionsList = SoftwareForgeFacade.Client.GetTeamCollections();
+            foreach (TeamCollection teamCollection in teamCollectionsList)
+            {
+                teamCollectionList.Add(new SelectListItem { Text = teamCollection.Name, Value = teamCollection.Guid.ToString()});
+            }
+            ViewData["TeamCollections"] = teamCollectionList;
+
+            return View(project);
+        }
+
+
+        /// <summary>
+        /// Forking Project After user confirms in the ForkProject view
+        /// </summary>
+        /// <param name="project">the new project</param>
+        /// <returns></returns>
+        public ActionResult PostForkProject(Project project)
+        {
+            SoftwareForgeFacade.Client.CreateProject(project, User.Identity.Name);
+            return RedirectToAction("Index", "Home");
         }
     }
 }
