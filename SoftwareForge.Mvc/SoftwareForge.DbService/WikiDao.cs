@@ -49,7 +49,7 @@ namespace SoftwareForge.DbService
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="wiki"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
         public static WikiModel GetEntry(int id)
         {

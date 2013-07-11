@@ -54,7 +54,7 @@ namespace SoftwareForge.Common.Models
         /// <summary>
         /// The project
         /// </summary>
-        [ForeignKey("Project"), Column(Order = 0)]
+        [ForeignKey("Project")]
         public Guid ProjectGuid { get; set; }
         public virtual Project Project { get; set; }
         

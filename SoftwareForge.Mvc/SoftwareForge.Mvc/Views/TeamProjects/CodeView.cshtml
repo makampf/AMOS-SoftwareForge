@@ -33,8 +33,11 @@
 
 
 <p>@Html.ActionLink("[Project Details]", "ProjectDetailsPage", "TeamProjects", new { guid = Model.ProjectGuid }, null) - Code View - 
-    @Html.ActionLink("[Bug View]", "WorkItemsView", "TeamProjects", new { guid = Model.ProjectGuid }, null)
+    @Html.ActionLink("[Bug View]", "WorkItemsView", "TeamProjects", new { guid = Model.ProjectGuid }, null) - 
+    @Html.ActionLink("[Wiki View]", "WikiView", "Wiki", new { guid = Model.ProjectGuid}, null)
+
 </p>
+
 
 
 

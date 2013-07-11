@@ -16,6 +16,7 @@
     <fieldset>
         <legend>Project</legend>
         
+        @Html.HiddenFor(model => model.ProjectGuid)
         @Html.HiddenFor(model => model.Id)
        
 
@@ -51,6 +52,6 @@
 
 <script type="text/javascript" >
     $("#submitbtn").click(function () {
-        window.loadingController.showLoadingLayer("Creating Bug...");
+        window.loadingController.showLoadingLayer("Creating Wiki entry...");
     });
 </script>

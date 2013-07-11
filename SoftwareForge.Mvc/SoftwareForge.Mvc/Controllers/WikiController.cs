@@ -28,15 +28,17 @@ namespace SoftwareForge.Mvc.Controllers
 {
     public class WikiController : Controller
     {
-       public ActionResult WikiView(WikiModel model)
+        public ActionResult WikiView(Guid guid)
        {
-           return View(SoftwareForgeFacade.Client.GetEntriesOfProject(model.ProjectGuid));
+           ViewBag.TeamProjectGuid = guid;
+           return View(SoftwareForgeFacade.Client.GetEntriesOfProject(guid));
        }
 
 
        public ActionResult CreateWikiEntry(Guid projectGuid)
        {
            WikiModel model = new WikiModel();
+           model.ProjectGuid = projectGuid;
 
            return View(model);
        }
@@ -48,7 +50,7 @@ namespace SoftwareForge.Mvc.Controllers
 
             SoftwareForgeFacade.Client.CreateEntry(model);
 
-            return RedirectToAction("WikiView");
+            return RedirectToAction("WikiView", new {guid = model.ProjectGuid});
         }
        
     }
