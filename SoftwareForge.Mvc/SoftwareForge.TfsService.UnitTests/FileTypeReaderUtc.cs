@@ -18,9 +18,6 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace SoftwareForge.TfsService.UnitTests
@@ -28,17 +25,12 @@ namespace SoftwareForge.TfsService.UnitTests
     [TestClass]
     public class FileTypeReaderUtc
     {
+
+        //TODO
         [TestMethod]
         public void TestGetFilesFromPath()
         {
-            FileTypeReader test = new FileTypeReader();
-            //string path = "C:\\Users\\Administrator\\Desktop\\AMOS-SoftwareForge\\SoftwareForge.Mvc\\SoftwareForge.TfsService.UnitTests\\Files\\test.html";
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files\\test.html");
-            test.GetFilesFromPath(path);
-            List<string> expectedFileContent = new List<string> { "test", "test123", "blatest" };
-            List<string> actual = test.GetFilesFromPath(path);
-            CollectionAssert.AreEqual(expectedFileContent, actual);
-
+            
         }
     }
 }

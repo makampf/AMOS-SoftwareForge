@@ -42,14 +42,17 @@
                 <div class="float-left">
                     <p class="site-title">@Html.ActionLink("Software Forge", "Index", "Home")</p>
                 </div>
+
+
                 <div class="float-right">
                     <section id="login">
-                       Hello <span class="username">@User.Identity.Name</span>!
+                        Hello <span class="username">@User.Identity.Name</span>!
                     </section>
                     <nav>
                         <ul id="menu">
                             <li>@Html.ActionLink("Dashboard", "Index", "Dashboard")</li>
                             <li>@Html.ActionLink("All projects", "Index", "Home")</li>
+                            <li>@Html.Partial("SearchPartial")</li>
                         </ul>
                     </nav>
                 </div>

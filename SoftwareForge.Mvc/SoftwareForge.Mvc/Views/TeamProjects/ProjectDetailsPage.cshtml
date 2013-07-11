@@ -34,7 +34,10 @@
     <b>@Model.Name</b>
     @if (@Model.Users.Any(t => (t.User.Username.Equals(User.Identity.Name)) && (t.UserRole == UserRole.ProjectOwner))){
      
-        @Html.ActionLink("[Rename]", "RenameProjectPage", "TeamProjects",new {guid=Model.Guid},null)<br/>}
+        @Html.ActionLink("[Rename]", "RenameProjectPage", "TeamProjects",new {guid=Model.Guid},null)
+    }
+    @Html.ActionLink("[Fork project]", "ForkProject", "TeamProjects", new {guid = Model.Guid}, null)<br/>
+
     TFS-Project: @Model.TfsName
 
     <br/>
@@ -77,6 +80,7 @@
         @Html.ActionLink("[Invite a User]", "CreateInvitationRequest", "TeamProjects", new {guid = Model.Guid}, null)
     }
     <br/>
+    
 
     @if (projectOwners.Any())
     {

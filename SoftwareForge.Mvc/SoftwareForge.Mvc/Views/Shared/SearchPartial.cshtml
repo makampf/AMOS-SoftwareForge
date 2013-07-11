@@ -17,17 +17,12 @@
  - License along with this program. If not, see
  - <http://www.gnu.org/licenses/>.
  -->
-@model string[]
-
-<div id="codePartial">
-    @if (Model.Length > 0)
-    {
-        <h5>Filecontent:</h5>
-    }
-    <code class="codeview">
-        @foreach (string line in Model)
-        {
-            <text>@line</text>
-        }
-    </code>
-</div>
+@using (Html.BeginForm("Search", "Home"))
+{
+    <fieldset>
+         Search: 
+        <span class="editor-field">
+            @Html.Editor("Search")
+        </span>
+    </fieldset>
+}

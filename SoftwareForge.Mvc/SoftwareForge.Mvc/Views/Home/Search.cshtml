@@ -17,17 +17,21 @@
  - License along with this program. If not, see
  - <http://www.gnu.org/licenses/>.
  -->
-@model string[]
+@using SoftwareForge.Common.Models
+@model IEnumerable<TeamCollection>
+@{
+    ViewBag.Title = "Search";
+}
+<h3>Searchresults</h3><br/>
 
-<div id="codePartial">
-    @if (Model.Length > 0)
-    {
-        <h5>Filecontent:</h5>
-    }
-    <code class="codeview">
-        @foreach (string line in Model)
+@foreach (TeamCollection teamCollection in Model)
+{
+    <h3>@teamCollection.Name</h3> 
+        foreach (Project project in teamCollection.Projects)
         {
-            <text>@line</text>
+  
+                @Html.Partial("ProjectPreviewPartial",project)
+
         }
-    </code>
-</div>
+    <br/>
+}

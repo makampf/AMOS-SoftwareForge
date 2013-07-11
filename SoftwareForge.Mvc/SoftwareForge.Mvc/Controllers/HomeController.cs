@@ -41,9 +41,10 @@ namespace SoftwareForge.Mvc.Controllers
         }
 
 
-
-
-
-        
+        public ActionResult Search(string search ="")
+        {
+            IEnumerable<TeamCollection> teamCollections = SoftwareForgeFacade.Client.GetTeamCollections(search);
+            return View(teamCollections);
+        }
     }
 }
