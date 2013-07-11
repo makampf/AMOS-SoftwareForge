@@ -25,6 +25,9 @@ using System.Web.Mvc;
 using SoftwareForge.Common.Models;
 using SoftwareForge.Mvc.Facade;
 using SoftwareForge.Mvc.Models;
+using Project = SoftwareForge.Common.Models.Project;
+using WorkItem = SoftwareForge.Common.Models.WorkItem;
+using Wiki = SoftwareForge.Common.Models.WikiModel;
 
 namespace SoftwareForge.Mvc.Controllers
 {
@@ -37,8 +40,7 @@ namespace SoftwareForge.Mvc.Controllers
         /// <returns>A CreateProject View</returns>
         public ActionResult CreateProject(Guid teamCollectionGuid)
         {
-            SelectListItem[] projectTypes = new[]
-            {
+            List<SelectListItem> projectTypes = new List<SelectListItem> {
                 new SelectListItem { Value = ProjectType.Application.ToString(), Text = ProjectType.Application.ToString() },
                 new SelectListItem { Value = ProjectType.Library.ToString(), Text =ProjectType.Library.ToString() },
                 new SelectListItem { Value = ProjectType.Nonsoftware.ToString(), Text = ProjectType.Nonsoftware.ToString() }
@@ -253,7 +255,7 @@ namespace SoftwareForge.Mvc.Controllers
         public ActionResult CodeView(Guid guid, string branch = null)
         {
             List<string> branchList = SoftwareForgeFacade.Client.GetBranches(guid);
-            List<CompositeItem> files = new List<CompositeItem>();
+            List<CompositeItem> files;
 
             if (branch == null && branchList.Count > 0) branch = branchList[0];
 
@@ -281,26 +283,96 @@ namespace SoftwareForge.Mvc.Controllers
         }
 
         /// <summary>
+        /// Show the WorkItems for a project
+        /// </summary>
+        /// <param name="guid">the project guid</param>
+        /// <returns>A WorkItems view</returns>
+        public ActionResult WorkItemsView(Guid guid)
+        {
+            List<WorkItem> workItems = SoftwareForgeFacade.Client.GetWorkItems(guid);
+            WorkItemsViewModel project = new WorkItemsViewModel
+                {
+                    ProjectGuid = guid,
+                    WorkItems = workItems
+                };
+            return View(project);
+        }
+
+        /// <summary>
         /// Change the choosen Branch
         /// </summary>
-        /// <param name="branch"></param>
-        /// <param name="guid"></param>
-        /// <returns></returns>
+        /// <param name="branch">the branch choosen</param>
+        /// <param name="guid">the project guid</param>
+        /// <returns>Returns to CodeView with changed branch selection</returns>
         public ActionResult BranchChoosen(string branch, string guid)
         {
             return RedirectToAction("CodeView", new {guid, branch});
         }
 
         /// <summary>
-        /// Change the choosen Branch
+        /// Return the Codepartial
         /// </summary>
-        /// <param name="branch"></param>
-        /// <param name="guid"></param>
-        /// <returns></returns>
+        /// <param name="filePath">file to load for codepartial</param>
+        /// <param name="guid">the project guid</param>
+        /// <returns>a partialview with the file contents</returns>
         public ActionResult CodePartial(string filePath, string guid)
         {
             return PartialView(SoftwareForgeFacade.Client.GetFileContent(filePath,new Guid(guid)));
         }
+
+
+
+        /// <summary>
+        /// Create a new bug
+        /// </summary>
+        /// <param name="guid">the guid of the project</param>
+        /// <returns>A CreateBug View</returns>
+        public ActionResult CreateBug(Guid guid)
+        {
+            return View(new WorkItem {TeamProjectGuid = guid});
+        }
+
+        public ActionResult PostCreateBug(WorkItem workItem)
+        {
+            if (string.IsNullOrEmpty(workItem.Title))
+                throw new Exception("Titel must not be empty");
+
+            SoftwareForgeFacade.Client.CreateBug(workItem);
+            return RedirectToAction("WorkItemsView", new {guid = workItem.TeamProjectGuid});
+        }
+
+        /// <summary>
+        /// Fork a project
+        /// </summary>
+        /// <param name="guid">project guid of the project to fork</param>
+        /// <returns>ForkProject View</returns>
+        public ActionResult ForkProject(Guid guid)
+        {
+            Project project = SoftwareForgeFacade.Client.GetTeamProject(guid);
+            List<SelectListItem> teamCollectionList = new List<SelectListItem>();
+
+            IEnumerable<TeamCollection> teamCollectionsList = SoftwareForgeFacade.Client.GetTeamCollections();
+            foreach (TeamCollection teamCollection in teamCollectionsList)
+            {
+                teamCollectionList.Add(new SelectListItem { Text = teamCollection.Name, Value = teamCollection.Guid.ToString()});
+            }
+            ViewData["TeamCollections"] = teamCollectionList;
+
+            return View(project);
+        }
+
+
+        /// <summary>
+        /// Forking Project After user confirms in the ForkProject view
+        /// </summary>
+        /// <param name="project">the new project</param>
+        /// <returns></returns>
+        public ActionResult PostForkProject(Project project)
+        {
+            SoftwareForgeFacade.Client.CreateProject(project, User.Identity.Name);
+            return RedirectToAction("Index", "Home");
+        }
+
 
     }
 }

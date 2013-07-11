@@ -65,35 +65,18 @@ namespace SoftwareForge.TfsService
         /// Reads a file line by line 
         /// </summary>
         /// <param name="path">file path</param>
+        /// <param name="content">file content</param>
         /// <returns>a list of strings which each includes a line</returns>
-        public List<string> GetFilesFromPath(string path)
+        public String[] GetFilesFromPath(string path, String content)
         {
-            if (File.Exists(path))
+            if (CheckifFileisBinary(path))
             {
+                if (content.Contains("\0\0"))
+                    throw new Exception(path + " seems to be a binary file. Found 2 consecutive \0\0");
 
-                if (CheckifFileisBinary(path))
-                {
-                    FileStream open = new FileStream(path, FileMode.Open, FileAccess.Read);
-                    StreamReader reader = new StreamReader(open);
-                    List<string> list = new List<string>();
-                    string line;
-
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        if (line.Contains("\0\0"))
-                            throw new Exception(path + " seems to be a binary file. Found 2 consecutive \0\0");
-
-                        list.Add(line);
-                    }
-                    open.Close();
-                    reader.Close();
-                    return list;
-
-                }
-                throw new Exception(path + " seems to be a binary file. Found this file extension on the blacklist");
+                return content.Split('\n');
             }
-            throw new Exception(path + " seems to be not existing");
+            throw new Exception(path + " seems to be a binary file. Found this file extension on the blacklist");
         }
-        
     }
 }

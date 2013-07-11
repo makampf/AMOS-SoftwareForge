@@ -18,33 +18,40 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-using SoftwareForge.Common.Models;
+using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
+using SoftwareForge.Common.Models;
 using SoftwareForge.Mvc.Facade;
 
 namespace SoftwareForge.Mvc.Controllers
 {
-    /// <summary>
-    /// Controller for home view.
-    /// </summary>
-    public class HomeController : Controller
+    public class WikiController : Controller
     {
-        /// <summary>
-        /// GET: /Home.
-        /// </summary>
-        /// <returns>Home view with teamcollections.</returns>
-        public ActionResult Index()
-        {
-            IEnumerable<TeamCollection> teamCollections = SoftwareForgeFacade.Client.GetTeamCollections();
-            return View(teamCollections);
-        }
+        public ActionResult WikiView(Guid guid)
+       {
+           ViewBag.TeamProjectGuid = guid;
+           return View(SoftwareForgeFacade.Client.GetEntriesOfProject(guid));
+       }
 
 
-        public ActionResult Search(string search ="")
+       public ActionResult CreateWikiEntry(Guid projectGuid)
+       {
+           WikiModel model = new WikiModel();
+           model.ProjectGuid = projectGuid;
+
+           return View(model);
+       }
+
+        public ActionResult PostCreateWikiEntry(WikiModel model)
         {
-            IEnumerable<TeamCollection> teamCollections = SoftwareForgeFacade.Client.GetTeamCollections(search);
-            return View(teamCollections);
+            if (string.IsNullOrEmpty(model.Title))
+                throw new Exception("Titel must not be empty");
+
+            SoftwareForgeFacade.Client.CreateEntry(model);
+
+            return RedirectToAction("WikiView", new {guid = model.ProjectGuid});
         }
+       
     }
 }

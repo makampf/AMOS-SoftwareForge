@@ -18,33 +18,26 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-using SoftwareForge.Common.Models;
-using System.Collections.Generic;
-using System.Web.Mvc;
-using SoftwareForge.Mvc.Facade;
+using System;
 
-namespace SoftwareForge.Mvc.Controllers
+namespace SoftwareForge.Common.Models
 {
-    /// <summary>
-    /// Controller for home view.
-    /// </summary>
-    public class HomeController : Controller
+    public class WorkItem
     {
-        /// <summary>
-        /// GET: /Home.
-        /// </summary>
-        /// <returns>Home view with teamcollections.</returns>
-        public ActionResult Index()
-        {
-            IEnumerable<TeamCollection> teamCollections = SoftwareForgeFacade.Client.GetTeamCollections();
-            return View(teamCollections);
-        }
+        public int Id { get; set; }
+        public Guid TeamProjectGuid { get; set; }
 
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string State { get; set; }
 
-        public ActionResult Search(string search ="")
-        {
-            IEnumerable<TeamCollection> teamCollections = SoftwareForgeFacade.Client.GetTeamCollections(search);
-            return View(teamCollections);
-        }
+        public string Iteration { get; set; }
+        public string Area { get; set; }
+
+        public string AssignedTo { get; set; }
+
+        public string StoryPoints { get; set; }
+
+        public string Severity { get; set; }
     }
 }

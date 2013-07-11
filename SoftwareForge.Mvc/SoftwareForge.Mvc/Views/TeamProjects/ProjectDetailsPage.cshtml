@@ -21,17 +21,23 @@
 @using SoftwareForge.Common.Models
 @model Project
 @{
-    IEnumerable<ProjectMember> projectOwners = Model.Users.Where(t => t.UserRole == UserRole.ProjectOwner);
-    IEnumerable<ProjectMember> contributors = Model.Users.Where(t => t.UserRole == UserRole.Contributor);
-   
+    List<ProjectMember> projectOwners = Model.Users.Where(t => t.UserRole == UserRole.ProjectOwner).ToList();
+    List<ProjectMember> contributors = Model.Users.Where(t => t.UserRole == UserRole.Contributor).ToList();
+    ProjectMember user = @Model.Users.SingleOrDefault(t => t.User.Username.Equals(User.Identity.Name));
+    bool isUserMember = user != null;
+    
     }
-<p>Project Details - @Html.ActionLink("[Code View]", "CodeView", "TeamProjects", new {guid = Model.Guid}, null)</p>
+<p>Project Details - @Html.ActionLink("[Code View]", "CodeView", "TeamProjects", new {guid = Model.Guid}, null) -  @Html.ActionLink("[Bug View]", "WorkItemsView", "TeamProjects", new { guid = Model.Guid }, null) - 
+    @Html.ActionLink("[Wiki View]", "WikiView", "Wiki", new { guid = Model.Guid }, null)</p>
+
 <p>
     <b>@Model.Name</b>
     @if (@Model.Users.Any(t => (t.User.Username.Equals(User.Identity.Name)) && (t.UserRole == UserRole.ProjectOwner))){
      
-        @Html.ActionLink("[Rename]", "RenameProjectPage", "TeamProjects",new {guid=Model.Guid},null)<br/>
+        @Html.ActionLink("[Rename]", "RenameProjectPage", "TeamProjects",new {guid=Model.Guid},null)
     }
+    @Html.ActionLink("[Fork project]", "ForkProject", "TeamProjects", new {guid = Model.Guid}, null)<br/>
+
     TFS-Project: @Model.TfsName
 
     <br/>
@@ -40,16 +46,16 @@
     
 
     
-    @if (@Model.Users.Any(t => t.User.Username.Equals(User.Identity.Name)))
+    @if (isUserMember)
     {
-        
-        if (@Model.Users.Any(t => (t.User.Username.Equals(User.Identity.Name)) && (t.UserRole == UserRole.Contributor)))
+
+        if (user.UserRole == UserRole.Contributor)
          {
              @Html.ActionLink("[Leave as Contributor]", "LeaveProject", "TeamProjects", new {projectGuid = Model.Guid, username = User.Identity.Name, role = UserRole.Contributor}, null)
          }
-         else if (@Model.Users.Any(t => (t.User.Username.Equals(User.Identity.Name)) && (t.UserRole == UserRole.ProjectOwner)))
+         else if (user.UserRole == UserRole.ProjectOwner)
          {
-             if ((@Model.Users.Where(u => (u.UserRole == UserRole.ProjectOwner))).Count() > 1)
+             if (projectOwners.Count() > 1)
              {
                  @Html.ActionLink("[Leave as Owner]", "LeaveProject", "TeamProjects", new {projectGuid = Model.Guid, username = User.Identity.Name, role = UserRole.ProjectOwner}, null)
              }
@@ -65,40 +71,35 @@
         }
     
 
-    @{
-        ProjectMember user = Model.Users.SingleOrDefault(u => u.User.Username == User.Identity.Name);
-        if ((user == null) || user.UserRole != UserRole.ProjectOwner)
-        {
-            @Html.ActionLink("[Create join request]", "CreateProjectJoinRequest", "TeamProjects", new {guid = Model.Guid}, null)
-        }
+    @if (!isUserMember || user.UserRole != UserRole.ProjectOwner)
+    {
+        @Html.ActionLink("[Create join request]", "CreateProjectJoinRequest", "TeamProjects", new {guid = Model.Guid}, null)
     }
-    @{
-        if ((user != null) && (user.UserRole == UserRole.ProjectOwner))
-        {
-            @Html.ActionLink("[Invite a User]", "CreateInvitationRequest", "TeamProjects", new {guid = Model.Guid}, null)
-        }
+    @if (isUserMember && (user.UserRole == UserRole.ProjectOwner))
+    {
+        @Html.ActionLink("[Invite a User]", "CreateInvitationRequest", "TeamProjects", new {guid = Model.Guid}, null)
     }
-
     <br/>
+    
+
     @if (projectOwners.Any())
     {
-        <b>ProjectOwner:</b>
-        <ul>
-            @foreach (ProjectMember projectMember in projectOwners)
-            {
-                <li>@projectMember.User.Username</li>
-            }
-        </ul>
+        <b class="clear-fix">ProjectOwner:</b>
+        foreach (ProjectMember projectMember in projectOwners)
+        {
+            @Html.Partial("UserPartial", projectMember);
         }
+        <span class="clear-fix"></span>
+    }
+        
     @if (contributors.Any())
     {
-        <b>Contributor:</b>
-        <ul>
-        @foreach (ProjectMember projectMember in contributors)
+        <b class="clear-fix">Contributor:</b>
+        foreach (ProjectMember projectMember in contributors)
         {
-            <li>@projectMember.User.Username</li>
+            @Html.Partial("UserPartial", projectMember);
         }
-        </ul>
+        <span class="clear-fix"></span>
     }
 
 </p>

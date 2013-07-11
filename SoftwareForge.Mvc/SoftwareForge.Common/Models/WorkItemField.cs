@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 by Denis Bach, Marvin Kampf, Konstantin Tsysin, Taner Tunc, Florian Wittmann
+ * Copyright (c) 2013 by Denis Bach, Konstantin Tsysin, Taner Tunc, Marvin Kampf, Florian Wittmann
  *
  * This file is part of the Software Forge Overlay rating application.
  *
@@ -18,19 +18,18 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 
-namespace SoftwareForge.TfsService.UnitTests
+namespace SoftwareForge.Common.Models
 {
-    [TestClass]
-    public class FileTypeReaderUtc
+    public class WorkItemField
     {
-
-        //TODO
-        [TestMethod]
-        public void TestGetFilesFromPath()
-        {
-            
-        }
+        public int Id { get; set; }
+        public List<string> AllowedValues = new List<string>();
+        public string FieldType { get; set; }
+        public bool IsCoreField { get; set; }
+        public bool IsUserNameField { get; set; }
+        public bool IsEditable { get; set; }
+        public string Name{ get; set; }
     }
 }

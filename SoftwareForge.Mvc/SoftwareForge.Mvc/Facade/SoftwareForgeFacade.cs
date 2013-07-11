@@ -20,10 +20,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.IO;
+using System.Net.Mime;
 using SoftwareForge.Common.Models;
 using SoftwareForge.Common.Models.Requests;
 using SoftwareForge.DbService;
 using SoftwareForge.TfsService;
+using Project = SoftwareForge.Common.Models.Project;
 
 namespace SoftwareForge.Mvc.Facade
 {
@@ -32,33 +36,38 @@ namespace SoftwareForge.Mvc.Facade
     /// </summary>
     public class SoftwareForgeFacade
     {
-
-
+        
         public static SoftwareForgeFacade Client
         {
-            get
-            {
-                if (_facade == null)
-                {
-                    _facade = new SoftwareForgeFacade();
-                    
-                }
-                return _facade;
-            }
+            get { return _facade ?? (_facade = new SoftwareForgeFacade()); }
         }
         private static SoftwareForgeFacade _facade;
 
+        private readonly ProjectsController _projectsController;
+        ProjectsController ProjectsController
+        {
+            get { return _projectsController; }
+        }
 
-        private readonly TfsController _tfsController;
+
+        private readonly CodeViewController _codeViewController;
+        CodeViewController CodeViewController
+        {
+            get { return _codeViewController; }
+        }
+
+        private readonly BugController _bugController;
+        BugController BugController
+        {
+            get { return _bugController; }
+        }
+
 
         public SoftwareForgeFacade()
         {
-            _tfsController = new TfsController(new Uri(Properties.Settings.Default.TfsServerUri), Properties.Settings.Default.DbConnectionString);
-        }
-
-        TfsController TfsController
-        {
-            get { return _tfsController; }
+            _projectsController = new ProjectsController(new Uri(Properties.Settings.Default.TfsServerUri), Properties.Settings.Default.DbConnectionString);
+            _codeViewController = new CodeViewController(new Uri(Properties.Settings.Default.TfsServerUri), Properties.Settings.Default.DbConnectionString);
+            _bugController = new BugController(new Uri(Properties.Settings.Default.TfsServerUri), Properties.Settings.Default.DbConnectionString);
         }
    
         /// <summary>
@@ -67,7 +76,40 @@ namespace SoftwareForge.Mvc.Facade
         /// <returns>all Team Collections</returns>
         public IEnumerable<TeamCollection> GetTeamCollections()
         {
-            return TfsController.GetTeamCollections();
+            List<TeamCollection> teamCollections =  ProjectsController.GetTeamCollections();
+            foreach (TeamCollection teamCollection in teamCollections)
+            {
+                teamCollection.Projects = ProjectsController.GetTeamProjectsOfTeamCollection(teamCollection.Guid);
+            }
+            return teamCollections;
+        }
+
+        /// <summary>
+        /// Shows already created Team Collections.
+        /// </summary>
+        /// <returns>all Team Collections</returns>
+        public IEnumerable<TeamCollection> GetTeamCollections(string searchFilter)
+        {
+            if (searchFilter == null)
+            {
+                searchFilter = "";
+            }
+            List<TeamCollection> teamCollections = ProjectsController.GetTeamCollections();
+            List<TeamCollection> filteredTeamCollections = new List<TeamCollection>();
+            foreach (TeamCollection teamCollection in teamCollections)
+            {
+                teamCollection.Projects = ProjectsController.GetTeamProjectsOfTeamCollection(teamCollection.Guid);
+                if (!String.IsNullOrWhiteSpace(searchFilter))
+                {
+                    teamCollection.Projects = teamCollection.Projects.Where(t => t.Name.ToLower().Contains(searchFilter.ToLower()) ||
+                        t.Guid.ToString().Equals(searchFilter) || t.TfsName.ToLower().Contains(searchFilter.ToLower())).ToList();
+                }
+                if (teamCollection.Projects.Any() || teamCollection.Name.ToLower().Contains(searchFilter.ToLower()))
+                {
+                    filteredTeamCollections.Add(teamCollection);
+                }
+            }
+            return filteredTeamCollections;
         }
 
         /// <summary>
@@ -77,7 +119,7 @@ namespace SoftwareForge.Mvc.Facade
         /// <returns>The created Team Collection</returns>
         public TeamCollection CreateTeamCollection(string name)
         {
-            return TfsController.CreateTeamCollection(name);
+            return ProjectsController.CreateTeamCollection(name);
         }
 
 
@@ -105,7 +147,7 @@ namespace SoftwareForge.Mvc.Facade
 
         public Project CreateProject(Project project, String username)
         {
-            List<String> templates = TfsController.GetTemplatesInCollection(project.TeamCollectionGuid);
+            List<String> templates = ProjectsController.GetTemplatesInCollection(project.TeamCollectionGuid);
             if (templates.Count < 1)
                 throw new ArgumentException("The project given is in a collection that has no templates! ");
 
@@ -114,7 +156,7 @@ namespace SoftwareForge.Mvc.Facade
                 throw new ArgumentException("Tfs Name and Project Name must not be empty");
             }
       
-            Project createdProject = TfsController.CreateTeamProjectInTeamCollection(project.TeamCollectionGuid, project.Name, project.TfsName, project.Description, project.ProjectType, templates[0]);
+            Project createdProject = ProjectsController.CreateTeamProjectInTeamCollection(project.TeamCollectionGuid, project.Name, project.TfsName, project.Description, project.ProjectType, templates[0]);
             ProjectsDao.ProcessMembershipRequest(new ProjectMembershipRequestModel { ProjectGuid = createdProject.Guid, Username = username, UserRole = UserRole.ProjectOwner });
             return createdProject;
         }
@@ -302,7 +344,6 @@ namespace SoftwareForge.Mvc.Facade
             return MessageDao.GetMessagesOfUser(ProjectMembershipDao.GetUser(userName));
         }
 
-
         /// <summary>
         /// Lists the InvitationRequests of a user
         /// </summary>
@@ -357,7 +398,7 @@ namespace SoftwareForge.Mvc.Facade
         /// <returns>a list of branches</returns>
         public List<string> GetBranches(Guid teamProjectGuid)
         {
-            return TfsController.GetBranches(teamProjectGuid);
+            return CodeViewController.GetBranches(teamProjectGuid);
         }
 
         /// <summary>
@@ -368,7 +409,7 @@ namespace SoftwareForge.Mvc.Facade
         /// <returns>a list of files</returns>
         public List<CompositeItem> GetFiles(Guid teamProjectGuid, string path)
         {
-            return TfsController.GetFiles(teamProjectGuid, path);
+            return CodeViewController.GetFiles(teamProjectGuid, path);
         }
 
 
@@ -378,21 +419,64 @@ namespace SoftwareForge.Mvc.Facade
         /// </summary>
         /// <param name="serverPath">the serverPath</param>
         /// <param name="teamProjectGuid">the guid of the project</param>
-        /// <returns>the content as a list of lines</returns>
-        public List<string> GetFileContent(string serverPath, Guid teamProjectGuid)
+        /// <returns>the content as a array of lines</returns>
+        public String[] GetFileContent(string serverPath, Guid teamProjectGuid)
         {
-            string localTempFile = TfsController.DownloadFile(teamProjectGuid, serverPath);
+            string content = CodeViewController.DownloadFile(teamProjectGuid, serverPath);
             try
             {
-                return new FileTypeReader().GetFilesFromPath(localTempFile);
+                string fileName = Path.GetFileName(serverPath);
+                return new FileTypeReader().GetFilesFromPath(fileName, content);
 
             }
             catch
             {
-                return new List<string>{"Can not show " + serverPath,"It seems to be a binary file!"};
+                return new[] {"Can not show " + serverPath, "It seems to be a binary file!"};
             }
         }
-   
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        public List<WorkItem> GetWorkItems(Guid guid)
+        {
+            return BugController.GetBugWorkItems(guid);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="workItem"></param>
+        public void CreateBug(WorkItem workItem)
+        {
+            BugController.CreateBug(workItem.TeamProjectGuid, workItem, new Dictionary<string, string>(), System.Web.HttpContext.Current.User.Identity.Name);
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projectGuid"></param>
+        /// <returns></returns>
+        public List<WikiModel> GetEntriesOfProject(Guid projectGuid)
+        {
+            return WikiDao.GetEntriesForProject(projectGuid);
+        }
+
+        public WikiModel GetEntry(int id)
+        {
+            return WikiDao.GetEntry(id);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        public void CreateEntry(WikiModel model)
+        {
+            WikiDao.AddEntry(model);
+        }
     }
 }

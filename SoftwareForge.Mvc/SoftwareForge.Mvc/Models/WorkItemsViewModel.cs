@@ -17,34 +17,23 @@
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
-using SoftwareForge.Common.Models;
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Web.Mvc;
-using SoftwareForge.Mvc.Facade;
+using SoftwareForge.Common.Models;
 
-namespace SoftwareForge.Mvc.Controllers
+namespace SoftwareForge.Mvc.Models
 {
-    /// <summary>
-    /// Controller for home view.
-    /// </summary>
-    public class HomeController : Controller
+    public class WorkItemsViewModel
     {
         /// <summary>
-        /// GET: /Home.
+        /// The collection of workItems for the branch
         /// </summary>
-        /// <returns>Home view with teamcollections.</returns>
-        public ActionResult Index()
-        {
-            IEnumerable<TeamCollection> teamCollections = SoftwareForgeFacade.Client.GetTeamCollections();
-            return View(teamCollections);
-        }
+        public List<WorkItem> WorkItems { get; set; }
 
-
-        public ActionResult Search(string search ="")
-        {
-            IEnumerable<TeamCollection> teamCollections = SoftwareForgeFacade.Client.GetTeamCollections(search);
-            return View(teamCollections);
-        }
+        /// <summary>
+        /// The guid of the choosen project
+        /// </summary>
+        public Guid ProjectGuid { get; set; }
     }
 }

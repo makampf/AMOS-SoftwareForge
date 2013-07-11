@@ -40,7 +40,7 @@
             @Html.ValidationMessageFor(model => model.Name)
         </div>
         <p>
-            <input type="submit" value="Create" />
+            <input type="submit" id="submitbtn" value="Create" />
         </p>
     </fieldset>
 }
@@ -52,3 +52,9 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+
+<script type="text/javascript" >
+    $("#submitbtn").click(function () {
+        window.loadingController.showLoadingLayer("Creating TeamCollection...");
+    });
+</script>

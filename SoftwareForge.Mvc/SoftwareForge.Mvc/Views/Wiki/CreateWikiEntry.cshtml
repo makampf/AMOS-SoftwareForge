@@ -1,0 +1,57 @@
+﻿@model SoftwareForge.Common.Models.WikiModel
+
+@{
+    ViewBag.Title = "Create Wiki Entry";
+}
+
+<h2>Create Wiki Entry</h2>
+
+
+
+@using (Html.BeginForm("PostCreateWikiEntry", "Wiki"))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Project</legend>
+        
+        @Html.HiddenFor(model => model.ProjectGuid)
+        @Html.HiddenFor(model => model.Id)
+       
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Title)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Title)
+            @Html.ValidationMessageFor(model => model.Title)
+        </div>
+        
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Text)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Text)
+            @Html.ValidationMessageFor(model => model.Text)
+        </div>
+        <p>
+            <input type="submit" id="submitbtn" value="Create" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List","WikiView","Wiki")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")   
+}
+
+
+<script type="text/javascript" >
+    $("#submitbtn").click(function () {
+        window.loadingController.showLoadingLayer("Creating Wiki entry...");
+    });
+</script>
