@@ -27,6 +27,7 @@ using SoftwareForge.Mvc.Facade;
 using SoftwareForge.Mvc.Models;
 using Project = SoftwareForge.Common.Models.Project;
 using WorkItem = SoftwareForge.Common.Models.WorkItem;
+using Wiki = SoftwareForge.Common.Models.WikiModel;
 
 namespace SoftwareForge.Mvc.Controllers
 {
@@ -371,5 +372,7 @@ namespace SoftwareForge.Mvc.Controllers
             SoftwareForgeFacade.Client.CreateProject(project, User.Identity.Name);
             return RedirectToAction("Index", "Home");
         }
+
+
     }
 }

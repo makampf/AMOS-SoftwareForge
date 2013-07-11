@@ -27,7 +27,9 @@
     bool isUserMember = user != null;
     
     }
-<p>Project Details - @Html.ActionLink("[Code View]", "CodeView", "TeamProjects", new {guid = Model.Guid}, null) -  @Html.ActionLink("[Bug View]", "WorkItemsView", "TeamProjects", new { guid = Model.Guid }, null)</p>
+<p>Project Details - @Html.ActionLink("[Code View]", "CodeView", "TeamProjects", new {guid = Model.Guid}, null) -  @Html.ActionLink("[Bug View]", "WorkItemsView", "TeamProjects", new { guid = Model.Guid }, null) - 
+    @Html.ActionLink("[Wiki View]", "WikiView", "Wiki", new { guid = Model.Guid }, null)</p>
+
 <p>
     <b>@Model.Name</b>
     @if (@Model.Users.Any(t => (t.User.Username.Equals(User.Identity.Name)) && (t.UserRole == UserRole.ProjectOwner))){
@@ -46,6 +48,7 @@
     
     @if (isUserMember)
     {
+
         if (user.UserRole == UserRole.Contributor)
          {
              @Html.ActionLink("[Leave as Contributor]", "LeaveProject", "TeamProjects", new {projectGuid = Model.Guid, username = User.Identity.Name, role = UserRole.Contributor}, null)

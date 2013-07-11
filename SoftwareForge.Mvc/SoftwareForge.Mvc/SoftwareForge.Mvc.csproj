@@ -96,6 +96,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TeamProjectsController.cs" />
     <Compile Include="Controllers\TeamCollectionsController.cs" />
+    <Compile Include="Controllers\WikiController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -261,7 +262,11 @@
     <Content Include="Views\Shared\UserPartial.cshtml" />
     <Content Include="Views\TeamProjects\WorkItemsView.cshtml" />
     <Content Include="Views\TeamProjects\CreateBug.cshtml" />
+    <Content Include="Views\TeamProjects\CreateWikiEntry.cshtml" />
     <Content Include="Views\TeamProjects\ForkProject.cshtml" />
+    <Content Include="Views\TeamProjects\WikiView.cshtml" />
+    <Content Include="Views\Wiki\WikiView.cshtml" />
+    <Content Include="Views\Wiki\CreateWikiEntry.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
