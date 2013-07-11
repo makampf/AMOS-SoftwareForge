@@ -41,7 +41,7 @@ namespace SoftwareForge.Mvc.Controllers
         public ActionResult Index()
         {
             DashboardModel dashboardModel = new DashboardModel();
-            List<TeamCollection> teamCollections = SoftwareForgeFacade.Client.GetTeamCollections().ToList();
+            List<TeamCollection> teamCollections = SoftwareForgeFacade.Client.GetTeamCollections("").ToList();
 
             dashboardModel.RandomProjects = GetRandomProjects(teamCollections);
             dashboardModel.MyProjects = GetMyProjects(teamCollections);

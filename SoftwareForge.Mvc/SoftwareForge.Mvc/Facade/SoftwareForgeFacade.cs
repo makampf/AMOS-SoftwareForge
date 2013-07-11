@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mime;
 using SoftwareForge.Common.Models;
 using SoftwareForge.Common.Models.Requests;
@@ -80,6 +81,34 @@ namespace SoftwareForge.Mvc.Facade
                 teamCollection.Projects = ProjectsController.GetTeamProjectsOfTeamCollection(teamCollection.Guid);
             }
             return teamCollections;
+        }
+
+        /// <summary>
+        /// Shows already created Team Collections.
+        /// </summary>
+        /// <returns>all Team Collections</returns>
+        public IEnumerable<TeamCollection> GetTeamCollections(string searchFilter)
+        {
+            if (searchFilter == null)
+            {
+                searchFilter = "";
+            }
+            List<TeamCollection> teamCollections = ProjectsController.GetTeamCollections();
+            List<TeamCollection> filteredTeamCollections = new List<TeamCollection>();
+            foreach (TeamCollection teamCollection in teamCollections)
+            {
+                teamCollection.Projects = ProjectsController.GetTeamProjectsOfTeamCollection(teamCollection.Guid);
+                if (!String.IsNullOrWhiteSpace(searchFilter))
+                {
+                    teamCollection.Projects = teamCollection.Projects.Where(t => t.Name.ToLower().Contains(searchFilter.ToLower()) ||
+                        t.Guid.ToString().Equals(searchFilter) || t.TfsName.ToLower().Contains(searchFilter.ToLower())).ToList();
+                }
+                if (teamCollection.Projects.Any() || teamCollection.Name.ToLower().Contains(searchFilter.ToLower()))
+                {
+                    filteredTeamCollections.Add(teamCollection);
+                }
+            }
+            return filteredTeamCollections;
         }
 
         /// <summary>
