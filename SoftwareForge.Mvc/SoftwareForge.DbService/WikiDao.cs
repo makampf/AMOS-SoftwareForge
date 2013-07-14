@@ -34,10 +34,10 @@ namespace SoftwareForge.DbService
 
 
         /// <summary>
-        /// 
+        /// Writes the new wiki entry in the database
         /// </summary>
-        /// <param name="wiki"></param>
-        /// <returns></returns>
+        /// <param name="wiki">wikimodel</param>
+        /// <returns>the entry</returns>
         public static WikiModel AddEntry(WikiModel wiki)
         {
             WikiModel createdEntry = SoftwareForgeDbContext.Entries.Add(wiki);
@@ -47,10 +47,10 @@ namespace SoftwareForge.DbService
 
 
         /// <summary>
-        /// 
+        ///  Gets the entry with the given id
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">id of the entry</param>
+        /// <returns>the project iff it exists with the given id </returns>
         public static WikiModel GetEntry(int id)
         {
             return SoftwareForgeDbContext.Entries.FirstOrDefault(e => e.Id == id);
@@ -58,10 +58,10 @@ namespace SoftwareForge.DbService
 
 
         /// <summary>
-        /// 
+        /// Gets the entries for a project
         /// </summary>
-        /// <param name="projectGuid"></param>
-        /// <returns></returns>
+        /// <param name="projectGuid">project guid</param>
+        /// <returns>a list of wiki entries</returns>
         public static List<WikiModel> GetEntriesForProject(Guid projectGuid)
         {
             try

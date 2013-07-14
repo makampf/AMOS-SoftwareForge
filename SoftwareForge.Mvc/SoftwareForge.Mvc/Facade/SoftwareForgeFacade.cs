@@ -456,24 +456,30 @@ namespace SoftwareForge.Mvc.Facade
 
 
         /// <summary>
-        /// 
+        /// Gets all wiki entries of a project
         /// </summary>
-        /// <param name="projectGuid"></param>
-        /// <returns></returns>
+        /// <param name="projectGuid">Guid of the project</param>
+        /// <returns>a list of entries</returns>
         public List<WikiModel> GetEntriesOfProject(Guid projectGuid)
         {
             return WikiDao.GetEntriesForProject(projectGuid);
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public WikiModel GetEntry(int id)
         {
             return WikiDao.GetEntry(id);
         }
 
         /// <summary>
-        /// 
+        /// Posts the model in the wikidao
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="model">wikimodel</param>
         public void CreateEntry(WikiModel model)
         {
             WikiDao.AddEntry(model);

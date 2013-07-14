@@ -27,7 +27,13 @@ using SoftwareForge.Mvc.Facade;
 namespace SoftwareForge.Mvc.Controllers
 {
     public class WikiController : Controller
-    {
+    {   
+
+        /// <summary>
+        /// Creates the wiki view.
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns>the entries as a list</returns>
         public ActionResult WikiView(Guid guid)
        {
            ViewBag.TeamProjectGuid = guid;
@@ -35,6 +41,11 @@ namespace SoftwareForge.Mvc.Controllers
        }
 
 
+       /// <summary>
+       /// 
+       /// </summary>
+       /// <param name="projectGuid"></param>
+       /// <returns></returns>
        public ActionResult CreateWikiEntry(Guid projectGuid)
        {
            WikiModel model = new WikiModel();
@@ -43,10 +54,16 @@ namespace SoftwareForge.Mvc.Controllers
            return View(model);
        }
 
+
+        /// <summary>
+        /// Posts the model to the facade
+        /// </summary>
+        /// <param name="model">wikimodel</param>
+        /// <returns>redirection to the wiki view</returns>
         public ActionResult PostCreateWikiEntry(WikiModel model)
         {
             if (string.IsNullOrEmpty(model.Title))
-                throw new Exception("Titel must not be empty");
+                throw new Exception("Title must not be empty");
 
             SoftwareForgeFacade.Client.CreateEntry(model);
 
