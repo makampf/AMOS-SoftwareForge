@@ -53,7 +53,7 @@
     <Compile Include="AbstractTfsController.cs" />
     <Compile Include="ImpersonatedTfsTeamProjectCollection.cs" />
     <Compile Include="ProjectsController.cs" />
-    <Compile Include="CodeViewController.cs" />
+    <Compile Include="CodeController.cs" />
     <Compile Include="PowerToolsUtil.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>

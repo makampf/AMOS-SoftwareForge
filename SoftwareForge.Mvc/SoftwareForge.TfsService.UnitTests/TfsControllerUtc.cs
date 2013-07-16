@@ -253,7 +253,21 @@ namespace SoftwareForge.TfsService.UnitTests
             Assert.IsNotNull(list);
         }
 
-        
+        [TestMethod]
+        public void RemoveProject()
+        {
+            List<TeamCollection> collections = _projectsController.GetTeamCollections();
+            foreach (var teamCollection in collections)
+            {
+                try
+                {
+                    _projectsController.RemoveTeamCollection(teamCollection.Guid);
+                }
+                catch (Exception)
+                {
+                }
+            }
+        }
 
     }
 }

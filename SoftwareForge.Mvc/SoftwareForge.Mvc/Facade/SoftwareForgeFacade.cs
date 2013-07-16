@@ -22,7 +22,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using System.Net.Mime;
 using SoftwareForge.Common.Models;
 using SoftwareForge.Common.Models.Requests;
 using SoftwareForge.DbService;
@@ -50,10 +49,10 @@ namespace SoftwareForge.Mvc.Facade
         }
 
 
-        private readonly CodeViewController _codeViewController;
-        CodeViewController CodeViewController
+        private readonly CodeController _codeController;
+        CodeController CodeController
         {
-            get { return _codeViewController; }
+            get { return _codeController; }
         }
 
         private readonly BugController _bugController;
@@ -66,7 +65,7 @@ namespace SoftwareForge.Mvc.Facade
         public SoftwareForgeFacade()
         {
             _projectsController = new ProjectsController(new Uri(Properties.Settings.Default.TfsServerUri), Properties.Settings.Default.DbConnectionString);
-            _codeViewController = new CodeViewController(new Uri(Properties.Settings.Default.TfsServerUri), Properties.Settings.Default.DbConnectionString);
+            _codeController = new CodeController(new Uri(Properties.Settings.Default.TfsServerUri), Properties.Settings.Default.DbConnectionString);
             _bugController = new BugController(new Uri(Properties.Settings.Default.TfsServerUri), Properties.Settings.Default.DbConnectionString);
         }
    
@@ -398,7 +397,7 @@ namespace SoftwareForge.Mvc.Facade
         /// <returns>a list of branches</returns>
         public List<string> GetBranches(Guid teamProjectGuid)
         {
-            return CodeViewController.GetBranches(teamProjectGuid);
+            return CodeController.GetBranches(teamProjectGuid);
         }
 
         /// <summary>
@@ -409,7 +408,7 @@ namespace SoftwareForge.Mvc.Facade
         /// <returns>a list of files</returns>
         public List<CompositeItem> GetFiles(Guid teamProjectGuid, string path)
         {
-            return CodeViewController.GetFiles(teamProjectGuid, path);
+            return CodeController.GetFiles(teamProjectGuid, path);
         }
 
 
@@ -422,7 +421,7 @@ namespace SoftwareForge.Mvc.Facade
         /// <returns>the content as a array of lines</returns>
         public String[] GetFileContent(string serverPath, Guid teamProjectGuid)
         {
-            string content = CodeViewController.DownloadFile(teamProjectGuid, serverPath);
+            string content = CodeController.DownloadFile(teamProjectGuid, serverPath);
             try
             {
                 string fileName = Path.GetFileName(serverPath);
@@ -487,7 +486,14 @@ namespace SoftwareForge.Mvc.Facade
         /// <returns></returns>
         public byte[] DownloadCode(Guid guid, string selectedbranch)
         {
-            return CodeViewController.DownloadCode(guid, selectedbranch);
+            return CodeController.DownloadCode(guid, selectedbranch);
+        }
+
+        public void ForkProject(Project project, string userName)
+        {
+            Project newProject = CreateProject(project, userName);
+            CodeController.ForkCode(project.Guid, newProject.Guid);
+
         }
     }
 }

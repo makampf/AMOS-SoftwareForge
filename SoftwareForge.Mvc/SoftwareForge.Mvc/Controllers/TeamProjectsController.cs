@@ -368,7 +368,7 @@ namespace SoftwareForge.Mvc.Controllers
         /// <returns></returns>
         public ActionResult PostForkProject(Project project)
         {
-            SoftwareForgeFacade.Client.CreateProject(project, User.Identity.Name);
+            SoftwareForgeFacade.Client.ForkProject(project, User.Identity.Name);
             return RedirectToAction("Index", "Home");
         }
 

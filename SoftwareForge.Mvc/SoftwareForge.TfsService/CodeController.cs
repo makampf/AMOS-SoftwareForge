@@ -23,7 +23,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using Microsoft.TeamFoundation.VersionControl.Client;
 using SoftwareForge.Common.Models;
@@ -34,16 +33,16 @@ using Project = SoftwareForge.Common.Models.Project;
 namespace SoftwareForge.TfsService
 {
     /// <summary>
-    /// The TfsController. Has the logic to control and query the tfs.
+    /// The CodeController. Has the logic to control the workspace code in tfs.
     /// </summary>
-    public class CodeViewController : AbstractTfsController
+    public class CodeController : AbstractTfsController
     {
         /// <summary>
         /// Constructor of the tfsController.
         /// </summary>
         /// <param name="tfsUri">The uri of the tfs</param>
         /// <param name="connectionString">The connection String to the mssql-server holding the ProjectCollections</param>
-        public CodeViewController(Uri tfsUri, String connectionString)
+        public CodeController(Uri tfsUri, String connectionString)
             : base(tfsUri, connectionString)
         {
         }
@@ -178,6 +177,7 @@ namespace SoftwareForge.TfsService
 
             String archiveName = Properties.Settings.Default.LocalCacheFolder + "\\" + guid + ".zip";
 
+            //TODO: Ugly :)
             Thread.Sleep(3000);
             int createZipTries = 0;
             while (createZipTries < 30)
@@ -206,7 +206,53 @@ namespace SoftwareForge.TfsService
 
             return fileBytes;
         }
+
+
+        /// <summary>
+        /// Fork code from old project to new project
+        /// </summary>
+        /// <param name="oldProjectGuid">the guid of the old project</param>
+        /// <param name="newProjectGuid">the guid of the new project</param>
+        public void ForkCode(Guid oldProjectGuid, Guid newProjectGuid)
+        {
+            Project oldProject = ProjectsDao.Get(oldProjectGuid);
+            Project newProject = ProjectsDao.Get(newProjectGuid);
+
+            String sourceProjectPath = "$/" + oldProject.TfsName;
+            VersionControlServer oldVersionControlServer = TfsConfigurationServer.GetTeamProjectCollection(oldProject.TeamCollectionGuid).GetService<VersionControlServer>();
+            
+            String guid = Guid.NewGuid().ToString();
+            string localPath = Properties.Settings.Default.LocalCacheFolder + "\\" + guid + "\\";
+
+
+            Workspace oldWorkspace = oldVersionControlServer.CreateWorkspace(guid);
+            WorkingFolder workfolder = new WorkingFolder(sourceProjectPath, localPath);
+            oldWorkspace.CreateMapping(workfolder);
+            oldWorkspace.Get();
+            oldWorkspace.DeleteMapping(workfolder);
+            oldWorkspace.Delete();
+
+            String newGuid = Guid.NewGuid().ToString();
+            string newLocalPath = Properties.Settings.Default.LocalCacheFolder + "\\" + newGuid + "\\";
+            VersionControlServer newVersionControlServer = TfsConfigurationServer.GetTeamProjectCollection(newProject.TeamCollectionGuid).GetService<VersionControlServer>();
+            String destinationProjectPath = "$/" + newProject.TfsName;
+            Workspace newWorkSpace = newVersionControlServer.CreateWorkspace(newGuid);
+            WorkingFolder newWorkfolder = new WorkingFolder(destinationProjectPath, newLocalPath);
+            newWorkSpace.CreateMapping(newWorkfolder);
+
+
+            Directory.Move(localPath, newLocalPath);
+
+            PendingChange[] pendingChanges = newWorkSpace.GetPendingChanges();
+            //ItemSpec[] itemSpecs = new[] { new ItemSpec(localPath, RecursionType.Full) };
+            //PendingSet[] pendingSets = newWorkSpace.VersionControlServer.QueryPendingSets(itemSpecs, newWorkSpace.Name, System.Security.Principal.WindowsIdentity.GetCurrent().Name);
+            //PendingChange[] pendingChanges = pendingSets.SelectMany(pendingSet => pendingSet.PendingChanges).ToArray();
+            newWorkSpace.CheckIn(pendingChanges, null);
+                
+                
+            newWorkSpace.DeleteMapping(newWorkfolder);
+            newWorkSpace.Delete();
+
+        }
     }
-
-
 }

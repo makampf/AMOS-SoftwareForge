@@ -29,7 +29,7 @@
 
 
 
-@using (Html.BeginForm("PostForkProject", "TeamProjects"))
+@using (Html.BeginForm("PostForkProject", "TeamProjects", new {guid = Model.Guid}))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
@@ -45,6 +45,7 @@
         </div>
 
         @Html.HiddenFor(model => model.TeamCollectionGuid)
+        
 
         <div class="editor-label">
             @Html.LabelFor(model => model.Name)
