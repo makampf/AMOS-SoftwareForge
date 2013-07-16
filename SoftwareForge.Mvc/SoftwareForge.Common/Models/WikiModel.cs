@@ -36,7 +36,7 @@ namespace SoftwareForge.Common.Models
         /// title of entry
         /// </summary>
         [MaxLength(100)]
-        [DataType(DataType.MultilineText)]
+        [DataType(DataType.Text)]
         public string Title { get; set; }
 
         /// <summary>

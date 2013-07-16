@@ -17,24 +17,27 @@
  - License along with this program. If not, see
  - <http://www.gnu.org/licenses/>.
  -->
-@using SoftwareForge.Common.Models
-@model  List<SoftwareForge.Common.Models.WikiModel>
+@model SoftwareForge.Common.Models.WikiModel
+
 @{
     ViewBag.Title = "Wiki";
     var teamProjectGuid = ViewBag.TeamProjectGuid;    
 }
-
-
 
 <p>@Html.ActionLink("[Project Details]", "ProjectDetailsPage", "TeamProjects", new { guid = teamProjectGuid }, null) -  
     @Html.ActionLink("[Code View]", "CodeView", "TeamProjects", new {guid = teamProjectGuid}, null) - 
     @Html.ActionLink("[Bug View]", "WorkItemsView", "TeamProjects", new { guid = teamProjectGuid }, null)
     - Wiki View
 </p>
-  @foreach (WikiModel wikiEntry in Model)
-  {
-    @Html.ActionLink(wikiEntry.Title, "WikiEntry", "Wiki", new { guid = teamProjectGuid,  id = wikiEntry.Id }, null) 
-   <br/>
-  }
- <br/>
- @Html.ActionLink("[Create Entry]", "CreateWikiEntry", "Wiki",new {projectGuid = teamProjectGuid},null)<br/>
+
+
+
+<h2>@Model.Title</h2>
+
+
+@Model.Text
+
+<br/><br/>
+<div>
+@Html.ActionLink("[Back to list]", "WikiView", "Wiki", new { guid = teamProjectGuid }, null)
+</div>

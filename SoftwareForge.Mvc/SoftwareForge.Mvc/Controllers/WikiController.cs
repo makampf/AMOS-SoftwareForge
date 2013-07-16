@@ -31,8 +31,17 @@ namespace SoftwareForge.Mvc.Controllers
         public ActionResult WikiView(Guid guid)
        {
            ViewBag.TeamProjectGuid = guid;
-           return View(SoftwareForgeFacade.Client.GetEntriesOfProject(guid));
+           List<WikiModel> wikiEntriesList = SoftwareForgeFacade.Client.GetEntriesOfProject(guid);
+           return View(wikiEntriesList);
        }
+
+
+        public ActionResult WikiEntry(Guid guid, int id )
+        {
+            ViewBag.TeamProjectGuid = guid;
+            WikiModel wikiEntry = SoftwareForgeFacade.Client.GetEntry(id);
+            return View(wikiEntry);
+        }
 
 
        public ActionResult CreateWikiEntry(Guid projectGuid)

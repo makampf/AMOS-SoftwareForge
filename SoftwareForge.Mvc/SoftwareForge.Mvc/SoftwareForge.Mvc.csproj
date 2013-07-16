@@ -277,6 +277,7 @@
     <Content Include="Views\Wiki\CreateWikiEntry.cshtml" />
     <Content Include="Views\Shared\SearchPartial.cshtml" />
     <Content Include="Views\Home\Search.cshtml" />
+    <Content Include="Views\Wiki\WikiEntry.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
