@@ -492,7 +492,8 @@ namespace SoftwareForge.Mvc.Facade
         public void ForkProject(Project project, string userName)
         {
             Project newProject = CreateProject(project, userName);
-            CodeController.ForkCode(project.Guid, newProject.Guid);
+
+            //CodeController.ForkCode(project.Guid, newProject.Guid);
 
         }
     }
