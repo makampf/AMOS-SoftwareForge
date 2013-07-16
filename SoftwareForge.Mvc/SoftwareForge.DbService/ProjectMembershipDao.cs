@@ -27,6 +27,9 @@ namespace SoftwareForge.DbService
 {
     public class ProjectMembershipDao
     {
+
+        private static object _userLock = new object();
+
         private static readonly SoftwareForgeDbContext SoftwareForgeDbContext = new SoftwareForgeDbContext();
 
         public static List<Project> GetProjectOwnerProjects(User user)
@@ -103,16 +106,19 @@ namespace SoftwareForge.DbService
 
         public static User GetOrCreateUser(string userName)
         {
-            User user = GetUser(userName);
-            if (user == null)
+            lock (_userLock)
             {
-                user = new User { Username = userName };
-                SoftwareForgeDbContext.Users.Add(user);
-                SoftwareForgeDbContext.SaveChanges();
+                User user = GetUser(userName);
+                if (user == null)
+                {
+                    user = new User { Username = userName };
+                    SoftwareForgeDbContext.Users.Add(user);
+                    SoftwareForgeDbContext.SaveChanges();
 
-                user = SoftwareForgeDbContext.Users.Single(a => a.Username == userName);
+                    user = SoftwareForgeDbContext.Users.Single(a => a.Username == userName);
+                }
+                return user;   
             }
-            return user;
         }
 
         public static User GetUser(String username)

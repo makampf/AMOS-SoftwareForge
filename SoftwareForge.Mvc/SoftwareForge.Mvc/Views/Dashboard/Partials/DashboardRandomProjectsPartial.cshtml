@@ -20,8 +20,11 @@
 
 @using SoftwareForge.Common.Models
 @model List<Project>
-<h3>Some random projects for you:<br/></h3>           
-@foreach (Project project in Model)
-        {
-      @Html.Partial("ProjectPreviewPartial",project)
-        }   
+@if (Model.Count > 0)
+{
+    <h3>Some random projects for you:<br/></h3>
+    foreach (Project project in Model)
+    {
+        @Html.Partial("ProjectPreviewPartial", project)
+    }
+}

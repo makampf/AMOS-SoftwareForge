@@ -33,6 +33,12 @@ namespace SoftwareForge.DbService
     public class ProjectsDao
     {
         /// <summary>
+        /// lock project adding/getting
+        /// </summary>
+        private static object _projectLock = new object();
+
+
+        /// <summary>
         /// The DatabaseContext
         /// </summary>
         private static readonly SoftwareForgeDbContext SoftwareForgeDbContext = new SoftwareForgeDbContext();
@@ -44,6 +50,15 @@ namespace SoftwareForge.DbService
         /// </summary>
         /// <param name="project">Project to add</param>
         public static Project Add(Project project)
+        {
+            lock (_projectLock)
+            {
+                return AddImpl(project);
+            }
+        }
+
+
+        private static Project AddImpl(Project project)
         {
             if (SoftwareForgeDbContext.Projects.Any(t => t.Guid == project.Guid))
             {
@@ -109,6 +124,30 @@ namespace SoftwareForge.DbService
 
             SoftwareForgeDbContext.SaveChanges();
         }
+
+
+        /// <summary>
+        /// Get a project by guid or create given one
+        /// </summary>
+        /// <param name="guid">guid of project</param>
+        /// <param name="projectToAdd">project to add if new</param>
+        /// <returns>A project or null if no project is found</returns>
+        public static Project GetOrAdd(Guid guid, Project projectToAdd)
+        {
+            lock (_projectLock)
+            {
+                Project project = Get(guid);
+                if (project != null)
+                {
+                    return project;
+                }
+                return AddImpl(projectToAdd); 
+            }
+
+
+        }
+
+
 
         /// <summary>
         /// Get a project by guid
