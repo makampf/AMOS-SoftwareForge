@@ -73,15 +73,12 @@ namespace SoftwareForge.TfsService
             foreach (Microsoft.TeamFoundation.WorkItemTracking.Client.Project project in projects)
             {
                 Guid guid = new Guid(project.Guid);
-                Project projectModel = ProjectsDao.Get(new Guid(project.Guid));
-                if (projectModel == null)
-                {
-                    //TODO: Language files - localization - no language specifictext in code!
-                    const string noDescriptionAvailable = "No description available.";
-                    projectModel =
-                        ProjectsDao.Add(new Project(project.Name, noDescriptionAvailable, project.Id, guid,
-                                                    teamCollectionGuid, ProjectType.Application));
-                }
+                const string noDescriptionAvailable = "No description available.";
+                Project projectToAdd = new Project(project.Name, noDescriptionAvailable, project.Id, guid,
+                            teamCollectionGuid, ProjectType.Application);
+                Project projectModel = ProjectsDao.GetOrAdd(new Guid(project.Guid), projectToAdd);
+                    
+
                 result.Add(projectModel);
             }
 
