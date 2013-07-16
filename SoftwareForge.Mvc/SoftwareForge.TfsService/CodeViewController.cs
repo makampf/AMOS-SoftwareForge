@@ -20,8 +20,11 @@
 
 using System;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text;
+using System.Threading;
 using Microsoft.TeamFoundation.VersionControl.Client;
 using SoftwareForge.Common.Models;
 using SoftwareForge.DbService;
@@ -149,6 +152,59 @@ namespace SoftwareForge.TfsService
             }
 
             return content;
+        }
+
+
+        /// <summary>
+        /// Download code of a project as a zip file
+        /// </summary>
+        /// <param name="projectGuid">the guid of the project</param>
+        /// <param name="serverPath">the selected branch</param>
+        /// <returns>content of zip file as byte array</returns>
+        public byte[] DownloadCode(Guid projectGuid, string serverPath)
+        {
+            Project project = ProjectsDao.Get(projectGuid);
+
+            VersionControlServer versionControlServer = TfsConfigurationServer.GetTeamProjectCollection(project.TeamCollectionGuid).GetService<VersionControlServer>();
+
+            String guid = Guid.NewGuid().ToString();
+            string localPath = Properties.Settings.Default.LocalCacheFolder + "\\" + guid + "\\";
+
+            Workspace workspace = versionControlServer.CreateWorkspace(guid);
+            WorkingFolder workfolder = new WorkingFolder(serverPath, localPath);
+            workspace.CreateMapping(workfolder);
+            workspace.Get();
+           
+
+            String archiveName = Properties.Settings.Default.LocalCacheFolder + "\\" + guid + ".zip";
+
+            Thread.Sleep(3000);
+            int createZipTries = 0;
+            while (createZipTries < 30)
+            {
+                try
+                {
+                    ZipFile.CreateFromDirectory(localPath, archiveName);
+                    createZipTries = 30;
+                }
+                catch (Exception)
+                {
+                    Thread.Sleep(500);
+                    createZipTries++;
+                }
+            }
+
+
+            byte[] fileBytes = File.ReadAllBytes(archiveName);
+
+            workspace.DeleteMapping(workfolder);
+            workspace.Delete();
+
+            DirectoryInfo directory = new DirectoryInfo(localPath);
+            directory.Delete(true);
+            File.Delete(archiveName);
+
+            return fileBytes;
         }
     }
 

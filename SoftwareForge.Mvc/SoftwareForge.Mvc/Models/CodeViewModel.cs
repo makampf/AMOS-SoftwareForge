@@ -37,6 +37,14 @@ namespace SoftwareForge.Mvc.Models
         /// </summary>
         public Guid ProjectGuid {get; set; }
 
+        /// <summary>
+        /// The files in a project branch
+        /// </summary>
         public List<CompositeItem> Files { get; set; }
+
+        /// <summary>
+        /// The branch the user selected
+        /// </summary>
+        public string SelectedBranch { get; set; }
     }
 }

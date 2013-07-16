@@ -27,7 +27,6 @@ using SoftwareForge.Mvc.Facade;
 using SoftwareForge.Mvc.Models;
 using Project = SoftwareForge.Common.Models.Project;
 using WorkItem = SoftwareForge.Common.Models.WorkItem;
-using Wiki = SoftwareForge.Common.Models.WikiModel;
 
 namespace SoftwareForge.Mvc.Controllers
 {
@@ -276,10 +275,10 @@ namespace SoftwareForge.Mvc.Controllers
                 branchSelectListItems.Add(new SelectListItem { Text = branchElement, Value = branchElement, Selected = selected});
             }
 
-            CodeViewModel project = new CodeViewModel { ProjectGuid = guid, Files = files };
+            CodeViewModel codeViewModel = new CodeViewModel { ProjectGuid = guid, Files = files, SelectedBranch = branch};
             ViewBag.BranchList = branchSelectListItems;
 
-            return View(project);
+            return View(codeViewModel);
         }
 
         /// <summary>
@@ -373,6 +372,19 @@ namespace SoftwareForge.Mvc.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <param name="selectedbranch"></param>
+        /// <returns></returns>
+        public FileResult DownloadCode(Guid guid, string selectedbranch)
+        {
+            byte[] content =SoftwareForgeFacade.Client.DownloadCode(guid, selectedbranch);
+            const string contentType = "application/zip";
 
+            return File(content, contentType, DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString().Replace(':','-')+".zip");
+        }
     }
 }

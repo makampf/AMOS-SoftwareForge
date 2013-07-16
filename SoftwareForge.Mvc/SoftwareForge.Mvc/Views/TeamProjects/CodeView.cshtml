@@ -34,7 +34,7 @@
 
 <p>@Html.ActionLink("[Project Details]", "ProjectDetailsPage", "TeamProjects", new { guid = Model.ProjectGuid }, null) - Code View - 
     @Html.ActionLink("[Bug View]", "WorkItemsView", "TeamProjects", new { guid = Model.ProjectGuid }, null) - 
-    @Html.ActionLink("[Wiki View]", "WikiView", "Wiki", new { guid = Model.ProjectGuid}, null)
+    @Html.ActionLink("[Wiki View]", "WikiView", "Wiki", new { guid = Model.ProjectGuid }, null)
 
 </p>
 
@@ -50,8 +50,10 @@
         <p>
             <input type="submit" value="Show Branch" />
         </p>
-
     </fieldset>
+    
+    @Html.ActionLink("[Download Code]", "DownloadCode", "TeamProjects", new { guid = Model.ProjectGuid, Model.SelectedBranch }, null)
+    <br/>
     
     
     <b>Files:</b><br/>

@@ -478,5 +478,16 @@ namespace SoftwareForge.Mvc.Facade
         {
             WikiDao.AddEntry(model);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <param name="selectedbranch"></param>
+        /// <returns></returns>
+        public byte[] DownloadCode(Guid guid, string selectedbranch)
+        {
+            return CodeViewController.DownloadCode(guid, selectedbranch);
+        }
     }
 }
